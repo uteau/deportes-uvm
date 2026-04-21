@@ -64,7 +64,7 @@ model Anuncio {
   author Usuario @relation(fields: [created_by], references: [id])
 }
 
-model Contact {
+model Contacto {
   id                    String  @id @default(uuid())
   nombre                String
   rol                   String?
