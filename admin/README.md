@@ -1,16 +1,51 @@
-# React + Vite
+# Panel Admin UVM
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Panel de administración web para la Plataforma Deportiva Universitaria UVM. Construido con Vite + React (JavaScript).
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Node.js 18 o superior
+- npm 9 o superior
 
-## React Compiler
+## Configuración
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Instala las dependencias:
 
-## Expanding the ESLint configuration
+```bash
+npm install
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+2. Copia el archivo de variables de entorno y ajusta los valores:
+
+```bash
+cp .env.example .env
+```
+
+| Variable       | Descripción                        | Valor por defecto          |
+|----------------|------------------------------------|----------------------------|
+| `VITE_API_URL` | URL base de la API REST del backend | `http://localhost:3000`    |
+
+## Scripts disponibles
+
+| Comando         | Descripción                                      |
+|-----------------|--------------------------------------------------|
+| `npm run dev`   | Inicia el servidor de desarrollo en `localhost:5173` |
+| `npm run build` | Genera el build de producción en `dist/`         |
+| `npm run preview` | Previsualiza el build de producción localmente |
+
+## Estructura del proyecto
+
+```
+admin/
+├── index.html          # Punto de entrada HTML de Vite
+├── vite.config.js      # Configuración de Vite
+├── .env.example        # Variables de entorno requeridas
+└── src/
+    ├── main.jsx        # Punto de entrada de React
+    └── App.jsx         # Componente raíz (placeholder)
+```
+
+## Notas
+
+- Este proyecto es parte del monorepo `deportes-uvm/`. El backend se encuentra en `../backend/` y la app móvil en `../movil/`.
+- Las rutas, el layout y el cliente HTTP se configuran en tareas posteriores (12.x).
