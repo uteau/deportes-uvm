@@ -1,7 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Prisma Schema — Plataforma Deportiva UVM
+// Documentación: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -9,7 +7,27 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Rol {
+  estudiante
+  admin
+}
+
+enum EventoSubtipo {
+  partido
+  evento_publico
+}
+
+enum AnuncioTipo {
+  publico
+  seluvm
+}
+
+// ─── Modelos ──────────────────────────────────────────────────────────────────
 
 model Usuario {
   id                    String    @id @default(uuid())
@@ -19,71 +37,66 @@ model Usuario {
   rol                   Rol       @default(estudiante)
   is_active             Boolean   @default(true)
   deporte               String?
-  foto_url              String?
   estudiante_id         String?   @unique
   credential_expires_at DateTime?
   last_login            DateTime?
   created_at            DateTime  @default(now())
 
-  eventos       Evento[]
-  anuncios      Anuncio[]
+  // Relaciones
+  eventos  Evento[]
+  anuncios Anuncio[]
+
+  @@map("usuarios")
 }
 
 model Evento {
-  id           String    @id @default(uuid())
-  nombre       String
-  descripcion  String?
-  fecha_evento DateTime
-  lugar        String?
-  subtipo      Subtipo
-  equipo_local String?
+  id            String        @id @default(uuid())
+  nombre        String
+  descripcion   String?
+  fecha_evento  DateTime
+  lugar         String
+  subtipo       EventoSubtipo
+  equipo_local  String?
   equipo_visita String?
-  resul_local  Int?
-  resul_visita Int?
-  promoted_at  DateTime?
-  is_active    Boolean   @default(true)
-  created_by   String
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
+  resul_local   Int?
+  resul_visita  Int?
+  promoted_at   DateTime?
+  is_active     Boolean       @default(true)
+  created_by    String
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
 
-  author Usuario @relation(fields: [created_by], references: [id])
+  // Relaciones
+  creador Usuario @relation(fields: [created_by], references: [id])
+
+  @@map("eventos")
 }
 
-model Anuncio { 
-  id             String           @id @default(uuid())
-  titulo         String
-  contenido      String
-  tipo           AnuncioTipo
-  instagram_url  String?
-  is_published   Boolean          @default(true)
-  created_by     String
-  published_at   DateTime?
-  created_at     DateTime         @default(now())
-  updated_at     DateTime         @updatedAt
+model Anuncio {
+  id            String      @id @default(uuid())
+  titulo        String
+  contenido     String
+  tipo          AnuncioTipo
+  instagram_url String?
+  is_published  Boolean     @default(true)
+  created_by    String
+  published_at  DateTime?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
 
-  author Usuario @relation(fields: [created_by], references: [id])
+  // Relaciones
+  creador Usuario @relation(fields: [created_by], references: [id])
+
+  @@map("anuncios")
 }
 
 model Contacto {
-  id                    String  @id @default(uuid())
-  nombre                String
-  rol                   String?
-  email                 String?
-  telefono              String?
-  descripcion_servicio  String?
-}
+  id                  String  @id @default(uuid())
+  nombre              String
+  rol                 String?
+  email               String?
+  telefono            String?
+  descripcion_servicio String?
 
-enum Rol {
-  estudiante
-  admin
-}
-
-enum Subtipo {
-  partido
-  evento_publico
-}
-
-enum AnuncioTipo   {
-  publico
-  seluvm
+  @@map("contactos")
 }

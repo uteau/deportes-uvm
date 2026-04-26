@@ -1,55 +1,121 @@
-require('dotenv/config');
+// prisma/seed.js
+// Script de seed para crear cuentas de administrador en la base de datos.
+// Uso: node prisma/seed.js  (o npm run seed)
+// Las credenciales se leen desde variables de entorno.
+
+'use strict';
+
+require('dotenv').config();
+
 const { PrismaClient } = require('@prisma/client');
-const { PrismaPg } = require('@prisma/adapter-pg');
 const bcrypt = require('bcrypt');
 
-// Crear el adaptador de conexión usando la URL de la base de datos
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient();
 
-// Instancia del cliente de Prisma usando el adaptador
-const prisma = new PrismaClient({ adapter });
+const SALT_ROUNDS = 10;
+
+/**
+ * Lee y valida las variables de entorno para un administrador.
+ * @param {string} emailVar   - Nombre de la variable de entorno para el email.
+ * @param {string} passwordVar - Nombre de la variable de entorno para la contraseña.
+ * @param {string} nombreVar  - Nombre de la variable de entorno para el nombre.
+ * @param {string} defaultEmail  - Valor por defecto para el email.
+ * @param {string} defaultNombre - Valor por defecto para el nombre.
+ * @returns {{ email: string, password: string, nombre: string } | null}
+ */
+function readAdminEnv(emailVar, passwordVar, nombreVar, defaultEmail, defaultNombre) {
+  const email = process.env[emailVar] || defaultEmail;
+  const password = process.env[passwordVar];
+  const nombre = process.env[nombreVar] || defaultNombre;
+
+  if (!password) {
+    return null;
+  }
+
+  return { email, password, nombre };
+}
 
 async function main() {
-    const email = process.env.ADMIN_EMAIL;
-    const password = process.env.ADMIN_PASSWORD;
-    const nombreAdmin = process.env.ADMIN_NOMBRE;
-    
-    if (!email || !password || !nombreAdmin) {
-        throw new Error('Faltan variables de entorno.');
-    }
+  // ── Admin principal ────────────────────────────────────────────────────────
+  const admin1Password = process.env.ADMIN_PASSWORD;
+  if (!admin1Password) {
+    throw new Error(
+      'La variable de entorno ADMIN_PASSWORD es requerida. ' +
+        'Defínela antes de ejecutar el seed.',
+    );
+  }
 
-    const existe = await prisma.usuario.findUnique({
-        where: { email },
+  const admin1 = {
+    email: process.env.ADMIN_EMAIL || 'admin@uvm.cl',
+    password: admin1Password,
+    nombre: process.env.ADMIN_NOMBRE || 'Administrador UVM',
+  };
+
+  const hash1 = await bcrypt.hash(admin1.password, SALT_ROUNDS);
+
+  const result1 = await prisma.usuario.upsert({
+    where: { email: admin1.email },
+    update: {
+      nombre: admin1.nombre,
+      password_hash: hash1,
+      rol: 'admin',
+      is_active: true,
+    },
+    create: {
+      nombre: admin1.nombre,
+      email: admin1.email,
+      password_hash: hash1,
+      rol: 'admin',
+      is_active: true,
+    },
+  });
+
+  console.log(`✅ Admin principal creado/actualizado: ${result1.email} (id: ${result1.id})`);
+
+  // ── Admin secundario (opcional) ────────────────────────────────────────────
+  const admin2 = readAdminEnv(
+    'ADMIN2_EMAIL',
+    'ADMIN2_PASSWORD',
+    'ADMIN2_NOMBRE',
+    'admin2@uvm.cl',
+    'Administrador UVM 2',
+  );
+
+  if (admin2) {
+    const hash2 = await bcrypt.hash(admin2.password, SALT_ROUNDS);
+
+    const result2 = await prisma.usuario.upsert({
+      where: { email: admin2.email },
+      update: {
+        nombre: admin2.nombre,
+        password_hash: hash2,
+        rol: 'admin',
+        is_active: true,
+      },
+      create: {
+        nombre: admin2.nombre,
+        email: admin2.email,
+        password_hash: hash2,
+        rol: 'admin',
+        is_active: true,
+      },
     });
 
-    // if (existe) {
-    //     console.log(`El administrador ${email} ya existe. No se creó uno nuevo.`);
-    //     return;
-    // }
+    console.log(`✅ Admin secundario creado/actualizado: ${result2.email} (id: ${result2.id})`);
+  } else {
+    console.log(
+      'ℹ️  Admin secundario omitido (ADMIN2_PASSWORD no definida).',
+    );
+  }
 
-    // Hashear la contraseña con bcrypt (10 es el número de rondas de encriptación)
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const admin = await prisma.usuario.upsert({
-        where: { email },
-        update: {},
-        create: {
-            nombre: nombreAdmin,
-            email,
-            password_hash: passwordHash,
-            rol: 'admin',
-            is_active: true,
-        },
-    });
-
-    console.log(`Admin creado: ${admin.email}`);
+  console.log('🌱 Seed completado.');
 }
 
 main()
-    .catch((e) => {
-        console.error(e);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
+  .catch((e) => {
+    console.error('❌ Error durante el seed:', e.message);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
