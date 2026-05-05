@@ -109,6 +109,7 @@ export class EventosService {
                 fecha_evento: dto.fecha_evento,
                 lugar: dto.lugar,
                 subtipo: dto.subtipo, //Prisma ignora el cambio si viene indefinido
+                // el operador ... (spread) pega las propiedades del objeto 
                 ...camposPartido,
                 promoted_at: new Date(),
             },
