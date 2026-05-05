@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
+import { Body, 
+    Controller, 
+    Delete, 
+    Get, 
+    Param, 
+    Post, 
+    Put, 
+    Request, 
+    UseGuards } from "@nestjs/common";
 import { EventosService } from "./eventos.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
