@@ -51,11 +51,11 @@ export class CrearEventoDto {
     @IsOptional()
     @IsInt({ message: 'El resultado local debe ser un número entero'})
     @Min(0)
-    resul_local?: string;
+    resul_local?: number;
     
     @ValidateIf((o) => o.subtipo === EventoSubtipo.PARTIDO)
     @IsOptional()
     @IsInt({ message: 'El resultado visita debe ser un número entero'})
     @Min(0)
-    resul_visita?: string;
+    resul_visita?: number;
 }
