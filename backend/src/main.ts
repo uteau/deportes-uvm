@@ -12,8 +12,8 @@ async function bootstrap() {
   // Pipe de validación global: rechaza DTOs inválidos con 400
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
+      whitelist: true,            // whitelist: true → descarta campos que no estén en el DTO
+      forbidNonWhitelisted: true, // forbidNonWhitelisted: true → lanza error 400 si llegan campos no declarados
       transform: true,
     }),
   );
