@@ -11,8 +11,8 @@ import { EventosService } from "./eventos.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorators";
-import { CrearEventoDto } from "./dto/crear-evento";
-import { ActualizarEventoDto } from "./dto/actualizar-evento";
+import { CrearEventoDto } from "./dto/crear-evento.dto";
+import { ActualizarEventoDto } from "./dto/actualizar-evento.dto";
 
 
 // === Rutas públicas ======================================

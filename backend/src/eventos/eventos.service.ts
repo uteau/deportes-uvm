@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { CrearEventoDto, EventoSubtipo } from "./dto/crear-evento";
-import { ActualizarEventoDto } from "./dto/actualizar-evento";
+import { CrearEventoDto, EventoSubtipo } from "./dto/crear-evento.dto";
+import { ActualizarEventoDto } from "./dto/actualizar-evento.dto";
 
 
 @Injectable()
