@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { CrearEventoDto, EventoSubtipo } from "./dto/crear-evento.dto";
+import { CrearEventoDto } from "./dto/crear-evento.dto";
 import { ActualizarEventoDto } from "./dto/actualizar-evento.dto";
 
 
@@ -37,19 +37,6 @@ export class EventosService {
 
     // Crear evento
     async crear(dto: CrearEventoDto, adminId: string) {
-        if (dto.subtipo !== EventoSubtipo.PARTIDO){
-            if (
-                dto.equipo_local !== undefined ||
-                dto.equipo_visita !== undefined ||
-                dto.resul_local !== undefined ||
-                dto.resul_visita !== undefined
-            ) {
-                throw new BadRequestException(
-                'Los campos de resultado solo están permitidos en eventos de subtipo "partido"',
-                );
-            }
-        }
-
         return this.prisma.evento.create({
             data: {
                 nombre: dto.nombre,
@@ -57,11 +44,6 @@ export class EventosService {
                 // Prisma necesita un objeto Date; lo convertimos desde el string ISO
                 fecha_evento: new Date(dto.fecha_evento),
                 lugar: dto.lugar,
-                subtipo: dto.subtipo,
-                equipo_local: dto.equipo_local,
-                equipo_visita: dto.equipo_visita,
-                resul_local: dto.resul_local,
-                resul_visita: dto.resul_visita,
                 is_active: true,
                 created_by: adminId, // guardamos quién lo creó
             }
@@ -83,23 +65,8 @@ export class EventosService {
         // Guardamos el subtipo final con el operador de fusión nula
         // ?? devuelve izq si en no nulo, y der si izq es nulo
         // verifica nulidad del primer valor, si es cierta, devuelve el segundo valor
-        const subtipoFinal = dto.subtipo ?? evento.subtipo;
 
-        // si subtipoFinal no es partido, anular los campos de partido
-        const camposPartido =
-            subtipoFinal !== EventoSubtipo.PARTIDO
-            ? {
-                equipo_local: null,
-                equipo_visita: null,
-                resul_local: null,
-                resul_visita: null,
-            }
-            : {
-                equipo_local: dto.equipo_local,
-                equipo_visita: dto.equipo_visita,
-                resul_local: dto.resul_local,
-                resul_visita: dto.resul_visita,
-            };
+        // const subtipoFinal = dto.subtipo ?? evento.subtipo;
         
         return this.prisma.evento.update({
             where: {id},
@@ -108,9 +75,6 @@ export class EventosService {
                 descripcion: dto.descripcion,
                 fecha_evento: dto.fecha_evento,
                 lugar: dto.lugar,
-                subtipo: dto.subtipo, //Prisma ignora el cambio si viene indefinido
-                // el operador ... (spread) pega las propiedades del objeto 
-                ...camposPartido,
                 promoted_at: new Date(),
             },
         });
