@@ -53,20 +53,28 @@ async function main() {
 
   const hash1 = await bcrypt.hash(admin1.password, SALT_ROUNDS);
 
+  // Crear o actualizar el usuario base
   const result1 = await prisma.usuario.upsert({
     where: { email: admin1.email },
     update: {
       nombre: admin1.nombre,
       password_hash: hash1,
-      rol: 'admin',
       is_active: true,
     },
     create: {
       nombre: admin1.nombre,
       email: admin1.email,
       password_hash: hash1,
-      rol: 'admin',
       is_active: true,
+    },
+  });
+
+  // Crear el registro de Admin asociado si no existe
+  await prisma.admin.upsert({
+    where: { usuario_id: result1.id },
+    update: {},
+    create: {
+      usuario_id: result1.id,
     },
   });
 
@@ -84,20 +92,28 @@ async function main() {
   if (admin2) {
     const hash2 = await bcrypt.hash(admin2.password, SALT_ROUNDS);
 
+    // Crear o actualizar el usuario base
     const result2 = await prisma.usuario.upsert({
       where: { email: admin2.email },
       update: {
         nombre: admin2.nombre,
         password_hash: hash2,
-        rol: 'admin',
         is_active: true,
       },
       create: {
         nombre: admin2.nombre,
         email: admin2.email,
         password_hash: hash2,
-        rol: 'admin',
         is_active: true,
+      },
+    });
+
+    // Crear el registro de Admin asociado si no existe
+    await prisma.admin.upsert({
+      where: { usuario_id: result2.id },
+      update: {},
+      create: {
+        usuario_id: result2.id,
       },
     });
 
