@@ -17,7 +17,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             secretOrKey: process.env.JWT_SECRET,
         });
     }
-    validate(payload: { sub: string; email: string, rol: string }) {
+    // validate() se ejecuta automáticamente después de verificar el token.
+    // El payload contiene los datos que firmamos en el token (sub, email, rol).
+    // Lo que retornemos aquí se adjunta a request.user en los controladores.
+    validate(payload: { sub: string; email: string; rol: string }) {
         return {
             sub: payload.sub,
             email: payload.email,

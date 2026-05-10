@@ -11,25 +11,25 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  imports: [
-    // Registra Passport con la estrategia por defecto 'jwt'.
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    imports: [
+        // Registra Passport con la estrategia por defecto 'jwt'.
+        PassportModule.register({ defaultStrategy: 'jwt' }),
 
-    // Registra JwtModule con el secreto para firmar/verificar tokens.
-    // El secreto viene de las variables de entorno.
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      // No ponemos expiresIn aquí porque lo controlamos por rol en el service.
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy, // Registramos la strategy para que Passport la use
-  ],
-  exports: [
-    JwtStrategy,    // Exportamos para que otros módulos puedan usar el guard
-    PassportModule, // Exportamos para que otros módulos tengan acceso a Passport
-  ],
+        // Registra JwtModule con el secreto para firmar/verificar tokens.
+        // El secreto viene de las variables de entorno.
+        JwtModule.register({
+            secret: process.env.JWT_SECRET,
+            // No ponemos expiresIn aquí porque lo controlamos por rol en el service.
+        }),
+    ],
+    controllers: [AuthController],
+    providers: [
+        AuthService,
+        JwtStrategy, // Registramos la strategy para que Passport la use
+    ],
+    exports: [
+        JwtStrategy, // Exportamos para que otros módulos puedan usar el guard
+        PassportModule, // Exportamos para que otros módulos tengan acceso a Passport
+    ],
 })
 export class AuthModule {}
