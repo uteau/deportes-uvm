@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { EventosModule } from './eventos/eventos.module';
 import { PartidosModule } from './partidos/partidos.module';
+import { AnunciosModule } from './anuncios/anuncios.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { PartidosModule } from './partidos/partidos.module';
     AuthModule,
     EventosModule,
     PartidosModule,
+    AnunciosModule,
   ],
 })
 export class AppModule {}
