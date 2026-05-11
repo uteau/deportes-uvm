@@ -92,6 +92,7 @@ export class AnunciosService {
                 contenido: dto.contenido,
                 tipo: subtipoFinal,
                 instagram_url: dto.instagram_url,
+                promoted_at: new Date(),
             },
         });
     }

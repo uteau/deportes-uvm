@@ -132,6 +132,7 @@ model Anuncio {
   contenido     String
   tipo          AnuncioTipo
   instagram_url String?     // URL opcional a un post o perfil de Instagram
+  promoted_at   DateTime?
   is_published  Boolean     @default(true)
   created_by    String
   published_at  DateTime?
