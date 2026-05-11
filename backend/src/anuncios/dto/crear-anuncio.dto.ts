@@ -3,10 +3,10 @@ import{
     IsNotEmpty,
     IsOptional,
     IsString,
-    ValidateIf
+    IsUrl,
 } from 'class-validator';
 
-export enum AnuncioSubtipo{
+export enum AnuncioTipo{
     PUBLICO = 'publico',
     SELUVM = 'seluvm',
 }
@@ -19,10 +19,10 @@ export class CrearAnuncioDto {
     @IsNotEmpty({message: 'El contenido es obligatorio'}) 
     contenido: string;
 
-    @IsEnum(AnuncioSubtipo, {message: 'El subtipo debe ser "publico" o "seluvm"'})   
-    subtipo: AnuncioSubtipo;
+    @IsEnum(AnuncioTipo, {message: 'El subtipo debe ser "publico" o "seluvm"'})   
+    subtipo: AnuncioTipo;
 
     @IsOptional()
-    @IsString()  
+    @IsUrl({}, { message: 'El enlace debe ser una URL válida'})  
     instagram_url?: string;
 }
