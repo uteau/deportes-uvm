@@ -18,8 +18,8 @@ export class AnunciosService {
         });
     }
 
-    async findOnePublicos(id: string) {
-        const anuncio = this.prisma.anuncio.findFirst({
+    async findOnePublico(id: string) {
+        const anuncio = await this.prisma.anuncio.findFirst({
             where: { 
                 id, 
                 tipo: AnuncioTipo.PUBLICO,
@@ -45,11 +45,11 @@ export class AnunciosService {
     }
 
     async findOneSeluvm(id: string) {
-        const anuncio = this.prisma.anuncio.findFirst({
+        const anuncio = await this.prisma.anuncio.findFirst({
             where: { 
                 id,
                 tipo: AnuncioTipo.SELUVM,
-                 is_published: true }
+                is_published: true }
         });
 
         if (!anuncio) {

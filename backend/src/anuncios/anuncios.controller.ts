@@ -7,7 +7,7 @@ import { CrearAnuncioDto } from "./dto/crear-anuncio.dto";
 import { ActualizarAnuncioDto } from "./dto/actualizar-anuncio.dto";
 
 // === Rutas públicas ======================================
-@Controller('anuncios/publicos')
+@Controller('anuncios/publico')
 export class AnunciosPublicosController {
     constructor (private readonly anunciosService: AnunciosService) {}
     
@@ -18,7 +18,7 @@ export class AnunciosPublicosController {
 
     @Get(':id')
     findOne(@Param('id') id: string) {
-        return this.anunciosService.findOnePublicos(id);
+        return this.anunciosService.findOnePublico(id);
     }
 }
 
