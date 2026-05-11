@@ -19,6 +19,23 @@ export class EventosService {
         });
     }
 
+    async findByDate(date: string) {
+        const startDate  = new Date(date);
+        startDate.setHours(0, 0, 0, 0); // 00:00:00
+        
+        const endDate  = new Date(date);
+        endDate .setHours(23, 59, 59, 999); // 23:59:59
+
+
+        return this.prisma.evento.findMany({
+            where: {
+                fecha_evento: {gte: startDate , lte: endDate },
+                is_active: true,
+            },
+            orderBy: { fecha_evento: 'asc' },
+        });
+    }
+
     // devolver evento por id
     async findOne(id: string) {
         const evento = await this.prisma.evento.findFirst({

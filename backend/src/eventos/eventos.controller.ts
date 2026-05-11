@@ -5,6 +5,7 @@ import { Body,
     Param, 
     Post, 
     Put, 
+    Query, 
     Request, 
     UseGuards } from "@nestjs/common";
 import { EventosService } from "./eventos.service";
@@ -22,9 +23,13 @@ export class EventosPublicosController {
 
     // Eventos publicos debe mostrar los eventos y mostrar evento por ID
 
-    // GET /api/eventos
+    // GET /api/eventos?date=2025-05-11
+    // GET /api/eventos (todos los eventos)
     @Get()
-    findAll() {
+    findAll(@Query('date') date?: string) {
+        if (date) {
+            return this.eventosService.findByDate(date);
+        }
         return this.eventosService.findAll();
     }
 
