@@ -19,6 +19,21 @@ export class PartidosService {
         });
     }
 
+    async findByDate(date: string) {
+        // Forzamos UTC con el sufijo Z para evitar ambigüedad de zona horaria
+        const fecha_inicio = new Date(`${date}T00:00:00.000Z`);
+        const fecha_fin = new Date(`${date}T23:59:59.999Z`);
+
+
+        return this.prisma.partido.findMany({
+            where: {
+                fecha_partido: {gte: fecha_inicio , lte: fecha_fin },
+                is_active: true,
+            },
+            orderBy: { fecha_partido: 'asc' },
+        });
+    }
+
     // devolver partido por id
     async findOne(id: string) {
         const partido = await this.prisma.partido.findFirst({

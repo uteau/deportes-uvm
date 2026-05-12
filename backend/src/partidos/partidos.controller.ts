@@ -5,6 +5,7 @@ import { Body,
     Param, 
     Post, 
     Put, 
+    Query, 
     Request, 
     UseGuards } from "@nestjs/common";
 import { PartidosService } from "./partidos.service";
@@ -21,7 +22,10 @@ export class PartidosController {
 
     // GET /api/partidos
     @Get()
-    findAll() {
+    findAll(@Query('date') date?: string) {
+        if (date) {
+            return this.partidosService.findByDate(date);
+        }
         return this.partidosService.findAll();
     }
 
