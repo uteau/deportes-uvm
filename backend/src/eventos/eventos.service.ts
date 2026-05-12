@@ -20,16 +20,14 @@ export class EventosService {
     }
 
     async findByDate(date: string) {
-        const startDate  = new Date(date);
-        startDate.setHours(0, 0, 0, 0); // 00:00:00
-        
-        const endDate  = new Date(date);
-        endDate .setHours(23, 59, 59, 999); // 23:59:59
+        // Forzamos UTC con el sufijo Z para evitar ambigüedad de zona horaria
+        const fecha_inicio = new Date(`${date}T00:00:00.000Z`);
+        const fecha_fin = new Date(`${date}T23:59:59.999Z`);
 
 
         return this.prisma.evento.findMany({
             where: {
-                fecha_evento: {gte: startDate , lte: endDate },
+                fecha_evento: {gte: fecha_inicio , lte: fecha_fin },
                 is_active: true,
             },
             orderBy: { fecha_evento: 'asc' },
