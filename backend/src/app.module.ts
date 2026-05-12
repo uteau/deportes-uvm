@@ -5,6 +5,7 @@ import { EventosModule } from './eventos/eventos.module';
 import { PartidosModule } from './partidos/partidos.module';
 import { AnunciosModule } from './anuncios/anuncios.module';
 import { FeedModule } from './feed/feed.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FeedModule } from './feed/feed.module';
     PartidosModule,
     AnunciosModule,
     FeedModule,
+    UsuariosModule,
   ],
 })
 export class AppModule {}
