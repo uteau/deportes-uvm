@@ -46,6 +46,8 @@ export class AnunciosSeluvmController {
 export class AnunciosAdminController {
     constructor (private readonly anunciosService: AnunciosService) {}
     
+    // Listar todos
+
     @Post()
     crear(@Body() dto: CrearAnuncioDto, @Request() req) {
         return this.anunciosService.crear(dto, req.user.sub);
