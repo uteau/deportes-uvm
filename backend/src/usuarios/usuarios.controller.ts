@@ -29,7 +29,7 @@ export class UsuariosController {
     }
 }
 
-@Controller('estudiante')
+@Controller('seluvm')
 @UseGuards(JwtAuthGuard) // Solo requiere JWT válido, cualquier rol
 export class EstudianteController {
     constructor(private readonly usuariosService: UsuariosService) {}
