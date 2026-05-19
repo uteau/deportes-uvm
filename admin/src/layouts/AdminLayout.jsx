@@ -13,13 +13,13 @@ export default function AdminLayout() {
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: '🏠' },
-    { name: 'Eventos', path: '/eventos', icon: '📅' },
-    { name: 'Partidos', path: '/partidos', icon: '⚽' },
-    { name: 'Anuncios Públicos', path: '/anuncios/publicos', icon: '📢' },
-    { name: 'Anuncios Seleccionados', path: '/anuncios/seluvm', icon: '🔒' },
-    { name: 'Estudiantes', path: '/estudiantes', icon: '👨‍🎓' },
-    { name: 'Deportes', path: '/deportes', icon: '🏆' },
+    { name: 'Dashboard', path: '/' },
+    { name: 'Eventos', path: '/eventos' },
+    { name: 'Partidos', path: '/partidos' },
+    { name: 'Anuncios Públicos', path: '/anuncios/publicos' },
+    { name: 'Anuncios Seleccionados', path: '/anuncios/seluvm' },
+    { name: 'Estudiantes', path: '/estudiantes' },
+    { name: 'Deportes', path: '/deportes' },
   ];
 
   return (
@@ -34,7 +34,7 @@ export default function AdminLayout() {
             </Link>
           ))}
           <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-gray-100 mt-4 text-red-600">
-            🚪 Cerrar sesión
+            Cerrar sesión
           </button>
         </nav>
       </aside>

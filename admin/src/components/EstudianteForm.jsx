@@ -9,7 +9,7 @@ export default function EstudianteForm({ estudiante, onClose }) {
     email: '',
     password: '',
     estudiante_id: '',
-    deporteId: ''
+    deporte_id: ''
   });
 
   useEffect(() => {
@@ -19,11 +19,11 @@ export default function EstudianteForm({ estudiante, onClose }) {
     // Si es edición, cargar datos del estudiante
     if (estudiante) {
       setForm({
-        nombre: estudiante.nombre || '',
-        email: estudiante.email || '',
+        nombre: estudiante.usuario.nombre || '',
+        email: estudiante.usuario.email || '',
         password: '', // No se carga la contraseña por seguridad
         estudiante_id: estudiante.estudiante_id || '',
-        deporteId: estudiante.deporte?.id || ''
+        deporte_id: estudiante.deporte?.id || ''
       });
     }
   }, [estudiante]);
@@ -38,7 +38,7 @@ export default function EstudianteForm({ estudiante, onClose }) {
           nombre: form.nombre,
           email: form.email,
           estudiante_id: form.estudiante_id,
-          deporteId: form.deporteId
+          deporte_id: form.deporte_id
         };
         if (form.password) updateData.password = form.password;
         await apiClient.put(`/admin/usuarios/${estudiante.id}`, updateData);
@@ -96,9 +96,9 @@ export default function EstudianteForm({ estudiante, onClose }) {
             required 
           />
           <select 
-            name="deporteId" 
-            value={form.deporteId} 
-            onChange={e => setForm({...form, deporteId: e.target.value})} 
+            name="deporte_id" 
+            value={form.deporte_id} 
+            onChange={e => setForm({...form, deporte_id: e.target.value})} 
             className="w-full p-2 border mb-4 rounded" 
             required
           >

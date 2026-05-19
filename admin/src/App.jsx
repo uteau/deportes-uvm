@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import Login from './pages/Login';
-import AdminLayout from './components/AdminLayout';
-import Dashboard from './pages/Dashboard';
+import Login from './pages/LoginPage';
+import AdminLayout from './layouts/AdminLayout';
+import Dashboard from './pages/DashboardPage';
 import EventosPage from './pages/EventosPage';
 import PartidosPage from './pages/PartidosPage';
 import AnunciosPublicosPage from './pages/AnunciosPublicosPage';
-import AnunciosSeleccionadosPage from './pages/AnunciosSeluvmPage';
+import AnunciosSeluvmPage from './pages/AnunciosSeluvmPage';
 import EstudiantesPage from './pages/EstudiantesPage';
 import DeportesPage from './pages/DeportesPage';
 
@@ -47,9 +47,7 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

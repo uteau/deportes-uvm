@@ -16,7 +16,7 @@ export default function AnunciosSeluvmPage() {
 
   const handleDelete = async (id) => {
     if (confirm('¿Eliminar?')) {
-      await apiClient.delete(`/admin/anuncios/seluvm/${id}`);
+      await apiClient.delete(`/admin/anuncios/${id}`);
       load();
     }
   };
@@ -38,7 +38,7 @@ export default function AnunciosSeluvmPage() {
           </div>
         ))}
       </div>
-      {showForm && <AnuncioForm tipo="seleccionado" anuncio={editItem} onClose={() => { setShowForm(false); load(); }} />}
+      {showForm && <AnuncioForm tipo="seluvm" anuncio={editItem} onClose={() => { setShowForm(false); load(); }} />}
     </div>
   );
 }

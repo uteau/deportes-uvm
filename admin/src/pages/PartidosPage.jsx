@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import apiClient from '../api/client';
 import EventoForm from '../components/PartidoForm';
+import PartidoForm from '../components/PartidoForm';
 
 export default function PartidosPage() {
   const [partidos, setPartidos] = useState([]);
@@ -53,8 +54,8 @@ export default function PartidosPage() {
                 <td className="px-4 py-2">{p.lugar}</td>
                 <td className="px-4 py-2">{p.equipo_local}</td>
                 <td className="px-4 py-2">{p.equipo_visita}</td>
-                <td className="px-4 py-2">{p.resultado_local}</td>
-                <td className="px-4 py-2">{p.resultado_visita}</td>
+                <td className="px-4 py-2">{p.resul_local}</td>
+                <td className="px-4 py-2">{p.resul_visita}</td>
                 <td className="px-4 py-2">
                   <button onClick={() => handleEdit(p)} className="text-blue-600 mr-2">Editar</button>
                   <button onClick={() => handleDelete(p.id)} className="text-red-600">Eliminar</button>

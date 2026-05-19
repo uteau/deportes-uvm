@@ -30,9 +30,9 @@ export default function Dashboard() {
         {feed.map((item) => (
           <div key={item.id} className="bg-white p-4 rounded shadow">
             <div className="text-sm text-gray-500">
-              {item.tipo_item === 'evento' && '📅 Evento'}
-              {item.tipo_item === 'partido' && '⚽ Partido'}
-              {item.tipo_item === 'anuncio' && '📢 Anuncio'}
+              {item.tipo_item === 'evento' && 'Evento'}
+              {item.tipo_item === 'partido' && 'Partido'}
+              {item.tipo_item === 'anuncio' && 'Anuncio'}
             </div>
             <h2 className="text-xl font-semibold">{item.nombre || item.titulo}</h2>
             {item.descripcion && <p>{item.descripcion}</p>}
@@ -40,7 +40,7 @@ export default function Dashboard() {
             {item.fecha_evento && <p className="text-sm">Fecha: {new Date(item.fecha_evento).toLocaleString()}</p>}
             {item.fecha_partido && <p className="text-sm">Fecha: {new Date(item.fecha_partido).toLocaleString()}</p>}
             {item.lugar && <p className="text-sm">Lugar: {item.lugar}</p>}
-            {item.equipo_local && <p>⚽ {item.equipo_local} vs {item.equipo_visita} – {item.resul_local} : {item.resul_visita}</p>}
+            {item.equipo_local && <p>{item.equipo_local} vs {item.equipo_visita} – {item.resul_local} : {item.resul_visita}</p>}
             {item.instagram_url && <a href={item.instagram_url} target="_blank" rel="noreferrer" className="text-blue-500">Ver en Instagram</a>}
           </div>
         ))}

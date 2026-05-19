@@ -16,7 +16,7 @@ export default function AnunciosPublicosPage() {
 
   const handleDelete = async (id) => {
     if (confirm('¿Eliminar?')) {
-      await apiClient.delete(`/admin/anuncios/publico/${id}`);
+      await apiClient.delete(`/admin/anuncios/${id}`);
       load();
     }
   };

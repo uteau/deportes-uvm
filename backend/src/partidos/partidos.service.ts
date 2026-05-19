@@ -64,6 +64,8 @@ export class PartidosService {
                 resul_visita: dto.resul_visita,
                 is_active: true,
                 created_by: adminId, 
+                created_at: new Date(),
+                updated_at: new Date(),
             }
         })
     }
@@ -90,7 +92,7 @@ export class PartidosService {
                 equipo_visita: dto.equipo_visita,
                 resul_local: dto.resul_local,
                 resul_visita: dto.resul_visita,
-                promoted_at: new Date(),
+                updated_at: new Date(),
             },
         });
     }
