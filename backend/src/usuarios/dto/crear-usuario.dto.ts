@@ -1,12 +1,11 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class CrearUsuarioDto {
     @IsString()
     @IsNotEmpty({ message: 'El nombre es obligatorio'})
     nombre: string;
     
-    @IsString()
-    @IsNotEmpty({ message: 'El nombre es obligatorio'})
+    @IsEmail({}, { message: 'El email no tiene un formato válido' })
     email: string;
     
     @IsString()

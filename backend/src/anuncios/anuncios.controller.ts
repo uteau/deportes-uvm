@@ -46,7 +46,12 @@ export class AnunciosSeluvmController {
 export class AnunciosAdminController {
     constructor (private readonly anunciosService: AnunciosService) {}
     
-    // Listar todos
+    //Get todos los anuncios Seluvm para admin
+
+    // @Get('/seluvm')
+    // findAll() {
+    //     return this.anunciosService.findAllSeluvm();
+    // }
 
     @Post()
     crear(@Body() dto: CrearAnuncioDto, @Request() req) {
@@ -63,3 +68,4 @@ export class AnunciosAdminController {
         return this.anunciosService.eliminar(id);
     }
 }
+
