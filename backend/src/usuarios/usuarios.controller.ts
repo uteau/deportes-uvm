@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Request, UseGuards } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
@@ -26,5 +26,18 @@ export class UsuariosController {
     @Patch(':id/estado')
     actualizarEstado(@Param('id') id: string, @Body() dto: ActualizarEstadoDto) {
         return this.usuariosService.actualizarEstado(id, dto);
+    }
+}
+
+@Controller('estudiante')
+@UseGuards(JwtAuthGuard) // Solo requiere JWT válido, cualquier rol
+export class EstudianteController {
+    constructor(private readonly usuariosService: UsuariosService) {}
+
+    // GET /api/estudiante/credencial
+    @Get('credencial')
+    getCredencial(@Request() req) {
+        // req.user.sub es el id del usuario que viene en el payload del JWT
+        return this.usuariosService.getCredencial(req.user.sub);
     }
 }

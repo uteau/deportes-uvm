@@ -90,4 +90,38 @@ export class UsuariosService {
             data: {is_active: dto.is_active},
         });
     }
+
+    async getCredencial(usuarioId: string) {
+        // Buscamos el estudiante por usuario_id, incluyendo su deporte
+        const estudiante = await this.prisma.estudiante.findUnique({
+            where: { usuario_id: usuarioId },
+            include: {
+                usuario: {
+                    select: { nombre: true, is_active: true },
+                },
+                deporte: {
+                    select: { nombre: true },
+                },
+            },
+        });
+
+        if (!estudiante) {
+            throw new NotFoundException('Credencial no encontrada');
+        }
+
+        // Determinar si la credencial está vigente
+        // Si no tiene fecha de vencimiento, la consideramos activa
+        const ahora = new Date();
+        const vigente = estudiante.credential_expires_at
+            ? estudiante.credential_expires_at >= ahora
+            : true;
+
+        return {
+            nombre: estudiante.usuario.nombre,
+            estudiante_id: estudiante.estudiante_id,
+            deporte: estudiante.deporte?.nombre ?? 'Sin asignar',
+            credential_expires_at: estudiante.credential_expires_at,
+            vigente,
+        };
+    }
 }
