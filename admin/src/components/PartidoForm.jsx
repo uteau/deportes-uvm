@@ -5,12 +5,12 @@ export default function PartidoForm({ partido, onClose }) {
   const [form, setForm] = useState({
     nombre: '', 
     descripcion: '', 
-    fecha_evento: '', 
+    fecha_partido: '', 
     lugar: '', 
     equipo_local: '', 
     equipo_visita: '', 
-    resul_local: '', 
-    resul_visita: ''
+    resul_local: null, 
+    resul_visita: null,
   });
 
   useEffect(() => {
@@ -23,12 +23,29 @@ export default function PartidoForm({ partido, onClose }) {
 
   const handleSubmit = async (p) => {
     p.preventDefault();
-    if (partido) {
-      await apiClient.put(`/admin/partidos/${partido.id}`, form);
-    } else {
-      await apiClient.post('/admin/partidos', form);
+
+    const payload = {
+      nombre: form.nombre,
+      descripcion: form.descripcion,
+      fecha_partido: form.fecha_partido,
+      lugar: form.lugar,
+      equipo_local: form.equipo_local,
+      equipo_visita: form.equipo_visita,
+      resul_local: form.resul_local,
+      resul_visita: form.resul_visita
+    };
+
+    try{
+      if (partido) {
+        await apiClient.put(`/admin/partidos/${partido.id}`, payload);
+      } else {
+        await apiClient.post('/admin/partidos', payload);
+      }
+      onClose();
+    } catch (err) {
+      console.error('Error al guardar:', err.response?.data);
+      alert(err.response?.data?.message?.join('\n') || 'Error al guardar');
     }
-    onClose();
   };
 
   return (
@@ -38,12 +55,12 @@ export default function PartidoForm({ partido, onClose }) {
         <form onSubmit={handleSubmit}>
           <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} className="w-full p-2 border mb-2 rounded" required />
           <textarea name="descripcion" placeholder="Descripción" value={form.descripcion} onChange={handleChange} className="w-full p-2 border mb-2 rounded" />
-          <input type="datetime-local" name="fecha_evento" value={form.fecha_evento?.slice(0,16)} onChange={handleChange} className="w-full p-2 border mb-2 rounded" required />
+          <input type="datetime-local" name="fecha_partido" value={form.fecha_partido?.slice(0,16)} onChange={handleChange} className="w-full p-2 border mb-2 rounded" required />
           <input name="lugar" placeholder="Lugar" value={form.lugar} onChange={handleChange} className="w-full p-2 border mb-2 rounded" required />
           <input name="equipo_local" placeholder="Equipo local" value={form.equipo_local} onChange={handleChange} className="w-full p-2 border mb-2 rounded" required />
           <input name="equipo_visita" placeholder="Equipo visitante" value={form.equipo_visita} onChange={handleChange} className="w-full p-2 border mb-2 rounded" required />
-          <input name="resul_local" placeholder="Resultado local" value={form.resul_local} onChange={handleChange} className="w-full p-2 border mb-2 rounded" required />
-          <input name="resul_visita" placeholder="Resultado visitante" value={form.resul_visita} onChange={handleChange} className="w-full p-2 border mb-2 rounded" required />
+          <input name="resul_local" placeholder="Resultado local" value={form.resul_local} onChange={handleChange} className="w-full p-2 border mb-2 rounded" />
+          <input name="resul_visita" placeholder="Resultado visitante" value={form.resul_visita} onChange={handleChange} className="w-full p-2 border mb-2 rounded" />
           <div className="flex justify-end gap-2">
             <button type="button" onClick={onClose} className="px-4 py-2 border rounded">Cancelar</button>
             <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Guardar</button>

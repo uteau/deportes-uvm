@@ -86,7 +86,7 @@ export class PartidosService {
             data: {
                 nombre: dto.nombre,
                 descripcion: dto.descripcion,
-                fecha_partido: dto.fecha_partido,
+                fecha_partido: new Date(dto.fecha_partido),
                 lugar: dto.lugar,
                 equipo_local: dto.equipo_local,
                 equipo_visita: dto.equipo_visita,

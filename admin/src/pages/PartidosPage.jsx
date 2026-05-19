@@ -50,7 +50,7 @@ export default function PartidosPage() {
             {partidos.map(p => (
               <tr key={p.id} className="border-t">
                 <td className="px-4 py-2">{p.nombre}</td>
-                <td className="px-4 py-2">{new Date(p.fecha_evento).toLocaleDateString()}</td>
+                <td className="px-4 py-2">{new Date(p.fecha_partido).toLocaleDateString()}</td>
                 <td className="px-4 py-2">{p.lugar}</td>
                 <td className="px-4 py-2">{p.equipo_local}</td>
                 <td className="px-4 py-2">{p.equipo_visita}</td>
