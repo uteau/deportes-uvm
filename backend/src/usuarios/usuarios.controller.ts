@@ -5,7 +5,6 @@ import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorators";
 import { UsuariosService } from "./usuarios.service";
 import { CrearUsuarioDto } from "./dto/crear-usuario.dto";
-import { ActualizarAnuncioDto } from "../anuncios/dto/actualizar-anuncio.dto";
 import { ActualizarEstadoDto } from "./dto/actualizar-estado.dto";
 
 @Controller('admin/usuarios')
