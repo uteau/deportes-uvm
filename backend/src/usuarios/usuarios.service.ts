@@ -3,6 +3,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import { CrearUsuarioDto } from "./dto/crear-usuario.dto";
 import * as bcrypt from 'bcrypt';
 import { ActualizarEstadoDto } from "./dto/actualizar-estado.dto";
+import { ActualizarUsuarioDto } from "./dto/actualizar-usuario.dto";
 
 const CICLOS = 10;
 
@@ -73,7 +74,62 @@ export class UsuariosService {
             
             return { usuario, estudiante };
         });
+    }
 
+    async actualizar(id: string, dto: ActualizarUsuarioDto) {
+        const usuario = await this.prisma.usuario.findFirst({
+            where: {id},
+        });
+
+        const estudiante = await this.prisma.estudiante.findFirst({
+            where: {usuario_id: id},
+        });
+
+        if (!usuario) {
+            throw new NotFoundException('Usuario no encontrado');
+        }
+
+        if (dto.email && dto.email !== usuario.email) {
+            const emailExiste = await this.prisma.usuario.findUnique({
+                where: { email: dto.email },
+            });
+            if (emailExiste) {
+                throw new ConflictException('El email ya está registrado.')
+            }
+        }
+
+        if (dto.estudiante_id && dto.estudiante_id !== estudiante.estudiante_id) {
+            const idExiste = await this.prisma.estudiante.findUnique({
+                where: { estudiante_id: dto.estudiante_id },
+            });
+            if (idExiste) {
+                throw new ConflictException('El número de identificación del estudiante ya está registrado.')
+            }
+        }
+
+        const password_hash = await bcrypt.hash(dto.password, CICLOS)
+
+        return this.prisma.$transaction( async (tx) => {
+            // registro base de usuario
+            const usuario = await tx.usuario.update({
+                where: { id },
+                data: {
+                    nombre: dto.nombre,
+                    email: dto.email,
+                    password_hash,
+                },
+            });
+            
+            const estudiante = await tx.estudiante.update({
+                where: { usuario_id: id },
+                data: {
+                    estudiante_id: dto.estudiante_id,
+                    deporte_id: dto.deporte_id,
+                },
+            });
+            
+            return { usuario, estudiante };
+        });
     }
 
     async actualizarEstado(id: string, dto: ActualizarEstadoDto) {
@@ -91,7 +147,7 @@ export class UsuariosService {
         });
     }
 
-    async getCredencial(usuarioId: string) {
+    async verCredencial(usuarioId: string) {
         // Buscamos el estudiante por usuario_id, incluyendo su deporte
         const estudiante = await this.prisma.estudiante.findUnique({
             where: { usuario_id: usuarioId },
