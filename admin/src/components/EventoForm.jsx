@@ -11,6 +11,14 @@ export default function EventoForm({ evento, onClose }) {
   });
 
   useEffect(() => {
+    if (evento) {
+      // Si es edición, convertir la fecha ISO a formato datetime-local para el input
+      const fechaLocal = evento.fecha_evento ? evento.fecha_evento.slice(0, 16) : '';
+      setForm({ ...evento, fecha_evento: fechaLocal });
+    }
+  }, [evento]);
+
+  useEffect(() => {
     if (evento) setForm(evento);
   }, [evento]);
 
@@ -24,7 +32,7 @@ export default function EventoForm({ evento, onClose }) {
     const payload = {
       nombre: form.nombre,
       descripcion: form.descripcion,
-      fecha_evento: form.fecha_evento,
+      fecha_evento: form.fecha_evento ? new Date(form.fecha_evento).toISOString() : null,
       lugar: form.lugar
     };
 

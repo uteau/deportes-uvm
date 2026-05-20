@@ -14,6 +14,14 @@ export default function PartidoForm({ partido, onClose }) {
   });
 
   useEffect(() => {
+    if (partido) {
+      // Convertir fecha ISO a formato datetime-local para el input
+      const fechaLocal = partido.fecha_partido ? partido.fecha_partido.slice(0, 16) : '';
+      setForm({ ...partido, fecha_partido: fechaLocal });
+    }
+  }, [partido]);
+
+  useEffect(() => {
     if (partido) setForm(partido);
   }, [partido]);
 
@@ -27,12 +35,13 @@ export default function PartidoForm({ partido, onClose }) {
     const payload = {
       nombre: form.nombre,
       descripcion: form.descripcion,
-      fecha_partido: form.fecha_partido,
+      fecha_partido: form.fecha_partido ? new Date(form.fecha_partido).toISOString() : null,
       lugar: form.lugar,
       equipo_local: form.equipo_local,
       equipo_visita: form.equipo_visita,
-      resul_local: form.resul_local,
-      resul_visita: form.resul_visita
+      // Convertir resultados a número o null
+      resul_local: form.resul_local ? parseInt(form.resul_local) : null,
+      resul_visita: form.resul_visita ? parseInt(form.resul_visita) : null
     };
 
     try{
