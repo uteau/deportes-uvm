@@ -3,7 +3,7 @@ import { FeedController } from './feed.controller';
 import { FeedService } from './feed.service';
 
 @Module({
-  controllers: [FeedController],
+  controllers: [FeedController,],
   providers: [FeedService],
 })
 export class FeedModule {}

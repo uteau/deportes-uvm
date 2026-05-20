@@ -5,7 +5,7 @@ import { PrismaService } from "../prisma/prisma.service";
 export class FeedService {
     constructor(private readonly prisma: PrismaService) {}
     
-    async getFeed() {
+    async verFeed() {
         const eventos = await this.prisma.evento.findMany({
             where: {is_active: true},
         });
@@ -15,7 +15,8 @@ export class FeedService {
         });
 
         const anuncios = await this.prisma.anuncio.findMany({
-            where: { tipo: 'publico', is_published: true},
+            where: { is_published: true},
+            // where: { tipo: 'publico', is_published: true},
         });
 
         const items = [
@@ -31,5 +32,25 @@ export class FeedService {
         });
 
         return items;
+    }
+
+    async verFeedAdmin() {
+    // Sin filtros de is_active ni is_published — el admin ve todo
+    const eventos = await this.prisma.evento.findMany();
+    const partidos = await this.prisma.partido.findMany();
+    const anuncios = await this.prisma.anuncio.findMany();
+
+    const items = [
+        ...eventos.map((e) => ({ ...e, tipo_item: 'evento' as const,
+        _sort_date: e.promoted_at ?? e.created_at })),
+        ...partidos.map((p) => ({ ...p, tipo_item: 'partido' as const,
+        _sort_date: p.promoted_at ?? p.created_at })),
+        ...anuncios.map((a) => ({ ...a, tipo_item: 'anuncio' as const,
+        _sort_date: a.created_at })),
+    ];
+
+    items.sort((a, b) => b._sort_date.getTime() - a._sort_date.getTime());
+
+    return items;
     }
 }
