@@ -31,7 +31,32 @@ export class UsuariosService {
         });
     }
 
+    // async findOne(id: string) {
+    //     const estudiante = await this.prisma.estudiante.findUnique({
+    //         where: { usuario_id: id },
+    //         include: {
+    //             usuario: {
+    //                 select: {
+    //                     id: true,
+    //                     nombre: true,
+    //                     email: true,
+    //                 },
+    //             },
+    //             deporte: {
+    //                 select: {id: true, nombre: true},
+    //             },
+    //         },
+    //     });
+        
+    //     if (!estudiante) {
+    //         throw new NotFoundException('Usuario no encontrado');
+    //     }
+        
+    //     return estudiante;
+    // }
+
     // Crear cuenta de estudiante
+    
     async crear(dto: CrearUsuarioDto) {
         // validaciones de email y de id estudiante
         const emailExiste = await this.prisma.usuario.findUnique({
@@ -91,7 +116,7 @@ export class UsuariosService {
                 where: { email: dto.email },
             });
             if (emailExiste) {
-                throw new ConflictException('El email ya está registrado.')
+                throw new ConflictException(`El email ${dto.email} ${usuario.email} ya está registrado.`);
             }
         }
 
@@ -104,29 +129,62 @@ export class UsuariosService {
             }
         }
 
-        const password_hash = await bcrypt.hash(dto.password, CICLOS)
+        let password_hash: string | undefined = undefined;
+    
+        if (dto.password && dto.password.trim() !== '') {
+            password_hash = await bcrypt.hash(dto.password, CICLOS);
+        }
 
         return this.prisma.$transaction( async (tx) => {
-            // registro base de usuario
-            const usuario = await tx.usuario.update({
-                where: { id },
-                data: {
-                    nombre: dto.nombre,
-                    email: dto.email,
-                    password_hash,
-                },
-            });
-            
-            const estudiante = await tx.estudiante.update({
-                where: { usuario_id: id },
-                data: {
-                    estudiante_id: dto.estudiante_id,
-                    deporte_id: dto.deporte_id,
-                },
-            });
-            
-            return { usuario, estudiante };
+            const usuarioData: any = {};
+            if (dto.nombre !== undefined) usuarioData.nombre = dto.nombre;
+            if (dto.email !== undefined) usuarioData.email = dto.email;
+            if (password_hash !== undefined) usuarioData.password_hash = password_hash;
+
+            let usuarioActualizado = usuario;
+            if (Object.keys(usuarioData).length > 0) {
+                usuarioActualizado = await tx.usuario.update({
+                    where: { id },
+                    data: usuarioData,
+                });
+            }
+
+            const estudianteData: any = {};
+            if (dto.estudiante_id !== undefined) estudianteData.estudiante_id = dto.estudiante_id;
+            if (dto.deporte_id !== undefined) estudianteData.deporte_id = dto.deporte_id;
+
+            // Actualizar estudiante (solo si hay datos para actualizar)
+            let estudianteActualizado = estudiante;
+            if (Object.keys(estudianteData).length > 0) {
+                estudianteActualizado = await tx.estudiante.update({
+                    where: { usuario_id: id },
+                    data: estudianteData,
+                });
+            }
+
+            return { usuario: usuarioActualizado, estudiante: estudianteActualizado };
         });
+        // return this.prisma.$transaction( async (tx) => {
+        //     // registro base de usuario
+        //     const usuario = await tx.usuario.update({
+        //         where: { id },
+        //         data: {
+        //             nombre: dto.nombre,
+        //             email: dto.email,
+        //             password_hash,
+        //         },
+        //     });
+            
+        //     const estudiante = await tx.estudiante.update({
+        //         where: { usuario_id: id },
+        //         data: {
+        //             estudiante_id: dto.estudiante_id,
+        //             deporte_id: dto.deporte_id,
+        //         },
+        //     });
+            
+        //     return { usuario, estudiante };
+        // });
     }
 
     async actualizarEstado(id: string, dto: ActualizarEstadoDto) {

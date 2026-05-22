@@ -40,8 +40,10 @@ export default function EstudianteForm({ estudiante, onClose }) {
           estudiante_id: form.estudiante_id,
           deporte_id: form.deporte_id
         };
-        if (form.password) updateData.password = form.password;
-        await apiClient.put(`/admin/usuarios/${estudiante.id}`, updateData);
+        if (form.password && form.password.trim() !== '') {
+          updateData.password = form.password;
+        }
+        await apiClient.put(`/admin/usuarios/${estudiante.usuario_id}`, updateData);
       } else {
         // Creación: enviar todos los campos
         await apiClient.post('/admin/usuarios', form);

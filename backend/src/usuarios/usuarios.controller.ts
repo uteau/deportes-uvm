@@ -16,8 +16,13 @@ export class UsuariosController {
 
     @Get()
     findAll() {
-        return this.usuariosService.findAll()
+        return this.usuariosService.findAll();
     }
+    
+    // @Get(':id')
+    // findOne(@Param('id') id: string) {
+    //     return this.usuariosService.findOne(id);
+    // }
 
     @Post()
     crear(@Body() dto: CrearUsuarioDto) {
