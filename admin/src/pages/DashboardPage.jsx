@@ -7,7 +7,7 @@ export default function Dashboard() {
 
   const loadFeed = async () => {
     try {
-      const res = await apiClient.get('/feed');
+      const res = await apiClient.get('/feed/admin');
       setFeed(res.data);
     } catch (err) {
       console.error(err);

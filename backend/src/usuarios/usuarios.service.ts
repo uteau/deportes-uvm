@@ -66,9 +66,6 @@ export class UsuariosService {
                     usuario_id: usuario.id,
                     estudiante_id: dto.estudiante_id,
                     deporte_id: dto.deporte_id,
-                    credential_expires_at: dto.credential_expires_at
-                        ? new Date(dto.credential_expires_at)
-                        : null,
                 },
             });
             
@@ -165,19 +162,11 @@ export class UsuariosService {
             throw new NotFoundException('Credencial no encontrada');
         }
 
-        // Determinar si la credencial está vigente
-        // Si no tiene fecha de vencimiento, la consideramos activa
-        const ahora = new Date();
-        const vigente = estudiante.credential_expires_at
-            ? estudiante.credential_expires_at >= ahora
-            : true;
-
         return {
             nombre: estudiante.usuario.nombre,
             estudiante_id: estudiante.estudiante_id,
             deporte: estudiante.deporte?.nombre ?? 'Sin asignar',
-            credential_expires_at: estudiante.credential_expires_at,
-            vigente,
+            is_active: estudiante.usuario.is_active,
         };
     }
 }

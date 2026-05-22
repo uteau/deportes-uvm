@@ -15,7 +15,7 @@ export class FeedService {
         });
 
         const anuncios = await this.prisma.anuncio.findMany({
-            where: { is_published: true},
+            where: { is_active: true},
             // where: { tipo: 'publico', is_published: true},
         });
 
@@ -26,8 +26,8 @@ export class FeedService {
         ];
 
         items.sort((a,b) => {
-            const fechaA = (a.promoted_at ?? a.created_at).getTime();
-            const fechaB = (b.promoted_at ?? b.created_at).getTime();
+            const fechaA = (a.updated_at ?? a.created_at).getTime();
+            const fechaB = (b.updated_at ?? b.created_at).getTime();
             return fechaB - fechaA;
         });
 
@@ -42,11 +42,11 @@ export class FeedService {
 
     const items = [
         ...eventos.map((e) => ({ ...e, tipo_item: 'evento' as const,
-        _sort_date: e.promoted_at ?? e.created_at })),
+        _sort_date: e.updated_at ?? e.created_at })),
         ...partidos.map((p) => ({ ...p, tipo_item: 'partido' as const,
-        _sort_date: p.promoted_at ?? p.created_at })),
+        _sort_date: p.updated_at ?? p.created_at })),
         ...anuncios.map((a) => ({ ...a, tipo_item: 'anuncio' as const,
-        _sort_date: a.created_at })),
+        _sort_date: a.updated_at ?? a.created_at })),
     ];
 
     items.sort((a, b) => b._sort_date.getTime() - a._sort_date.getTime());

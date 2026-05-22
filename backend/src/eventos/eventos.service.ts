@@ -61,6 +61,8 @@ export class EventosService {
                 lugar: dto.lugar,
                 is_active: true,
                 created_by: adminId, // guardamos quién lo creó
+                created_at: new Date(),
+                updated_at: new Date(),
             }
         })
     }
@@ -76,13 +78,6 @@ export class EventosService {
             throw new NotFoundException('Evento con id "&{id}" no encontrado');
         }
 
-        // Al actualizar el evento puede cambiar el tipo de evento de  público a partido
-        // Guardamos el subtipo final con el operador de fusión nula
-        // ?? devuelve izq si en no nulo, y der si izq es nulo
-        // verifica nulidad del primer valor, si es cierta, devuelve el segundo valor
-
-        // const subtipoFinal = dto.subtipo ?? evento.subtipo;
-        
         return this.prisma.evento.update({
             where: {id},
             data: {
@@ -90,7 +85,7 @@ export class EventosService {
                 descripcion: dto.descripcion,
                 fecha_evento: dto.fecha_evento,
                 lugar: dto.lugar,
-                promoted_at: new Date(),
+                updated_at: new Date(),
             },
         });
     }

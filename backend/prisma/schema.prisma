@@ -47,7 +47,6 @@ model Usuario {
 model Estudiante {
   id                    String    @id @default(uuid())
   estudiante_id         String    @unique // Número de matrícula o identificación institucional
-  credential_expires_at DateTime?
 
   // Relación con la entidad base (uno a uno)
   usuario_id String  @unique
@@ -92,7 +91,6 @@ model Evento {
   descripcion  String?
   fecha_evento DateTime
   lugar        String
-  promoted_at  DateTime?
   is_active    Boolean   @default(true)
   created_by   String
   created_at   DateTime  @default(now())
@@ -114,7 +112,6 @@ model Partido {
   equipo_visita String
   resul_local   Int?      // null mientras el partido no ha sido jugado
   resul_visita  Int?      // null mientras el partido no ha sido jugado
-  promoted_at   DateTime?
   is_active     Boolean   @default(true)
   created_by    String
   created_at    DateTime  @default(now())
@@ -132,10 +129,8 @@ model Anuncio {
   contenido     String
   tipo          AnuncioTipo
   instagram_url String?     // URL opcional a un post o perfil de Instagram
-  promoted_at   DateTime?
-  is_published  Boolean     @default(true)
+  is_active     Boolean     @default(true)
   created_by    String
-  published_at  DateTime?
   created_at    DateTime    @default(now())
   updated_at    DateTime    @updatedAt
 
