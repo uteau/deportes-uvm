@@ -59,13 +59,13 @@ async function main() {
     update: {
       nombre: admin1.nombre,
       password_hash: hash1,
-      is_active: true,
+      activo: true,
     },
     create: {
       nombre: admin1.nombre,
       email: admin1.email,
       password_hash: hash1,
-      is_active: true,
+      activo: true,
     },
   });
 
@@ -98,13 +98,13 @@ async function main() {
       update: {
         nombre: admin2.nombre,
         password_hash: hash2,
-        is_active: true,
+        activo: true,
       },
       create: {
         nombre: admin2.nombre,
         email: admin2.email,
         password_hash: hash2,
-        is_active: true,
+        activo: true,
       },
     });
 

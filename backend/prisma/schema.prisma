@@ -26,9 +26,9 @@ model Usuario {
   nombre        String
   email         String    @unique
   password_hash String
-  is_active     Boolean   @default(true)
-  last_login    DateTime?
-  created_at    DateTime  @default(now())
+  activo        Boolean   @default(true)
+  ultimo_ingreso    DateTime?
+  fecha_creacion    DateTime  @default(now())
 
   // Herencia: un usuario puede ser estudiante o admin (uno a uno, opcional)
   estudiante Estudiante?
@@ -46,7 +46,8 @@ model Usuario {
 // Un estudiante practica exactamente un deporte (relación muchos a uno con Deporte).
 model Estudiante {
   id                    String    @id @default(uuid())
-  estudiante_id         String    @unique // Número de matrícula o identificación institucional
+  rut                   Int       @unique
+  dig_verificador       Int       
 
   // Relación con la entidad base (uno a uno)
   usuario_id String  @unique
@@ -75,7 +76,7 @@ model Deporte {
   id          String  @id @default(uuid())
   nombre      String  @unique
   descripcion String?
-  is_active   Boolean @default(true)
+  activo      Boolean @default(true)
 
   // Estudiantes que practican este deporte
   estudiantes Estudiante[]
@@ -91,12 +92,12 @@ model Evento {
   descripcion  String?
   fecha_evento DateTime
   lugar        String
-  is_active    Boolean   @default(true)
-  created_by   String
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
+  activo       Boolean   @default(true)
+  creado_por   String
+  fecha_creacion   DateTime  @default(now())
+  fecha_actualizacion   DateTime  @updatedAt
 
-  creador Usuario @relation(fields: [created_by], references: [id])
+  creador Usuario @relation(fields: [creado_por], references: [id])
 
   @@map("eventos")
 }
@@ -112,12 +113,12 @@ model Partido {
   equipo_visita String
   resul_local   Int?      // null mientras el partido no ha sido jugado
   resul_visita  Int?      // null mientras el partido no ha sido jugado
-  is_active     Boolean   @default(true)
-  created_by    String
-  created_at    DateTime  @default(now())
-  updated_at    DateTime  @updatedAt
+  activo        Boolean   @default(true)
+  creado_por    String
+  fecha_creacion        DateTime  @default(now())
+  fecha_actualizacion   DateTime  @updatedAt
 
-  creador Usuario @relation(fields: [created_by], references: [id])
+  creador Usuario @relation(fields: [creado_por], references: [id])
 
   @@map("partidos")
 }
@@ -129,12 +130,12 @@ model Anuncio {
   contenido     String
   tipo          AnuncioTipo
   instagram_url String?     // URL opcional a un post o perfil de Instagram
-  is_active     Boolean     @default(true)
-  created_by    String
-  created_at    DateTime    @default(now())
-  updated_at    DateTime    @updatedAt
+  activo        Boolean   @default(true)
+  creado_por    String
+  fecha_creacion        DateTime  @default(now())
+  fecha_actualizacion   DateTime  @updatedAt
 
-  creador Usuario @relation(fields: [created_by], references: [id])
+  creador Usuario @relation(fields: [creado_por], references: [id])
 
   @@map("anuncios")
 }
