@@ -14,7 +14,7 @@ export class PartidosService {
     // devolver todos los enventos activos
     async findAll() {
         return this.prisma.partido.findMany({
-            where: { is_active: true },
+            where: { activo: true },
             orderBy: { fecha_partido: 'asc' },
         });
     }
@@ -28,7 +28,7 @@ export class PartidosService {
         return this.prisma.partido.findMany({
             where: {
                 fecha_partido: {gte: fecha_inicio , lte: fecha_fin },
-                is_active: true,
+                activo: true,
             },
             orderBy: { fecha_partido: 'asc' },
         });
@@ -37,7 +37,7 @@ export class PartidosService {
     // devolver partido por id
     async findOne(id: string) {
         const partido = await this.prisma.partido.findFirst({
-            where: { id, is_active: true},
+            where: { id, activo: true},
         });
 
         // 404 si no existe o fue eliminado
@@ -62,10 +62,10 @@ export class PartidosService {
                 equipo_visita: dto.equipo_visita,
                 resul_local: dto.resul_local,
                 resul_visita: dto.resul_visita,
-                is_active: true,
-                created_by: adminId, 
-                created_at: new Date(),
-                updated_at: new Date(),
+                activo: true,
+                creado_por: adminId, 
+                fecha_creacion: new Date(),
+                fecha_actualizacion: new Date(),
             }
         })
     }
@@ -74,7 +74,7 @@ export class PartidosService {
     async actualizar(dto: ActualizarPartidoDto, id: string) {
         // verificar que el partido exista
         const partido = await this.prisma.partido.findFirst({
-            where: { id, is_active: true },
+            where: { id, activo: true },
         });
 
         if (!partido) {
@@ -92,7 +92,7 @@ export class PartidosService {
                 equipo_visita: dto.equipo_visita,
                 resul_local: dto.resul_local,
                 resul_visita: dto.resul_visita,
-                updated_at: new Date(),
+                fecha_actualizacion: new Date(),
             },
         });
     }
@@ -100,7 +100,7 @@ export class PartidosService {
     // desactivar partido (elminación lógica)
     async eliminar(id: string) {
        const partido = await this.prisma.partido.findFirst({
-            where: { id, is_active: true },
+            where: { id, activo: true },
         }); 
         
         if (!partido) {
@@ -109,7 +109,7 @@ export class PartidosService {
 
         return this.prisma.partido.update({
             where: {id},
-            data: { is_active: false},
+            data: { activo: false},
         });
     }
 }
