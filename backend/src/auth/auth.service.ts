@@ -63,10 +63,10 @@ export class AuthService {
 
         const accessToken = this.jwt.sign(payload, { expiresIn });
 
-        // Actualizar last_login con la fecha y hora actual.
+        // Actualizar ultimo_ingreso con la fecha y hora actual.
         await this.prisma.usuario.update({
             where: { id: usuario.id },
-            data: { last_login: new Date() },
+            data: { ultimo_ingreso: new Date() },
         });
 
         // Devolver el token y el rol para que el frontend redirija al módulo correcto.
