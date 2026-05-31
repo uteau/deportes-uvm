@@ -1,6 +1,7 @@
 import {
     IsDateString,
     IsEmail,
+    IsInt,
     IsNotEmpty,
     IsOptional,
     IsString,
@@ -19,9 +20,9 @@ export class CrearUsuarioDto {
     @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
     password: string;
 
-    @IsString()
-    @IsNotEmpty({ message: 'El número de estudiante es obligatorio' })
-    estudiante_id: string;
+    @IsInt()
+    @IsNotEmpty({ message: 'El rut del estudiante es obligatorio' })
+    rut: number;
 
     // ID del deporte asignado (UUID de la tabla Deporte)
     @IsString()

@@ -20,8 +20,8 @@ export class UsuariosService {
                         id: true,
                         nombre: true,
                         email: true,
-                        is_active: true,
-                        created_at: true,
+                        activo: true,
+                        fecha_creacion: true,
                     },
                 },
                 deporte: {
@@ -66,7 +66,7 @@ export class UsuariosService {
             throw new ConflictException('El email ya está registrado.')
         }
         const idExiste = await this.prisma.estudiante.findUnique({
-            where: { estudiante_id: dto.estudiante_id },
+            where: { rut: dto.rut },
         });
         if (idExiste) {
             throw new ConflictException('El número de identificación del estudiante ya está registrado.')
@@ -82,14 +82,19 @@ export class UsuariosService {
                     nombre: dto.nombre,
                     email: dto.email,
                     password_hash,
-                    is_active: true,
+                    activo: true,
                 },
             });
             
+            //================================================================
+            //                  CALCULAR DIGITO VERIFICADOR
+            //================================================================
+
             const estudiante = await tx.estudiante.create({
                 data: {
                     usuario_id: usuario.id,
-                    estudiante_id: dto.estudiante_id,
+                    rut: dto.rut,
+                    dig_verificador: 0, // se puede calcular el dígito verificador si es necesario
                     deporte_id: dto.deporte_id,
                 },
             });
@@ -120,9 +125,9 @@ export class UsuariosService {
             }
         }
 
-        if (dto.estudiante_id && dto.estudiante_id !== estudiante.estudiante_id) {
+        if (dto.rut && dto.rut !== estudiante.rut) {
             const idExiste = await this.prisma.estudiante.findUnique({
-                where: { estudiante_id: dto.estudiante_id },
+                where: { rut: dto.rut },
             });
             if (idExiste) {
                 throw new ConflictException('El número de identificación del estudiante ya está registrado.')
@@ -150,7 +155,7 @@ export class UsuariosService {
             }
 
             const estudianteData: any = {};
-            if (dto.estudiante_id !== undefined) estudianteData.estudiante_id = dto.estudiante_id;
+            if (dto.rut !== undefined) estudianteData.rut = dto.rut;
             if (dto.deporte_id !== undefined) estudianteData.deporte_id = dto.deporte_id;
 
             // Actualizar estudiante (solo si hay datos para actualizar)
@@ -164,27 +169,6 @@ export class UsuariosService {
 
             return { usuario: usuarioActualizado, estudiante: estudianteActualizado };
         });
-        // return this.prisma.$transaction( async (tx) => {
-        //     // registro base de usuario
-        //     const usuario = await tx.usuario.update({
-        //         where: { id },
-        //         data: {
-        //             nombre: dto.nombre,
-        //             email: dto.email,
-        //             password_hash,
-        //         },
-        //     });
-            
-        //     const estudiante = await tx.estudiante.update({
-        //         where: { usuario_id: id },
-        //         data: {
-        //             estudiante_id: dto.estudiante_id,
-        //             deporte_id: dto.deporte_id,
-        //         },
-        //     });
-            
-        //     return { usuario, estudiante };
-        // });
     }
 
     async actualizarEstado(id: string, dto: ActualizarEstadoDto) {
@@ -198,7 +182,7 @@ export class UsuariosService {
 
         return this.prisma.usuario.update({
             where: { id },
-            data: {is_active: dto.is_active},
+            data: {activo: dto.activo},
         });
     }
 
@@ -208,7 +192,7 @@ export class UsuariosService {
             where: { usuario_id: usuarioId },
             include: {
                 usuario: {
-                    select: { nombre: true, is_active: true },
+                    select: { nombre: true, activo: true },
                 },
                 deporte: {
                     select: { nombre: true },
@@ -222,9 +206,9 @@ export class UsuariosService {
 
         return {
             nombre: estudiante.usuario.nombre,
-            estudiante_id: estudiante.estudiante_id,
+            rut: estudiante.rut,
             deporte: estudiante.deporte?.nombre ?? 'Sin asignar',
-            is_active: estudiante.usuario.is_active,
+            activo: estudiante.usuario.activo,
         };
     }
 }
