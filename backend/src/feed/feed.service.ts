@@ -7,15 +7,15 @@ export class FeedService {
     
     async verFeed() {
         const eventos = await this.prisma.evento.findMany({
-            where: {is_active: true},
+            where: { activo : true},
         });
 
         const partidos = await this.prisma.partido.findMany({
-            where: {is_active: true},
+            where: { activo : true},
         });
 
         const anuncios = await this.prisma.anuncio.findMany({
-            where: { is_active: true},
+            where: {  activo : true},
             // where: { tipo: 'publico', is_published: true},
         });
 
@@ -26,8 +26,8 @@ export class FeedService {
         ];
 
         items.sort((a,b) => {
-            const fechaA = (a.updated_at ?? a.created_at).getTime();
-            const fechaB = (b.updated_at ?? b.created_at).getTime();
+            const fechaA = (a.fecha_actualizacion ?? a.fecha_creacion).getTime();
+            const fechaB = (b.fecha_actualizacion ?? b.fecha_creacion).getTime();
             return fechaB - fechaA;
         });
 
@@ -35,18 +35,18 @@ export class FeedService {
     }
 
     async verFeedAdmin() {
-    // Sin filtros de is_active ni is_published — el admin ve todo
+    // Sin filtros de  activo  ni is_published — el admin ve todo
     const eventos = await this.prisma.evento.findMany();
     const partidos = await this.prisma.partido.findMany();
     const anuncios = await this.prisma.anuncio.findMany();
 
     const items = [
         ...eventos.map((e) => ({ ...e, tipo_item: 'evento' as const,
-        _sort_date: e.updated_at ?? e.created_at })),
+        _sort_date: e.fecha_actualizacion ?? e.fecha_creacion })),
         ...partidos.map((p) => ({ ...p, tipo_item: 'partido' as const,
-        _sort_date: p.updated_at ?? p.created_at })),
+        _sort_date: p.fecha_actualizacion ?? p.fecha_creacion })),
         ...anuncios.map((a) => ({ ...a, tipo_item: 'anuncio' as const,
-        _sort_date: a.updated_at ?? a.created_at })),
+        _sort_date: a.fecha_actualizacion ?? a.fecha_creacion })),
     ];
 
     items.sort((a, b) => b._sort_date.getTime() - a._sort_date.getTime());
