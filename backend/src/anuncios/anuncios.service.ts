@@ -12,9 +12,9 @@ export class AnunciosService {
         return this.prisma.anuncio.findMany({
             where: { 
                 tipo: AnuncioTipo.PUBLICO,
-                is_active: true,
+                activo: true,
             },
-            orderBy: { updated_at: 'desc' }
+            orderBy: { fecha_actualizacion: 'desc' }
         });
     }
 
@@ -23,7 +23,7 @@ export class AnunciosService {
             where: { 
                 id, 
                 tipo: AnuncioTipo.PUBLICO,
-                is_active: true,
+                activo: true,
             },
         });
 
@@ -39,9 +39,9 @@ export class AnunciosService {
         return this.prisma.anuncio.findMany({
             where: {
                 tipo: AnuncioTipo.SELUVM,
-                is_active: true,
+                activo: true,
             },
-            orderBy: { updated_at: 'desc' }
+            orderBy: { fecha_actualizacion: 'desc' }
         });
     }
 
@@ -50,7 +50,7 @@ export class AnunciosService {
             where: { 
                 id,
                 tipo: AnuncioTipo.SELUVM,
-                is_active: true }
+                activo: true }
         });
 
         if (!anuncio) {
@@ -68,10 +68,10 @@ export class AnunciosService {
                 contenido: dto.contenido,
                 tipo: dto.subtipo,
                 instagram_url: dto.instagram_url,
-                is_active: true,
-                created_by: adminId,
-                created_at: new Date(),
-                updated_at: new Date(),
+                activo: true,
+                creado_por: adminId,
+                fecha_creacion: new Date(),
+                fecha_actualizacion: new Date(),
             },
         });
     }
@@ -94,7 +94,7 @@ export class AnunciosService {
                 contenido: dto.contenido,
                 tipo: subtipoFinal,
                 instagram_url: dto.instagram_url,
-                updated_at: new Date(),
+                fecha_actualizacion: new Date(),
             },
         });
     }
