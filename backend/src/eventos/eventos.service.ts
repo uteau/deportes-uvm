@@ -14,7 +14,7 @@ export class EventosService {
     // devolver todos los enventos activos
     async findAll() {
         return this.prisma.evento.findMany({
-            where: { is_active: true },
+            where: { activo: true },
             orderBy: { fecha_evento: 'asc' },
         });
     }
@@ -28,7 +28,7 @@ export class EventosService {
         return this.prisma.evento.findMany({
             where: {
                 fecha_evento: {gte: fecha_inicio , lte: fecha_fin },
-                is_active: true,
+                activo: true,
             },
             orderBy: { fecha_evento: 'asc' },
         });
@@ -37,7 +37,8 @@ export class EventosService {
     // devolver evento por id
     async findOne(id: string) {
         const evento = await this.prisma.evento.findFirst({
-            where: { id, is_active: true},
+            where: { id,
+                 activo: true},
         });
 
         // 404 si no existe o fue eliminado
@@ -59,10 +60,10 @@ export class EventosService {
                 // Prisma necesita un objeto Date; lo convertimos desde el string ISO
                 fecha_evento: new Date(dto.fecha_evento),
                 lugar: dto.lugar,
-                is_active: true,
-                created_by: adminId, // guardamos quién lo creó
-                created_at: new Date(),
-                updated_at: new Date(),
+                activo: true,
+                creado_por: adminId, // guardamos quién lo creó
+                fecha_creacion: new Date(),
+                fecha_actualizacion: new Date(),
             }
         })
     }
@@ -71,7 +72,7 @@ export class EventosService {
     async actualizar(dto: ActualizarEventoDto, id: string) {
         // verificar que el evento exista
         const evento = await this.prisma.evento.findFirst({
-            where: { id, is_active: true },
+            where: { id, activo: true },
         });
 
         if (!evento) {
@@ -85,7 +86,7 @@ export class EventosService {
                 descripcion: dto.descripcion,
                 fecha_evento: dto.fecha_evento,
                 lugar: dto.lugar,
-                updated_at: new Date(),
+                fecha_actualizacion: new Date(),
             },
         });
     }
@@ -93,7 +94,7 @@ export class EventosService {
     // desactivar evento (elminación lógica)
     async eliminar(id: string) {
        const evento = await this.prisma.evento.findFirst({
-            where: { id, is_active: true },
+            where: { id, activo: true },
         }); 
         
         if (!evento) {
@@ -102,7 +103,7 @@ export class EventosService {
 
         return this.prisma.evento.update({
             where: {id},
-            data: { is_active: false},
+            data: { activo: false},
         });
     }
 }
