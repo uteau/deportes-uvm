@@ -7,8 +7,8 @@ export class DeportesService {
 
     async findAll() {
         return this.prisma.deporte.findMany({
-            where: {is_active: true},
-            orderBy: { nombre: 'asc' },
+            where: { activo : true},
+            orderBy: { nombre : 'asc' },
         });
     }
 
@@ -23,9 +23,32 @@ export class DeportesService {
         return this.prisma.deporte.create({
             data: {
                 nombre: dto.nombre,
-                is_active: true,
+                activo: true,
             },
         });
+    }
+
+    async editar(id: string, dto: { nombre: string }) {
+        const deporte = await this.prisma.deporte.findUnique({
+            where: { id },
+        })
+
+        if (!deporte){
+            throw new NotFoundException('Deporte no encontrado');
+        }
+
+        const deporteMismoNombre = await this.prisma.deporte.findUnique({
+            where: { nombre: dto.nombre },
+        });
+
+        if (deporteMismoNombre && deporteMismoNombre.id !== id) {
+            throw new ConflictException(`El deporte "${dto.nombre}" ya existe`);
+        }
+
+        return this.prisma.deporte.update({
+            where : {id},
+            data : {nombre: dto.nombre}
+        })
     }
 
     async eliminar(id: string) {
@@ -47,8 +70,9 @@ export class DeportesService {
         }
 
         // Soft delete: marcamos como inactivo en vez de borrar el registro
-        return this.prisma.deporte.delete({
+        return this.prisma.deporte.update({
             where: { id },
+            data: { activo: false },
         });
     }
 

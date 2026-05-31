@@ -5,6 +5,7 @@ import {
     Get,
     Param,
     Post,
+    Put,
     UseGuards,
 } from '@nestjs/common';
 import { DeportesService } from './deportes.service';
@@ -29,6 +30,12 @@ export class DeportesController {
     @Post()
     crear(@Body() dto: CrearDeporteDto) {
         return this.deportesService.crear(dto);
+    }
+
+    // PUT /api/admin/deportes/:id
+    @Put(':id')
+    editar(@Param('id') id: string, @Body() dto: { nombre: string }) {
+        return this.deportesService.editar(id, dto);
     }
 
     // DELETE /api/admin/deportes/:id
