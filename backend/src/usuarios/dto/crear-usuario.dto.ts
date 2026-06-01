@@ -6,6 +6,8 @@ import {
     IsOptional,
     IsString,
     MinLength,
+    Max,
+    Min,
 } from 'class-validator';
 
 export class CrearUsuarioDto {
@@ -23,6 +25,12 @@ export class CrearUsuarioDto {
     @IsInt()
     @IsNotEmpty({ message: 'El rut del estudiante es obligatorio' })
     rut: number;
+
+    @IsInt()
+    @IsNotEmpty({ message: 'El dígito verificador es obligatorio' })
+    @Min(0, { message: 'El dígito verificador debe ser un número entre 0-9 o K' })
+    @Max(10, { message: 'El dígito verificador debe ser un número entre 0-9 o K' })
+    dig_verificador: number;
 
     // ID del deporte asignado (UUID de la tabla Deporte)
     @IsString()

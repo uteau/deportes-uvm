@@ -65,11 +65,11 @@ export class UsuariosService {
         if (emailExiste) {
             throw new ConflictException('El email ya está registrado.')
         }
-        const idExiste = await this.prisma.estudiante.findUnique({
+        const rutExiste = await this.prisma.estudiante.findUnique({
             where: { rut: dto.rut },
         });
-        if (idExiste) {
-            throw new ConflictException('El número de identificación del estudiante ya está registrado.')
+        if (rutExiste) {
+            throw new ConflictException('El rut del estudiante ya está registrado.')
         }
 
         // hash de la contraseña para guardar
@@ -85,16 +85,12 @@ export class UsuariosService {
                     activo: true,
                 },
             });
-            
-            //================================================================
-            //                  CALCULAR DIGITO VERIFICADOR
-            //================================================================
 
             const estudiante = await tx.estudiante.create({
                 data: {
                     usuario_id: usuario.id,
                     rut: dto.rut,
-                    dig_verificador: 0, // se puede calcular el dígito verificador si es necesario
+                    dig_verificador: dto.dig_verificador, // se puede calcular el dígito verificador si es necesario
                     deporte_id: dto.deporte_id,
                 },
             });
@@ -126,14 +122,14 @@ export class UsuariosService {
         }
 
         if (dto.rut && dto.rut !== estudiante.rut) {
-            const idExiste = await this.prisma.estudiante.findUnique({
+            const rutExiste = await this.prisma.estudiante.findUnique({
                 where: { rut: dto.rut },
             });
-            if (idExiste) {
-                throw new ConflictException('El número de identificación del estudiante ya está registrado.')
+            if (rutExiste) {
+                throw new ConflictException('El rut del estudiante ya está registrado.')
             }
         }
-
+        
         let password_hash: string | undefined = undefined;
     
         if (dto.password && dto.password.trim() !== '') {

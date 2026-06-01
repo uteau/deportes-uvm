@@ -22,7 +22,7 @@ export default function Login() {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center font-segoe-ui"
+      className="min-h-screen flex items-center justify-center  font-sans"
       style={{ backgroundColor: '#212529' }}
     >
       <form 

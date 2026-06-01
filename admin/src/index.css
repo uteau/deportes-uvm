@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --uvm-primary: #101820;
+  --uvm-secondary: #5B6770;
+  --uvm-light: #f8f9fa;
+  --uvm-accent: #c00;
+  --uvm-accent-dark: #900;
+  --uvm-text: #4C4E56;
+}
+
+@layer base {
+  body {
+    font-family: 'Lato', sans-serif;
+    color: var(--uvm-secondary);
+    background-color: #ffffff;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Oswald', sans-serif;
+    color: var(--uvm-text);
+  }
+} */
