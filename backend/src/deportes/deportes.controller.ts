@@ -4,8 +4,8 @@ import {
     Delete,
     Get,
     Param,
+    Patch,
     Post,
-    Put,
     UseGuards,
 } from '@nestjs/common';
 import { DeportesService } from './deportes.service';
@@ -33,7 +33,7 @@ export class DeportesController {
     }
 
     // PUT /api/admin/deportes/:id
-    @Put(':id')
+    @Patch(':id')
     editar(@Param('id') id: string, @Body() dto: { nombre: string }) {
         return this.deportesService.editar(id, dto);
     }
