@@ -8,7 +8,7 @@ export default function EstudianteForm({ estudiante, onClose }) {
     nombre: '',
     email: '',
     password: '',
-    estudiante_id: '',
+    rut: '',
     deporte_id: ''
   });
 
@@ -22,7 +22,7 @@ export default function EstudianteForm({ estudiante, onClose }) {
         nombre: estudiante.usuario.nombre || '',
         email: estudiante.usuario.email || '',
         password: '', // No se carga la contraseña por seguridad
-        estudiante_id: estudiante.estudiante_id || '',
+        rut: estudiante.rut || '',
         deporte_id: estudiante.deporte?.id || ''
       });
     }
@@ -37,7 +37,7 @@ export default function EstudianteForm({ estudiante, onClose }) {
         const updateData = {
           nombre: form.nombre,
           email: form.email,
-          estudiante_id: form.estudiante_id,
+          rut: form.rut,
           deporte_id: form.deporte_id
         };
         if (form.password && form.password.trim() !== '') {
@@ -90,10 +90,10 @@ export default function EstudianteForm({ estudiante, onClose }) {
             required={!estudiante} 
           />
           <input 
-            name="estudiante_id" 
+            name="rut" 
             placeholder="Número de matrícula" 
-            value={form.estudiante_id} 
-            onChange={e => setForm({...form, estudiante_id: e.target.value})} 
+            value={form.rut} 
+            onChange={e => setForm({...form, rut: e.target.value})} 
             className="w-full p-2 border mb-2 rounded" 
             required 
           />

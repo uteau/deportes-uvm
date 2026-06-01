@@ -30,7 +30,7 @@ export default function EstudiantesPage() {
     const action = currentStatus ? 'desactivar' : 'activar';
     if (confirm(`¿${action} este estudiante?`)) {
       try {
-        await apiClient.patch(`/admin/usuarios/${id}/estado`, { is_active: !currentStatus });
+        await apiClient.patch(`/admin/usuarios/${id}/estado`, { activo: !currentStatus });
         load();
       } catch (err) {
         alert('Error al cambiar estado');
@@ -88,19 +88,19 @@ export default function EstudiantesPage() {
                 <tr key={est.id} className="border-t hover:bg-gray-50">
                   <td className="px-4 py-2">{est.usuario.nombre}</td>
                   <td className="px-4 py-2">{est.usuario.email}</td>
-                  <td className="px-4 py-2">{est.estudiante_id}</td>
+                  <td className="px-4 py-2">{est.rut}</td>
                   <td className="px-4 py-2">{est.deporte?.nombre || '-'}</td>
                   <td className="px-4 py-2">
-                    <span className={`px-2 py-1 rounded text-xs ${est.usuario.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {est.usuario.is_active ? 'Activo' : 'Inactivo'}
+                    <span className={`px-2 py-1 rounded text-xs ${est.usuario.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {est.usuario.activo ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
                   <td className="px-4 py-2">
                     <button onClick={() => handleEdit(est)} className="text-blue-600 hover:text-blue-800 mr-3">
                       Editar
                     </button>
-                    <button onClick={() => toggleStatus(est.usuario.id, est.usuario.is_active)} className="text-yellow-600 hover:text-yellow-800">
-                      {est.usuario.is_active ? 'Desactivar' : 'Activar'}
+                    <button onClick={() => toggleStatus(est.usuario.id, est.usuario.activo)} className="text-yellow-600 hover:text-yellow-800">
+                      {est.usuario.activo ? 'Desactivar' : 'Activar'}
                     </button>
                   </td>
                 </tr>
