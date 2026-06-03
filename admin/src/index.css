@@ -9,10 +9,12 @@
   --color-uvm-primary:      #101820;
   --color-uvm-secondary:    #5B6770;
   --color-uvm-light:        #f8f9fa;
-  --color-uvm-accent:       #cc0000;
-  --color-uvm-accent-dark:  #900000;
+  --color-uvm-red:       #cc0000;
+  --color-uvm-red-dark:  #900000;
   --color-uvm-text:         #4C4E56;
   --color-uvm-white:        #F7F7F7;
+  --color-uvm-orange:       #f5a425; /* CTAs destacados */
+  --color-uvm-yellow:       #F5BE00; /* highlights sobre fondo oscuro */
 
   /* Fuentes institucionales */
   --font-lato:   'Lato', sans-serif;

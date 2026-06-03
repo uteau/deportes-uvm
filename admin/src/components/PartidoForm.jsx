@@ -92,9 +92,11 @@ export default function PartidoForm({ partido, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/50 bg-opacity-10 flex items-center justify-center p-4 z-40">
       <div className="bg-white rounded p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">{partido ? 'Editar Partido' : 'Nuevo Partido'}</h2>
+        <h2 className="text-xl mb-4">
+          {partido ? 'Editar Partido' : 'Nuevo Partido'}
+        </h2>
         <form onSubmit={handleSubmit}>
           {/* Nombre */}
           <input 
@@ -189,7 +191,7 @@ export default function PartidoForm({ partido, onClose }) {
             </button>
             <button 
               type="submit" 
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              className="px-4 py-2 bg-uvm-primary text-white rounded hover:bg-uvm-secondary transition"
             >
               Guardar
             </button>

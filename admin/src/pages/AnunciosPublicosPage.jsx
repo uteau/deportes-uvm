@@ -24,16 +24,22 @@ export default function AnunciosPublicosPage() {
   return (
     <div>
       <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-bold">Anuncios Públicos</h1>
-        <button onClick={() => { setEditItem(null); setShowForm(true); }} className="bg-blue-600 text-white px-4 py-2 rounded">+ Nuevo</button>
+        <h1 className="text-2xl mb-4">Anuncios Públicos</h1>
+        <button onClick={() => { setEditItem(null); setShowForm(true); }} className="bg-uvm-primary text-white px-4 py-2 rounded hover:bg-uvm-secondary transition">
+          + Nuevo
+        </button>
       </div>
       <div className="space-y-2">
         {anuncios.map(a => (
           <div key={a.id} className="bg-white p-3 rounded shadow flex justify-between">
             <div><strong>{a.titulo}</strong><p>{a.contenido}</p>{a.instagram_url && <a href={a.instagram_url} className="text-blue-500">Instagram</a>}</div>
             <div>
-              <button onClick={() => { setEditItem(a); setShowForm(true); }} className="text-blue-600 mr-2">Editar</button>
-              <button onClick={() => handleDelete(a.id)} className="text-red-600">Eliminar</button>
+              <button onClick={() => { setEditItem(a); setShowForm(true); }} className="text-uvm-primary hover:text-uvm-primary-dark px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
+                Editar
+              </button>
+              <button onClick={() => handleDelete(a.id)} className="text-uvm-red hover:text-uvm-red-dark px-3 py-1 rounded hover:bg-uvm-red/5 transition">
+                Eliminar
+              </button>
             </div>
           </div>
         ))}

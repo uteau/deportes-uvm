@@ -43,9 +43,9 @@ export default function AnuncioForm({ tipo, anuncio, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/50 bg-opacity-10 flex items-center justify-center p-4 z-40">
       <div className="bg-white rounded p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">
+        <h2 className="text-xl mb-4">
           {anuncio ? 'Editar' : 'Nuevo'} anuncio {tipo === 'publico' ? 'público' : 'para seleccionados'}
         </h2>
         <form onSubmit={handleSubmit}>
@@ -71,7 +71,7 @@ export default function AnuncioForm({ tipo, anuncio, onClose }) {
           {tipo === 'publico' && (
             <input 
               name="instagram_url" 
-              placeholder="URL de Instagram (opcional)" 
+              placeholder="URL (opcional)" 
               value={form.instagram_url} 
               onChange={(e) => setForm({...form, instagram_url: e.target.value})} 
               className="w-full p-2 border mb-4 rounded" 
@@ -82,13 +82,13 @@ export default function AnuncioForm({ tipo, anuncio, onClose }) {
             <button 
               type="button" 
               onClick={onClose} 
-              className="px-4 py-2 border rounded hover:bg-gray-100"
+              className="px-4 py-2 border rounded hover:bg-gray-100 transition"
             >
               Cancelar
             </button>
             <button 
               type="submit" 
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-2 bg-uvm-primary text-white rounded hover:bg-uvm-secondary transition"
             >
               Guardar
             </button>

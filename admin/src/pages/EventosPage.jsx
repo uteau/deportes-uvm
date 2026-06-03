@@ -37,13 +37,20 @@ export default function EventosPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Eventos</h1>
-        <button onClick={() => setShowForm(true)} className="bg-blue-600 text-white px-4 py-2 rounded">+ Nuevo evento</button>
+        <h1 className="text-2xl mb-4">Eventos</h1>
+        <button onClick={() => setShowForm(true)} className="bg-uvm-primary text-white px-4 py-2 rounded hover:bg-uvm-secondary transition">
+          + Nuevo evento
+        </button>
       </div>
       <div className="bg-white rounded shadow overflow-x-auto">
         <table className="min-w-full">
           <thead className="bg-gray-50">
-            <tr><th className="px-4 py-2 text-left">Nombre</th><th>Fecha</th><th>Lugar</th><th>Acciones</th></tr>
+            <tr>
+              <th className="px-4 py-2 text-left">Nombre</th>
+              <th className="px-4 py-2 text-left">Fecha</th>
+              <th className="px-4 py-2 text-left">Lugar</th>
+              <th className="px-4 py-2 text-left">Acciones</th>
+            </tr>
           </thead>
           <tbody>
             {eventos.map(e => (
@@ -52,8 +59,12 @@ export default function EventosPage() {
                 <td className="px-4 py-2">{new Date(e.fecha_evento).toLocaleDateString()}</td>
                 <td className="px-4 py-2">{e.lugar}</td>
                 <td className="px-4 py-2">
-                  <button onClick={() => handleEdit(e)} className="text-blue-600 mr-2">Editar</button>
-                  <button onClick={() => handleDelete(e.id)} className="text-red-600">Eliminar</button>
+                  <button onClick={() => handleEdit(e)} className="text-uvm-primary hover:text-uvm-primary-dark px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
+                    Editar
+                  </button>
+                  <button onClick={() => handleDelete(e.id)} className="text-uvm-red hover:text-uvm-red-dark px-3 py-1 rounded hover:bg-uvm-red/5 transition">
+                    Eliminar
+                  </button>
                 </td>
               </tr>
             ))}

@@ -169,9 +169,9 @@ export default function EstudianteForm({ estudiante, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/50 bg-opacity-10 flex items-center justify-center p-4 z-40">
       <div className="bg-white rounded p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">
+        <h2 className="text-xl mb-4">
           {estudiante ? 'Editar Estudiante' : 'Nuevo Estudiante'}
         </h2>
         <form onSubmit={handleSubmit}>
@@ -255,14 +255,14 @@ export default function EstudianteForm({ estudiante, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border rounded hover:bg-gray-100"
+              className="px-4 py-2 border rounded hover:bg-gray-100 transition"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading || !!dvError}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              className="px-4 py-2 bg-uvm-primary text-white rounded hover:bg-uvm-secondary transition"
             >
               {loading ? 'Guardando...' : 'Guardar'}
             </button>

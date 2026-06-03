@@ -24,7 +24,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Feed de actividad</h1>
+      <h1 className="text-2xl mb-4">Feed de actividad</h1>
       <div className="space-y-4">
         {feed.length === 0 && <p>No hay contenido reciente.</p>}
         {feed.map((item) => (
@@ -34,7 +34,7 @@ export default function Dashboard() {
               {item.tipo_item === 'partido' && 'Partido'}
               {item.tipo_item === 'anuncio' && 'Anuncio'}
             </div>
-            <h2 className="text-xl font-semibold">{item.nombre || item.titulo}</h2>
+            <h2 className="text-xl">{item.nombre || item.titulo}</h2>
             {item.descripcion && <p>{item.descripcion}</p>}
             {item.contenido && <p>{item.contenido}</p>}
             {item.fecha_evento && <p className="text-sm">Fecha: {new Date(item.fecha_evento).toLocaleString()}</p>}

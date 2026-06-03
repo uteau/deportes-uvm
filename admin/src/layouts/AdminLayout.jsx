@@ -74,7 +74,7 @@ export default function AdminLayout() {
         <button
           onClick={handleLogout}
           className="px-5 py-4 text-sm uppercase tracking-wide text-white
-                     border-t border-white/20 hover:bg-uvm-accent
+                     border-t border-white/20 hover:bg-uvm-red
                      transition-colors duration-150 text-left"
         >
           Cerrar sesión

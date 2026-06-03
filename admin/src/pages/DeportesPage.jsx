@@ -115,11 +115,12 @@ export default function DeportesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Deportes</h1>
+      <h1 className="text-2xl mb-4">Deportes</h1>
 
       {/* Mensaje de error */}
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+        <div className="bg-red-50 border border-uvm-red text-uvm-red text-sm px-3 py-2 rounded mb-4">
+              
           {error}
           <button onClick={() => setError(null)} className="float-right font-bold">×</button>
         </div>
@@ -127,7 +128,7 @@ export default function DeportesPage() {
 
       {/* Formulario de creación */}
       <div className="bg-white p-4 rounded shadow mb-4">
-        <h2 className="font-semibold mb-2">Agregar deporte</h2>
+        <h2 className="text-lg mb-2 font-lato">Agregar deporte</h2>
         <div className="flex flex-col gap-2">
           <input
             placeholder="Nombre del deporte *"
@@ -148,8 +149,8 @@ export default function DeportesPage() {
             disabled={loading || !newName.trim()}
             className={`px-4 py-2 rounded text-white self-start ${
               loading || !newName.trim()
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-green-600 hover:bg-green-700'
+                ? 'bg-uvm-secondary/60 cursor-not-allowed'
+                : 'bg-uvm-primary hover:bg-uvm-secondary'
             }`}
           >
             {loading ? 'Guardando...' : 'Crear'}
@@ -158,7 +159,7 @@ export default function DeportesPage() {
       </div>
 
       {/* Listado de deportes */}
-      <ul className="bg-white rounded shadow divide-y">
+      <ul className="bg-white font-lato font-light rounded shadow divide-y">
         {deportes.length === 0 ? (
           <li className="p-3 text-center text-gray-500">No hay deportes registrados</li>
         ) : (
@@ -184,7 +185,7 @@ export default function DeportesPage() {
                     <button
                       onClick={() => handleSaveEdit(d.id)}
                       disabled={loading || !editName.trim()}
-                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
+                      className="px-3 py-1 bg-uvm-primary text-white rounded hover:bg-uvm-secondary disabled:bg-uvm-secondary/60"
                     >
                       Guardar
                     </button>
@@ -208,13 +209,13 @@ export default function DeportesPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleStartEdit(d)}
-                      className="text-blue-600 hover:text-blue-800 px-3 py-1 rounded hover:bg-blue-50"
+                      className="text-uvm-primary hover:text-uvm-primary-dark px-3 py-1 rounded hover:bg-uvm-primary/10 transition"
                     >
                       Editar
                     </button>
                     <button
                       onClick={() => handleDelete(d.id, d.nombre)}
-                      className="text-red-600 hover:text-red-800 px-3 py-1 rounded hover:bg-red-50"
+                      className="text-uvm-red hover:text-uvm-red-dark px-3 py-1 rounded hover:bg-uvm-red/5 transition"
                     >
                       Eliminar
                     </button>
