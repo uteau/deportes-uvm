@@ -16,52 +16,69 @@ export default function Login() {
       if (rol === 'admin') navigate('/');
       else setError('Acceso solo para administradores');
     } catch (err) {
-      setError(err.response?.data?.error?.message || 'Credenciales incorrectas');
+      setError(err.response?.data?.message || 'Usuario o contraseña incorrectos. Intente nuevamente.');
     }
   };
 
   return (
-    <div 
-      className="min-h-screen flex items-center justify-center  font-sans"
-      style={{ backgroundColor: '#212529' }}
-    >
-      <form 
-        onSubmit={handleSubmit} 
-        className="p-6 rounded shadow-md w-96"
-        style={{ backgroundColor: '#5B6770' }}
-      >
-        <h1 className="text-2xl font-bold mb-4 text-white">Panel Admin UVM</h1>
-        
-        {error && <div className="text-red-200 mb-2">{error}</div>}
-        
-        <input 
-          type="email" 
-          placeholder="Correo" 
-          value={email} 
-          onChange={e => setEmail(e.target.value)} 
-          className="w-full p-2 border mb-2 rounded text-gray-800"
-          style={{ backgroundColor: '#f8f9fa' }}
-          required 
-        />
-        
-        <input 
-          type="password" 
-          placeholder="Contraseña" 
-          value={password} 
-          onChange={e => setPassword(e.target.value)} 
-          className="w-full p-2 border mb-4 rounded text-gray-800"
-          style={{ backgroundColor: '#f8f9fa' }}
-          required 
-        />
-        
-        <button 
-          type="submit" 
-          className="w-full text-gray-800 p-2 rounded hover:opacity-90 transition"
-          style={{ backgroundColor: '#f8f9fa' }}
-        >
-          Ingresar
-        </button>
-      </form>
+    // Fondo oscuro institucional
+    <div className="min-h-screen flex items-center justify-center bg-uvm-primary font-lato">
+      <div className="w-full max-w-sm">
+
+        {/* Logo / título institucional */}
+        <h1 className="font-oswald text-white text-center text-3xl uppercase tracking-widest mb-8">
+          Deportes UVM
+        </h1>
+
+        <form 
+          onSubmit={handleSubmit} 
+          className="bg-uvm-white rounded shadow-lg p-8">
+          <h2 className="font-lato text-uvm-primary text-center text-xl uppercase tracking-wide mb-6">
+            Panel de Administración
+          </h2>
+
+          {/* <p className="text-uvm-secondary text-sm mb-6">
+            Ingresa con tu cuenta institucional
+          </p> */}
+
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="w-full p-2 border border-gray-300 mb-3 rounded text-uvm-text
+                       focus:outline-none focus:border-uvm-primary focus:ring-1 focus:ring-uvm-primary"
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="w-full p-2 border border-gray-300 mb-6 rounded text-uvm-text
+                       focus:outline-none focus:border-uvm-primary focus:ring-1 focus:ring-uvm-primary"
+            required
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-uvm-primary text-white font-lato tracking-wide
+                       py-2 rounded hover:bg-uvm-secondary transition-colors duration-200 mb-6"
+          >
+            Ingresar
+          </button>
+
+          {/* Error de login */}
+          {error && (
+            <div className="bg-red-50 border border-uvm-accent text-uvm-accent text-sm px-3 py-2 rounded mb-4">
+              {error}
+            </div>
+          )}
+          
+        </form>
+
+      </div>
     </div>
   );
 }
