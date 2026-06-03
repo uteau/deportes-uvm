@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
+  // useLocation permite saber la ruta activa para resaltar el link del sidebar
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -13,46 +15,104 @@ export default function AdminLayout() {
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/' },
-    { name: 'Eventos', path: '/eventos' },
-    { name: 'Partidos', path: '/partidos' },
-    { name: 'Anuncios Públicos', path: '/anuncios/publicos' },
+    { name: 'Dashboard',              path: '/' },
+    { name: 'Eventos',                path: '/eventos' },
+    { name: 'Partidos',               path: '/partidos' },
+    { name: 'Anuncios Públicos',      path: '/anuncios/publicos' },
     { name: 'Anuncios Seleccionados', path: '/anuncios/seluvm' },
-    { name: 'Estudiantes', path: '/estudiantes' },
-    { name: 'Deportes', path: '/deportes' },
+    { name: 'Estudiantes',            path: '/estudiantes' },
+    { name: 'Deportes',               path: '/deportes' },
   ];
 
+  // Determina si un link está activo comparando la ruta actual
+  const isActive = (path) =>
+    path === '/'
+      ? location.pathname === '/'
+      : location.pathname.startsWith(path);
+
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar para escritorio */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-md transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0`}>
-        <div className="p-4 font-bold text-xl border-b">Admin UVM</div>
-        <nav className="mt-4">
+    <div className="flex h-screen bg-gray-100 font-lato">
+
+      {/* ── Sidebar ───────────────────────────────────────────── */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-uvm-secondary flex flex-col
+        transform transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        lg:relative lg:translate-x-0
+      `}>
+
+        {/* Cabecera del sidebar */}
+        <div className="bg-uvm-secondary px-5 py-4">
+          <span className="font-oswald text-white text-lg uppercase tracking-widest">
+            Deportes UVM
+          </span>
+          <p className="text-gray-400 text-xs mt-0.5">Panel de Administración</p>
+        </div>
+
+        {/* Links de navegación */}
+        <nav className="flex-1 mt-2 overflow-y-auto">
           {navItems.map(item => (
-            <Link key={item.path} to={item.path} className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100">
-              <span>{item.icon}</span> {item.name}
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={() => setSidebarOpen(false)} // cerrar en móvil al navegar
+              className={`
+                flex items-center px-5 py-3 text-sm uppercase tracking-wide
+                transition-colors duration-150
+                ${isActive(item.path)
+                  ? 'bg-uvm-white text-uvm-primary/60'       // activo
+                  : 'text-white hover:bg-uvm-primary/60'        // inactivo
+                }
+              `}
+            >
+              {item.name}
             </Link>
           ))}
-          <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-gray-100 mt-4 text-red-600">
-            Cerrar sesión
-          </button>
         </nav>
+
+        {/* Cerrar sesión al fondo del sidebar */}
+        <button
+          onClick={handleLogout}
+          className="px-5 py-4 text-sm uppercase tracking-wide text-white
+                     border-t border-white/20 hover:bg-uvm-accent
+                     transition-colors duration-150 text-left"
+        >
+          Cerrar sesión
+        </button>
       </aside>
 
-      {/* Contenido principal */}
+      {/* ── Contenido principal ───────────────────────────────── */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow-sm p-4 lg:hidden flex justify-between">
-          <button onClick={() => setSidebarOpen(true)} className="text-2xl">☰</button>
-          <h1 className="font-bold">Admin UVM</h1>
-          <div className="w-8"></div>
+
+        {/* Topbar — solo visible en móvil */}
+        <header className="bg-uvm-primary shadow-sm px-4 py-3 lg:hidden flex items-center justify-between">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="text-white text-2xl leading-none"
+          >
+            ☰
+          </button>
+          <span className="font-oswald text-white uppercase tracking-widest text-base">
+            Deportes UVM
+          </span>
+          {/* Espaciador para centrar el título */}
+          <div className="w-8" />
         </header>
-        <main className="flex-1 overflow-y-auto p-4">
+
+        {/* Área de contenido de cada página */}
+        <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
+
       </div>
 
-      {/* Overlay para móvil */}
-      {sidebarOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)}></div>}
+      {/* Overlay oscuro al abrir sidebar en móvil */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
     </div>
   );
 }
