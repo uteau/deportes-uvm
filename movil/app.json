@@ -11,7 +11,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "cl.uvm.deportes"
@@ -26,6 +29,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "sdkVersion": "51.0.0"
+    "sdkVersion": "51.0.0",
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
