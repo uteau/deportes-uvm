@@ -1,0 +1,3 @@
+Si en algún momento algo de @react-navigation o expo-secure-store se rompe con un error de versión
+corre npx expo install <paquete> en vez de npm install 
+Expo 54 resuelve automáticamente la versión compatible.

@@ -4,21 +4,18 @@
     "slug": "deportes-uvm",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "platforms": ["ios", "android"],
+    "main": "App.js",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "cl.uvm.deportes"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "cl.uvm.deportes"
@@ -26,6 +23,10 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "sdkVersion": "51.0.0"
+    "sdkVersion": "54.0.0",
+    "plugins": [
+      "expo-secure-store",
+      "expo-font"
+    ]
   }
 }

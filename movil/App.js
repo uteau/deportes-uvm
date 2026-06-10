@@ -1,31 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// App.js
+import { registerRootComponent } from 'expo';
+import React from 'react';
+import { View, ActivityIndicator } from 'react-native';
 
-export default function App() {
+// Importamos el hook de carga de fuentes y las variantes que usaremos
+import { useFonts } from 'expo-font';
+import { Oswald_400Regular, Oswald_600SemiBold } from '@expo-google-fonts/oswald';
+import { Lato_400Regular, Lato_700Bold } from '@expo-google-fonts/lato';
+
+import { AuthProvider } from './src/contexto/AuthContext';
+import NavegadorRoot from './src/navegacion/NavegadorRoot';
+import { Colors } from './src/tema';
+
+function App() {
+  // useFonts carga las fuentes de Google Fonts de forma asíncrona.
+  // Devuelve [fontsLoaded, error].
+  // Hasta que carguen, no renderizamos nada para evitar texto sin fuente.
+  const [fontsLoaded] = useFonts({
+    Oswald_400Regular,
+    Oswald_600SemiBold,
+    Lato_400Regular,
+    Lato_700Bold,
+  });
+
+  // Spinner de carga mientras las fuentes se descargan
+  if (!fontsLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.primary }}>
+        <ActivityIndicator size="large" color={Colors.orange} />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Deportes UVM</Text>
-      <Text style={styles.subtitle}>Plataforma Deportiva Universitaria</Text>
-      <StatusBar style="auto" />
-    </View>
+    <AuthProvider>
+      <NavegadorRoot />
+    </AuthProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1a1a2e',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#555',
-  },
-});
+registerRootComponent(App);

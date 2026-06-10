@@ -15,8 +15,8 @@ export class FeedService {
         });
 
         const anuncios = await this.prisma.anuncio.findMany({
-            where: {  activo : true},
-            // where: { tipo: 'publico', is_published: true},
+            where: {  activo : true,
+                    tipo: 'publico'},
         });
 
         const items = [
