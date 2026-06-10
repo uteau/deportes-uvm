@@ -15,10 +15,6 @@ export default function TarjetaEvento({ item }) {
 
   return (
     <View style={styles.tarjeta}>
-      {/* Etiqueta de tipo en la esquina superior izquierda */}
-      <View style={[styles.etiqueta, { backgroundColor: Colors.primary }]}>
-        <Text style={styles.etiquetaTexto}>EVENTO</Text>
-      </View>
 
       {/* Nombre del evento */}
       <Text style={styles.nombre}>{item.nombre}</Text>

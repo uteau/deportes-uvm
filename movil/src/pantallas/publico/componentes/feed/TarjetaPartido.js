@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     marginBottom: Spacing.md,
     borderLeftWidth: 4,
-    borderLeftColor: Colors.red,
+    borderLeftColor: Colors.primary,
     ...Shadow.card,
   },
   etiqueta: {
