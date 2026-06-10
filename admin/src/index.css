@@ -1,0 +1,32 @@
+/* ── Fuentes institucionales UVM ─────────────────────────────
+   Ya se cargan desde index.html, aquí solo se declaran como
+   tokens para usarlas con font-lato y font-oswald en Tailwind.
+   ---------------------------------------------------------- */
+@import "tailwindcss";
+
+@theme {
+  /* Paleta institucional UVM */
+  --color-uvm-primary:      #101820;
+  --color-uvm-secondary:    #5B6770;
+  --color-uvm-light:        #f8f9fa;
+  --color-uvm-red:       #cc0000;
+  --color-uvm-red-dark:  #900000;
+  --color-uvm-text:         #4C4E56;
+  --color-uvm-white:        #F7F7F7;
+  --color-uvm-orange:       #f5a425; /* CTAs destacados */
+  --color-uvm-yellow:       #F5BE00; /* highlights sobre fondo oscuro */
+
+  /* Fuentes institucionales */
+  --font-lato:   'Lato', sans-serif;
+  --font-oswald: 'Oswald', sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-lato);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-oswald);
+  }
+}

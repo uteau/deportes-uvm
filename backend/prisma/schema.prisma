@@ -1,0 +1,153 @@
+// Prisma Schema — Plataforma Deportiva UVM
+// Documentación: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum AnuncioTipo {
+  publico
+  seluvm
+}
+
+// ─── Modelos ──────────────────────────────────────────────────────────────────
+
+// Entidad base de autenticación. Todos los usuarios del sistema tienen un registro aquí.
+// El rol se determina por la existencia de un registro en Estudiante o Admin.
+model Usuario {
+  id            String    @id @default(uuid())
+  nombre        String
+  email         String    @unique
+  password_hash String
+  activo        Boolean   @default(true)
+  ultimo_ingreso    DateTime?
+  fecha_creacion    DateTime  @default(now())
+
+  // Herencia: un usuario puede ser estudiante o admin (uno a uno, opcional)
+  estudiante Estudiante?
+  admin      Admin?
+
+  // Contenido creado por este usuario
+  eventos  Evento[]
+  partidos Partido[]
+  anuncios Anuncio[]
+
+  @@map("usuarios")
+}
+
+// Datos específicos de un estudiante seleccionado.
+// Un estudiante practica exactamente un deporte (relación muchos a uno con Deporte).
+model Estudiante {
+  id                    String    @id @default(uuid())
+  rut                   Int       @unique
+  dig_verificador       Int       
+
+  // Relación con la entidad base (uno a uno)
+  usuario_id String  @unique
+  usuario    Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
+  // Deporte que practica el estudiante (muchos a uno)
+  deporte_id String?
+  deporte    Deporte? @relation(fields: [deporte_id], references: [id])
+
+  @@map("estudiantes")
+}
+
+// Datos específicos de un administrador.
+model Admin {
+  id String @id @default(uuid())
+
+  // Relación con la entidad base (uno a uno)
+  usuario_id String  @unique
+  usuario    Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
+  @@map("admins")
+}
+
+// Catálogo de deportes disponibles en el área de deportes UVM.
+model Deporte {
+  id          String  @id @default(uuid())
+  nombre      String  @unique
+  descripcion String?
+  activo      Boolean @default(true)
+
+  // Estudiantes que practican este deporte
+  estudiantes Estudiante[]
+
+  @@map("deportes")
+}
+
+// Actividad deportiva general (charla, torneo, inauguración, etc.).
+// No tiene equipos ni marcador.
+model Evento {
+  id           String    @id @default(uuid())
+  nombre       String
+  descripcion  String?
+  fecha_evento DateTime
+  lugar        String
+  activo       Boolean   @default(true)
+  creado_por   String
+  fecha_creacion   DateTime  @default(now())
+  fecha_actualizacion   DateTime  @updatedAt
+
+  creador Usuario @relation(fields: [creado_por], references: [id])
+
+  @@map("eventos")
+}
+
+// Partido deportivo con equipos y marcador opcional.
+model Partido {
+  id            String    @id @default(uuid())
+  nombre        String
+  descripcion   String?
+  fecha_partido DateTime
+  lugar         String
+  equipo_local  String
+  equipo_visita String
+  resul_local   Int?      // null mientras el partido no ha sido jugado
+  resul_visita  Int?      // null mientras el partido no ha sido jugado
+  activo        Boolean   @default(true)
+  creado_por    String
+  fecha_creacion        DateTime  @default(now())
+  fecha_actualizacion   DateTime  @updatedAt
+
+  creador Usuario @relation(fields: [creado_por], references: [id])
+
+  @@map("partidos")
+}
+
+// Anuncio informativo. Puede ser público (feed) o exclusivo para seleccionados (seluvm).
+model Anuncio {
+  id            String      @id @default(uuid())
+  titulo        String
+  contenido     String
+  tipo          AnuncioTipo
+  instagram_url String?     // URL opcional a un post o perfil de Instagram
+  activo        Boolean   @default(true)
+  creado_por    String
+  fecha_creacion        DateTime  @default(now())
+  fecha_actualizacion   DateTime  @updatedAt
+
+  creador Usuario @relation(fields: [creado_por], references: [id])
+
+  @@map("anuncios")
+}
+
+// Contacto relevante del área de deportes UVM.
+model Contacto {
+  id                   String  @id @default(uuid())
+  nombre               String
+  rol                  String?
+  email                String?
+  telefono             String?
+  descripcion_servicio String?
+
+  @@map("contactos")
+}
