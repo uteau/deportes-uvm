@@ -17,10 +17,6 @@ export default function TarjetaPartido({ item }) {
 
   return (
     <View style={styles.tarjeta}>
-      {/* Etiqueta */}
-      <View style={[styles.etiqueta, { backgroundColor: Colors.red }]}>
-        <Text style={styles.etiquetaTexto}>PARTIDO</Text>
-      </View>
 
       {/* Nombre del partido */}
       <Text style={styles.nombre}>{item.nombre}</Text>
