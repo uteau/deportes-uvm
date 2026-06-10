@@ -25,7 +25,8 @@
     },
     "sdkVersion": "54.0.0",
     "plugins": [
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-font"
     ]
   }
 }

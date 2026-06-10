@@ -1,20 +1,25 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../contexto/AuthContext";
+import {createStackNavigator} from '@react-navigation/stack'
+import { Colors } from '../tema';
+import PantallaFeed from '../pantallas/publico/PantallaFeed';
+
+const Stack = createStackNavigator();
 
 function NavegadorPublico() {
     const { iniciarSesion } = useAuth();
     return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            {/* Feed publico */}
-        </View>
+        <Stack.Navigator screenOptions={{ headerShown : false }}>
+            <Stack.Screen name="feed" component={PantallaFeed} />
+        </Stack.Navigator>
     )
 }
 
 function NavegadorSeluvm() {
     return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.light}}>
             {/* credencial y anucios seluv m*/}
         </View>
     )
@@ -22,7 +27,7 @@ function NavegadorSeluvm() {
 
 function NavegadorAdmin() {
     return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.light}}>
             {/* admin movil */}
         </View>
     )
@@ -36,8 +41,8 @@ export default function NavegadorRoot() {
   // Esto evita el parpadeo entre "no hay sesión" y "sí hay sesión"
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.primary }}>
+        <ActivityIndicator size="large" color={Colors.light}/>
       </View>
     );
   }
