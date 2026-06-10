@@ -1,31 +1,15 @@
+import React from 'react';
+import { AuthProvider } from './src/context/AuthContext';
+import NavegadorRoot from './src/navegation/NavegadorRoot';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { registerRootComponent } from 'expo';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Deportes UVM</Text>
-      <Text style={styles.subtitle}>Plataforma Deportiva Universitaria</Text>
-      <StatusBar style="auto" />
-    </View>
+    <AuthProvider>
+      <NavegadorRoot />
+    </AuthProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1a1a2e',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#555',
-  },
-});
+registerRootComponent(App);
