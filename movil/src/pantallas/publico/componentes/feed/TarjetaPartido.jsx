@@ -1,10 +1,12 @@
 // TarjetaPartido.jsx
 // Tarjeta para partidos. Extiende TarjetaEvento mostrando equipos y marcador.
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors, Typography, FontSize, Spacing, Radius, Shadow } from '../../../../tema';
 
 export default function TarjetaPartido({ item }) {
+  const navigation = useNavigation();
+
   const fecha = new Date(item.fecha_partido).toLocaleDateString('es-CL', {
     weekday: 'short',
     day: 'numeric',
@@ -16,11 +18,11 @@ export default function TarjetaPartido({ item }) {
   const tieneResultado = item.resul_local !== null && item.resul_visita !== null;
 
   return (
-    <View style={styles.tarjeta}>
-      {/* Etiqueta */}
-      <View style={[styles.etiqueta, { backgroundColor: Colors.red }]}>
-        <Text style={styles.etiquetaTexto}>PARTIDO</Text>
-      </View>
+    <TouchableOpacity 
+      style={styles.tarjeta}
+      onPress={() => navigation.navigate('DetallePartido', {id: item.id})}
+      activeOpacity={0.85}
+    >
 
       {/* Nombre del partido */}
       <Text style={styles.nombre}>{item.nombre}</Text>
@@ -52,7 +54,7 @@ export default function TarjetaPartido({ item }) {
       {/* Fecha y lugar */}
       <Text style={styles.meta}>Fecha: {fecha}</Text>
       <Text style={styles.meta}>Lugar: {item.lugar}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     marginBottom: Spacing.md,
     borderLeftWidth: 4,
-    borderLeftColor: Colors.red,
+    borderLeftColor: Colors.primary,
     ...Shadow.card,
   },
   etiqueta: {

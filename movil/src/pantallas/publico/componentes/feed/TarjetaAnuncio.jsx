@@ -20,10 +20,6 @@ export default function TarjetaAnuncio({ item }) {
 
   return (
     <View style={styles.tarjeta}>
-      {/* Etiqueta */}
-      <View style={[styles.etiqueta, { backgroundColor: Colors.orange }]}>
-        <Text style={styles.etiquetaTexto}>ANUNCIO</Text>
-      </View>
 
       {/* Título */}
       <Text style={styles.titulo}>{item.titulo}</Text>
@@ -55,7 +51,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     marginBottom: Spacing.md,
     borderLeftWidth: 4,
-    borderLeftColor: Colors.orange,
+    borderLeftColor: Colors.primary,
     ...Shadow.card,
   },
   etiqueta: {

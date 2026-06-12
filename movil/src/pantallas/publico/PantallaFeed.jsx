@@ -1,6 +1,6 @@
 // PantallaFeed.jsx
 // Pantalla principal del módulo público.
-// Consume GET /api/feed y renderiza la tarjeta correcta según tipo_recurso.
+// Consume GET /api/feed y renderiza la tarjeta correcta según tipo_item.
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
@@ -31,6 +31,8 @@ export default function PantallaFeed() {
     try {
         setError(null);
         const respuesta = await api.get('/feed');
+        console.log('Total items:', respuesta.data.length);
+        console.log('Primer item:', JSON.stringify(respuesta.data[0], null, 2));
         setItems(respuesta.data);
     } catch (e) {
         console.log('URL base:', process.env.EXPO_PUBLIC_API_URL);
@@ -53,11 +55,11 @@ export default function PantallaFeed() {
     setRefrescando(false);
   }, [cargarFeed]);
 
-  // Decide qué tarjeta renderizar según el campo tipo_recurso del backend
+  // Decide qué tarjeta renderizar según el campo tipo_item del backend
   const renderItem = ({ item }) => {
-    if (item.tipo_recurso === 'evento')  return <TarjetaEvento  item={item} />;
-    if (item.tipo_recurso === 'partido') return <TarjetaPartido item={item} />;
-    if (item.tipo_recurso === 'anuncio') return <TarjetaAnuncio item={item} />;
+    if (item.tipo_item === 'evento')  return <TarjetaEvento  item={item} />;
+    if (item.tipo_item === 'partido') return <TarjetaPartido item={item} />;
+    if (item.tipo_item === 'anuncio') return <TarjetaAnuncio item={item} />;
     // Si el backend devuelve un tipo desconocido, no renderizamos nada
     return null;
   };
@@ -66,7 +68,7 @@ export default function PantallaFeed() {
   if (cargando) {
     return (
       <View style={styles.centrado}>
-        <ActivityIndicator size="large" color={Colors.orange} />
+        <ActivityIndicator size="large" color={Colors.light} />
       </View>
     );
   }
@@ -91,7 +93,7 @@ export default function PantallaFeed() {
       {/* Lista del feed */}
       <FlatList
         data={items}
-        keyExtractor={(item) => `${item.tipo_recurso}-${item.id}`}
+        keyExtractor={(item) => `${item.tipo_item}-${item.id}`}
         renderItem={renderItem}
         contentContainerStyle={styles.lista}
         // Pull-to-refresh nativo
@@ -99,8 +101,8 @@ export default function PantallaFeed() {
           <RefreshControl
             refreshing={refrescando}
             onRefresh={onRefresh}
-            colors={[Colors.orange]}
-            tintColor={Colors.orange}
+            colors={[Colors.primary]}
+            tintColor={Colors.primary}
           />
         }
         // Mensaje cuando no hay contenido
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light,
   },
   header: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.secondary,
     paddingTop: 56, // espacio para la status bar
     paddingBottom: Spacing.md,
     paddingHorizontal: Spacing.md,
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   headerTitulo: {
     fontFamily: Typography.heading,
     fontSize: FontSize.xxl,
-    color: Colors.white,
+    color: Colors.light,
     letterSpacing: 2,
   },
   headerSubtitulo: {
