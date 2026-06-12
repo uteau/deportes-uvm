@@ -30,15 +30,6 @@ function AppRoutes() {
         <Route path="anuncios/seluvm" element={<AnunciosSeluvmPage />} />
         <Route path="estudiantes" element={<EstudiantesPage />} />
         <Route path="deportes" element={<DeportesPage />} />
-
-        {/* <Route index element={<Dashboard />} />
-        <Route path="eventos" element={<div>Eventos - Próximamente</div>} />
-        <Route path="partidos" element={<div>Partidos - Próximamente</div>} />
-        <Route path="anuncios/publicos" element={<div>Anuncios públicos - Próximamente</div>} />
-        <Route path="anuncios/seluvm" element={<div>Anuncios seleccionados - Próximamente</div>} />
-        <Route path="estudiantes" element={<div>Estudiantes - Próximamente</div>} />
-        <Route path="deportes" element={<div>Deportes - Próximamente</div>} /> */}
-        
       </Route>
     </Routes>
   );
@@ -47,7 +38,9 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppRoutes />
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

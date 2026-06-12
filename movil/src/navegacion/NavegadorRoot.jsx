@@ -13,6 +13,27 @@ function NavegadorPublico() {
     return (
         <Stack.Navigator screenOptions={{ headerShown : false }}>
             <Stack.Screen name="feed" component={PantallaFeed} />
+            <Stack.Screen 
+                name="DetalleEvento"
+                component={PantallaDetalleEvento}
+                options={{
+                    headerShown: true,
+                    title: 'Evento',
+                    headerStyle: { backgroundColor: Colors.secondary },
+                    headerTintColor: Colors.white,       // color del texto y flecha de volver
+                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
+                }}
+            /><Stack.Screen 
+                name="DetallePartido"
+                component={PantallaDetallePartido}
+                options={{
+                    headerShown: true,
+                    title: 'Partido',
+                    headerStyle: { backgroundColor: Colors.secondary },
+                    headerTintColor: Colors.white,       // color del texto y flecha de volver
+                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
+                }}
+            />
         </Stack.Navigator>
     )
 }

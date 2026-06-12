@@ -101,8 +101,8 @@ export default function PantallaFeed() {
           <RefreshControl
             refreshing={refrescando}
             onRefresh={onRefresh}
-            colors={[Colors.orange]}
-            tintColor={Colors.orange}
+            colors={[Colors.primary]}
+            tintColor={Colors.primary}
           />
         }
         // Mensaje cuando no hay contenido
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   headerTitulo: {
     fontFamily: Typography.heading,
     fontSize: FontSize.xxl,
-    color: Colors.primary,
+    color: Colors.light,
     letterSpacing: 2,
   },
   headerSubtitulo: {

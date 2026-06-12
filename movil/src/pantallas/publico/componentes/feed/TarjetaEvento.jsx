@@ -1,10 +1,12 @@
 // TarjetaEvento.jsx
 // Tarjeta para mostrar un evento deportivo general en el feed
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import { Colors, Typography, FontSize, Spacing, Radius, Shadow } from '../../../../tema';
 
 export default function TarjetaEvento({ item }) {
+  const navigation = useNavigation();
   // Formateamos la fecha a formato legible en español
   const fecha = new Date(item.fecha_evento).toLocaleDateString('es-CL', {
     weekday: 'short',
@@ -14,7 +16,11 @@ export default function TarjetaEvento({ item }) {
   });
 
   return (
-    <View style={styles.tarjeta}>
+    <TouchableOpacity 
+      style={styles.tarjeta}
+      onPress={() => navigation.navigate('DetalleEvento', {id: item.id})}
+      activeOpacity={0.85}
+    >
 
       {/* Nombre del evento */}
       <Text style={styles.nombre}>{item.nombre}</Text>
@@ -29,7 +35,7 @@ export default function TarjetaEvento({ item }) {
           {item.descripcion}
         </Text>
       ) : null}
-    </View>
+    </TouchableOpacity>
   );
 }
 
