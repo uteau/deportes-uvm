@@ -2,6 +2,7 @@
 // Tarjeta para partidos. Extiende TarjetaEvento mostrando equipos y marcador.
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import { Colors, Typography, FontSize, Spacing, Radius, Shadow } from '../../../../tema';
 
 export default function TarjetaPartido({ item }) {

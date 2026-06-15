@@ -53,10 +53,12 @@ export default function PantallaDetallePartido({ route }) {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
+    timeZone: 'UTC',
   });
   const hora = fechaHora.toLocaleTimeString('es-CL', {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'UTC',
   });
 
   // Hay resultado solo si ambos valores son números (no null)

@@ -1,79 +1,87 @@
 import React, { useEffect, useState } from 'react';
+import { 
+  View, 
+  Text, 
+  ScrollView, 
+  StyleSheet,
+  ActivityIndicator  
+} from 'react-native';
 import api from '../../api/client';
-import { View, ActivityIndicator, Text, ScrollView, StyleSheet } from 'react-native';
 import { Colors, FontSize, Radius, Spacing, Typography } from '../../tema';
 
-export default function DetalleEvento({route}) {
-    const id = route.params;
+export default function PantallaDetalleEvento({ route }) {
+  const id = route.params.id;
 
-    const [evento, setEvento] = useState(null);
-    const [cargando, setCargando] = useState(true);
-    const [error, setError] = useState(null);
-    
-    useEffect(() => {
-        // Cargamos el evento al montar la pantalla
-        api.get(`/eventos/${id}`)
-        .then(res => setEvento(res.data))
-        .catch(err => {
-            // 404 o error de red
-            if (err.response?.status === 404) {
-            setError('Este evento no está disponible.');
-            } else {
-            setError('No se pudo cargar el evento. Intenta de nuevo.');
-            }
-        })
-        .finally(() => setCargando(false));
-    }, [id]); // se vuelve a ejecutar si cambia el id (por si navegamos de un detalle a otro)
+  const [evento, setEvento] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+      // Cargamos el evento al montar la pantalla
+      api.get(`/eventos/${id}`)
+      .then(res => setEvento(res.data))
+      .catch(err => {
+          // 404 o error de red
+          if (err.response?.status === 404) {
+          setError('Este evento no está disponible.');
+          } else {
+          setError('No se pudo cargar el evento. Intenta de nuevo.');
+          }
+      })
+      .finally(() => setCargando(false));
+  }, [id]); // se vuelve a ejecutar si cambia el id (por si navegamos de un detalle a otro)
 
-    
-    if (cargando) {
-        return (
-        <View style={styles.centrado}>
-            <ActivityIndicator size="large" color={Colors.light} />
+  
+  if (cargando) {
+      return (
+      <View style={styles.centrado}>
+          <ActivityIndicator size="large" color={Colors.light} />
+      </View>
+      );
+  }
+
+  if (error) {
+      return (
+      <View style={styles.centrado}>
+          <Text style={styles.errorTexto}>{error}</Text>
+      </View>
+      );
+  }
+
+  const fechaHora = new Date(evento.fecha_evento);
+  const fecha = fechaHora.toLocaleDateString('es-CL', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+  });
+  const hora = fechaHora.toLocaleTimeString('es-CL', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'UTC',
+  });
+  
+  return (
+      <ScrollView style={styles.contenedor} contentContainerStyle={styles.contenido}>
+        <Text style={styles.titulo}>{evento.nombre}</Text>
+
+        {/* Bloque de metadatos */}
+        <View style={styles.bloque}>
+          <FilaMeta etiqueta="Fecha" valor={fecha} />
+          <FilaMeta etiqueta="Hora"  valor={hora} />
+          <FilaMeta etiqueta="Lugar" valor={evento.lugar} />
         </View>
-        );
-    }
 
-    if (error) {
-        return (
-        <View style={styles.centrado}>
-            <Text style={styles.errorTexto}>{error}</Text>
-        </View>
-        );
-    }
-
-    const fechaHora = new Date(evento.fecha_evento);
-    const fecha = fechaHora.toLocaleDateString('es-CL', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    });
-    const hora = fechaHora.toLocaleTimeString('es-CL', {
-        hour: '2-digit',
-        minute: '2-digit',
-    });
-    
-    return (
-        <ScrollView style={styles.contenedor} contentContainerStyle={contenido}>
-            <Text style={styles.titulo}>{evento.nombre}</Text>
-
-            {/* Bloque de metadatos */}
-            <View style={styles.bloque}>
-                <FilaMeta etiqueta="Fecha" valor={fecha} />
-                <FilaMeta etiqueta="Hora"  valor={hora} />
-                <FilaMeta etiqueta="Lugar" valor={evento.lugar} />
+        {/* Descripción — solo si existe */}
+        {evento.descripcion ? (
+          <View style={styles.bloque}>
+          <Text style={styles.seccionTitulo}>Descripción</Text>
+          <Text style={styles.descripcion}>{evento.descripcion}</Text>
             </View>
-
-            {/* Descripción — solo si existe */}
-            {evento.descripcion ? (
-                <View style={styles.bloque}>
-                <Text style={styles.seccionTitulo}>Descripción</Text>
-                <Text style={styles.descripcion}>{evento.descripcion}</Text>
-                </View>
-            ) : null}
-        </ScrollView>
-    )
+        ) : null}
+      </ScrollView>
+  )
 }
 
 // Componente interno reutilizable para mostrar etiqueta + valor en una fila

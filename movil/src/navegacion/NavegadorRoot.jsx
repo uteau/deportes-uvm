@@ -5,6 +5,8 @@ import { useAuth } from "../contexto/AuthContext";
 import {createStackNavigator} from '@react-navigation/stack'
 import { Colors } from '../tema';
 import PantallaFeed from '../pantallas/publico/PantallaFeed';
+import PantallaDetalleEvento from '../pantallas/publico/PantallaDetalleEvento';
+import PantallaDetallePartido from '../pantallas/publico/PantallaDetallePartido';
 
 const Stack = createStackNavigator();
 
