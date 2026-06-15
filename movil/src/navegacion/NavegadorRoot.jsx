@@ -1,21 +1,53 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import { Ionicons } from '@expo/vector-icons';
+
 import { useAuth } from "../contexto/AuthContext";
-import {createStackNavigator} from '@react-navigation/stack'
 import { Colors } from '../tema';
+
 import PantallaFeed from '../pantallas/publico/PantallaFeed';
 import PantallaDetalleEvento from '../pantallas/publico/PantallaDetalleEvento';
 import PantallaDetallePartido from '../pantallas/publico/PantallaDetallePartido';
 import PantallaCalendario from '../pantallas/publico/PantallaCalendario';
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function TabsPublico() {
+    return (
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                headerShown: false,
+                // Ícono según la pestaña activa o inactiva
+                tabBarIcon: ({ focused, color, size }) => {
+                    const iconos = {
+                        Feed:       focused ? 'home'           : 'home-outline',
+                        Calendario: focused ? 'calendar'       : 'calendar-outline',
+                    };
+                    return <Ionicons name={iconos[route.name]} size={size} color={color} />;
+                },
+                // Paleta UVM para el tab bar
+                tabBarStyle:            { backgroundColor: Colors.secondary },
+                tabBarActiveTintColor:  Colors.orange,
+                tabBarInactiveTintColor: Colors.white,
+                tabBarLabelStyle:       { fontFamily: 'Lato_400Regular', fontSize: 11 },
+            })}
+        >
+            <Tab.Screen name="Feed"       component={PantallaFeed} />
+            <Tab.Screen name="Calendario" component={PantallaCalendario} />
+        </Tab.Navigator>
+    );
+}
 
 function NavegadorPublico() {
     const { iniciarSesion } = useAuth();
     return (
         <Stack.Navigator screenOptions={{ headerShown : false }}>
-            <Stack.Screen name="Feed" component={PantallaFeed} />
+            <Stack.Screen name="TabsPublico" component={TabsPublico} />
             <Stack.Screen 
                 name="DetalleEvento"
                 component={PantallaDetalleEvento}
@@ -37,18 +69,6 @@ function NavegadorPublico() {
                     headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
                 }}
             />
-            <Stack.Screen 
-                name="calendario" 
-                component={PantallaCalendario}
-                options={{
-                    headerShown: true,
-                    title:'Calendario',
-                    headerStyle: { backgroundColor: Colors.secondary },
-                    headerTintColor: Colors.white,       // color del texto y flecha de volver
-                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
-                }}
-            >
-            </Stack.Screen>
         </Stack.Navigator>
     )
 }

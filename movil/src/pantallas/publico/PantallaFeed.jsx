@@ -9,6 +9,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import api from '../../api/client';
 import TarjetaEvento from './componentes/feed/TarjetaEvento';
@@ -64,6 +65,15 @@ export default function PantallaFeed() {
     return null;
   };
 
+  // ── Estado para el filtro activo ──────────────────────────-------------------------------------------------
+  // 'todos' | 'evento' | 'partido' | 'anuncio'
+  const [filtro, setFiltro] = useState('todos');
+
+  // Filtra los items según la pestaña seleccionada
+  const itemsFiltrados = filtro === 'todos'
+    ? items
+    : items.filter(item => item.tipo_item === filtro);
+
   // Pantalla de carga inicial
   if (cargando) {
     return (
@@ -89,10 +99,36 @@ export default function PantallaFeed() {
         <Text style={styles.headerTitulo}>DEPORTES UVM</Text>
         <Text style={styles.headerSubtitulo}>Actividad deportiva universitaria</Text>
       </View>
+      
+      {/* Barra de filtros horizontales */}
+      <View style={styles.filtros}>
+        {[
+          { key: 'todos',   label: 'Todos' },
+          { key: 'evento',  label: 'Eventos' },
+          { key: 'partido', label: 'Partidos' },
+          { key: 'anuncio', label: 'Anuncios' },
+        ].map(f => (
+          <TouchableOpacity
+            key={f.key}
+            onPress={() => setFiltro(f.key)}
+            style={[
+              styles.filtroBotón,
+              filtro === f.key && styles.filtroBotónActivo,
+            ]}
+          >
+            <Text style={[
+              styles.filtroTexto,
+              filtro === f.key && styles.filtroTextoActivo,
+            ]}>
+              {f.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
       {/* Lista del feed */}
       <FlatList
-        data={items}
+        data={itemsFiltrados}
         keyExtractor={(item) => `${item.tipo_item}-${item.id}`}
         renderItem={renderItem}
         contentContainerStyle={styles.lista}
@@ -159,5 +195,32 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     color: Colors.secondary,
     textAlign: 'center',
+  },
+  filtros: {
+    flexDirection: 'row',
+    backgroundColor: Colors.white,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    gap: 8,
+  },
+  filtroBotón: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    backgroundColor: Colors.white,
+  },
+  filtroBotónActivo: {
+    backgroundColor: Colors.secondary,
+    borderColor: Colors.secondary,
+  },
+  filtroTexto: {
+    fontFamily: Typography.body,
+    fontSize: FontSize.sm,
+    color: Colors.secondary,
+  },
+  filtroTextoActivo: {
+    color: Colors.white,
   },
 });
