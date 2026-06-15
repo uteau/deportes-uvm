@@ -50,11 +50,11 @@ export default function PantallaDetalleEvento({ route }) {
 
   const fechaHora = new Date(evento.fecha_evento);
   const fecha = fechaHora.toLocaleDateString('es-CL', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      timeZone: 'UTC',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
   });
   const hora = fechaHora.toLocaleTimeString('es-CL', {
     hour: '2-digit',

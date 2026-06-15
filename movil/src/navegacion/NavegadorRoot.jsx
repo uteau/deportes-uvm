@@ -7,6 +7,7 @@ import { Colors } from '../tema';
 import PantallaFeed from '../pantallas/publico/PantallaFeed';
 import PantallaDetalleEvento from '../pantallas/publico/PantallaDetalleEvento';
 import PantallaDetallePartido from '../pantallas/publico/PantallaDetallePartido';
+import PantallaCalendario from '../pantallas/publico/PantallaCalendario';
 
 const Stack = createStackNavigator();
 
@@ -14,7 +15,7 @@ function NavegadorPublico() {
     const { iniciarSesion } = useAuth();
     return (
         <Stack.Navigator screenOptions={{ headerShown : false }}>
-            <Stack.Screen name="feed" component={PantallaFeed} />
+            <Stack.Screen name="Feed" component={PantallaFeed} />
             <Stack.Screen 
                 name="DetalleEvento"
                 component={PantallaDetalleEvento}
@@ -36,6 +37,18 @@ function NavegadorPublico() {
                     headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
                 }}
             />
+            <Stack.Screen 
+                name="calendario" 
+                component={PantallaCalendario}
+                options={{
+                    headerShown: true,
+                    title:'Calendario',
+                    headerStyle: { backgroundColor: Colors.secondary },
+                    headerTintColor: Colors.white,       // color del texto y flecha de volver
+                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
+                }}
+            >
+            </Stack.Screen>
         </Stack.Navigator>
     )
 }
