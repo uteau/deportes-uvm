@@ -11,6 +11,7 @@ import { Lato_400Regular, Lato_700Bold } from '@expo-google-fonts/lato';
 import { AuthProvider } from './src/contexto/AuthContext';
 import NavegadorRoot from './src/navegacion/NavegadorRoot';
 import { Colors } from './src/tema';
+import { MenuProvider } from 'react-native-popup-menu';
 
 function App() {
   // useFonts carga las fuentes de Google Fonts de forma asíncrona.
@@ -33,9 +34,11 @@ function App() {
   }
 
   return (
-    <AuthProvider>
-      <NavegadorRoot />
-    </AuthProvider>
+    <MenuProvider>
+      <AuthProvider>
+        <NavegadorRoot />
+      </AuthProvider>
+    </MenuProvider>
   );
 }
 

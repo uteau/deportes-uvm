@@ -1,10 +1,14 @@
 // TarjetaAnuncio.jsx
 // Tarjeta para anuncios públicos. Muestra enlace a Instagram si existe.
+// En modo admin (esAdmin=true) muestra un menú de opciones (Editar/Eliminar),
+// en su propia fila arriba, igual que TarjetaEvento y TarjetaPartido.
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, FontSize, Spacing, Radius, Shadow } from '../../../../tema';
 
-export default function TarjetaAnuncio({ item }) {
+export default function TarjetaAnuncio({ item, esAdmin = false, onEditar, onEliminar }) {
   const fecha = new Date(item.fecha_creacion).toLocaleDateString('es-CL', {
     day: 'numeric',
     month: 'short',
@@ -20,6 +24,26 @@ export default function TarjetaAnuncio({ item }) {
 
   return (
     <View style={styles.tarjeta}>
+
+      {/* Fila superior: el ⋮ vive en su propia fila, alineado a la derecha,
+          igual que en TarjetaEvento y TarjetaPartido */}
+      {esAdmin && (
+        <View style={styles.filaMenu}>
+          <Menu>
+            <MenuTrigger>
+              <Ionicons name="ellipsis-vertical" size={20} color={Colors.secondary} />
+            </MenuTrigger>
+            <MenuOptions customStyles={menuEstilos}>
+              <MenuOption onSelect={() => onEditar?.(item)}>
+                <Text style={styles.menuTexto}>Editar</Text>
+              </MenuOption>
+              <MenuOption onSelect={() => onEliminar?.(item)}>
+                <Text style={[styles.menuTexto, styles.menuTextoEliminar]}>Eliminar</Text>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+        </View>
+      )}
 
       {/* Título */}
       <Text style={styles.titulo}>{item.titulo}</Text>
@@ -44,6 +68,15 @@ export default function TarjetaAnuncio({ item }) {
   );
 }
 
+// Estilos custom para el popup del menú
+const menuEstilos = {
+  optionsContainer: {
+    borderRadius: Radius.sm,
+    paddingVertical: 4,
+    width: 130,
+  },
+};
+
 const styles = StyleSheet.create({
   tarjeta: {
     backgroundColor: Colors.white,
@@ -53,6 +86,11 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderLeftColor: Colors.primary,
     ...Shadow.card,
+  },
+  filaMenu: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: -Spacing.xs,
   },
   etiqueta: {
     alignSelf: 'flex-start',
@@ -95,5 +133,15 @@ const styles = StyleSheet.create({
     fontFamily: Typography.bodyBold,
     fontSize: FontSize.xs,
     color: Colors.orange,
+  },
+  menuTexto: {
+    fontFamily: Typography.body,
+    fontSize: FontSize.sm,
+    color: Colors.text,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  menuTextoEliminar: {
+    color: Colors.red,
   },
 });

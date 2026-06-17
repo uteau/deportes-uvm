@@ -97,11 +97,21 @@ function NavegadorSeluvm() {
 }
 
 function NavegadorAdmin() {
-    return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.light}}>
-            {/* admin movil */}
-        </View>
-    )
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarIcon: ({ focused, color, size }) => {
+            return <Ionicons name={'home'} size={size} color={color} />;
+        },
+        tabBarStyle: { backgroundColor: Colors.secondary },
+        tabBarActiveTintColor: Colors.white,
+        tabBarInactiveTintColor: Colors.primary,
+      }}
+    >
+      <Tab.Screen name="Feed" component={PantallaFeed} />
+    </Tab.Navigator>
+  );
 }
 
 export default function NavegadorRoot() {

@@ -1,6 +1,6 @@
 // PantallaFeed.jsx
-// Pantalla principal del módulo público.
-// Consume GET /api/feed y renderiza la tarjeta correcta según tipo_item.
+// Pantalla del feed. Sirve tanto al módulo público (esAdmin=false)
+// como al módulo admin (esAdmin=true), reutilizando el mismo componente.
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
@@ -18,67 +18,69 @@ import TarjetaAnuncio from './componentes/feed/TarjetaAnuncio';
 import { Colors, Typography, FontSize, Spacing } from '../../tema';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
+import { useAuth } from '../../contexto/AuthContext';
 
 export default function PantallaFeed() {
   const navigation = useNavigation();
+  // rol viene del AuthContext: 'admin' | 'estudiante' | null
+  const { rol, cerrarSesion } = useAuth();
+  const esAdmin = rol === 'admin';
 
-  // items: array con los elementos del feed mezclados
   const [items, setItems] = useState([]);
-  // cargando: true en la primera carga
   const [cargando, setCargando] = useState(true);
-  // refrescando: true cuando el usuario hace pull-to-refresh
   const [refrescando, setRefrescando] = useState(false);
-  // error: mensaje de error si la petición falla
   const [error, setError] = useState(null);
+  const [filtro, setFiltro] = useState('todos');
 
-  // Función que carga el feed desde la API
   const cargarFeed = useCallback(async () => {
     try {
-        setError(null);
-        const respuesta = await api.get('/feed');
-        console.log('Total items:', respuesta.data.length);
-        console.log('Primer item:', JSON.stringify(respuesta.data[0], null, 2));
-        setItems(respuesta.data);
+      setError(null);
+      const respuesta = await api.get('/feed');
+      setItems(respuesta.data);
     } catch (e) {
-        console.log('URL base:', process.env.EXPO_PUBLIC_API_URL);
-        console.log('Error completo:', e.message);
-        console.log('Error response:', e.response?.data);
-        console.log('Error status:', e.response?.status);
-        setError('No se pudo cargar el feed. Intenta de nuevo.');
+      setError('No se pudo cargar el feed. Intenta de nuevo.');
     }
   }, []);
 
-  // Carga inicial al montar la pantalla
   useEffect(() => {
     cargarFeed().finally(() => setCargando(false));
   }, [cargarFeed]);
 
-  // Pull-to-refresh: muestra el spinner nativo de refresco
   const onRefresh = useCallback(async () => {
     setRefrescando(true);
     await cargarFeed();
     setRefrescando(false);
   }, [cargarFeed]);
 
-  // Decide qué tarjeta renderizar según el campo tipo_item del backend
+  // Placeholder por ahora: en el Paso C conectamos los formularios reales
+  const editarItem = (item) => {
+    console.log('Editar', item.tipo_item, item.id);
+  };
+
+  // Placeholder por ahora: en el Paso D conectamos la llamada DELETE real
+  const eliminarItem = (item) => {
+    console.log('Eliminar', item.tipo_item, item.id);
+  };
+
+  // Placeholder por ahora: en el Paso C navega al formulario de creación
+  const crearPublicacion = (tipo) => {
+    console.log('Crear nuevo', tipo);
+  };
+
+  // Cada tarjeta recibe esAdmin y los callbacks; solo importan si esAdmin=true
   const renderItem = ({ item }) => {
-    if (item.tipo_item === 'evento')  return <TarjetaEvento  item={item} />;
-    if (item.tipo_item === 'partido') return <TarjetaPartido item={item} />;
-    if (item.tipo_item === 'anuncio') return <TarjetaAnuncio item={item} />;
-    // Si el backend devuelve un tipo desconocido, no renderizamos nada
+    const propsAdmin = { esAdmin, onEditar: editarItem, onEliminar: eliminarItem };
+    if (item.tipo_item === 'evento')  return <TarjetaEvento  item={item} {...propsAdmin} />;
+    if (item.tipo_item === 'partido') return <TarjetaPartido item={item} {...propsAdmin} />;
+    if (item.tipo_item === 'anuncio') return <TarjetaAnuncio item={item} {...propsAdmin} />;
     return null;
   };
 
-  // ── Estado para el filtro activo ──────────────────────────-------------------------------------------------
-  // 'todos' | 'evento' | 'partido' | 'anuncio'
-  const [filtro, setFiltro] = useState('todos');
-
-  // Filtra los items según la pestaña seleccionada
   const itemsFiltrados = filtro === 'todos'
     ? items
     : items.filter(item => item.tipo_item === filtro);
 
-  // Pantalla de carga inicial
   if (cargando) {
     return (
       <View style={styles.centrado}>
@@ -87,7 +89,6 @@ export default function PantallaFeed() {
     );
   }
 
-  // Pantalla de error
   if (error) {
     return (
       <View style={styles.centrado}>
@@ -103,23 +104,53 @@ export default function PantallaFeed() {
         <View style={styles.headerFila}>
           <View>
             <Text style={styles.headerTitulo}>DEPORTES UVM</Text>
-            <Text style={styles.headerSubtitulo}>Actividad deportiva universitaria</Text>
+            <Text style={styles.headerSubtitulo}>
+              {esAdmin ? 'Panel de administración' : 'Actividad deportiva universitaria'}
+            </Text>
           </View>
 
-          <TouchableOpacity
-            onPress = { () => navigation.navigate('Login') }
-            style = {styles.botonLogin}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="person-circle-outline" size={28} color={Colors.light} />
-          </TouchableOpacity>
-
-
+          {/* Sin sesión: ícono para ir a Login. Con sesión admin: ícono para cerrar sesión */}
+          {esAdmin ? (
+            <TouchableOpacity
+              onPress={cerrarSesion}
+              style={styles.botonLogin}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="log-out-outline" size={28} color={Colors.white} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Login')}
+              style={styles.botonLogin}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="person-circle-outline" size={28} color={Colors.light} />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
-      
-      {/* Barra de filtros horizontales */}
+
+      {/* Barra de filtros + botón de crear (solo admin) */}
       <View style={styles.filtros}>
+        {esAdmin && (
+          <Menu>
+            <MenuTrigger style={styles.botonCrear}>
+              <Ionicons name="add-circle" size={28} color={Colors.primary} />
+            </MenuTrigger>
+            <MenuOptions customStyles={menuCrearEstilos}>
+              <MenuOption onSelect={() => crearPublicacion('evento')}>
+                <Text style={styles.menuTexto}>Nuevo evento</Text>
+              </MenuOption>
+              <MenuOption onSelect={() => crearPublicacion('partido')}>
+                <Text style={styles.menuTexto}>Nuevo partido</Text>
+              </MenuOption>
+              <MenuOption onSelect={() => crearPublicacion('anuncio')}>
+                <Text style={styles.menuTexto}>Nuevo anuncio</Text>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+        )}
+
         {[
           { key: 'todos',   label: 'Todos' },
           { key: 'evento',  label: 'Eventos' },
@@ -150,7 +181,6 @@ export default function PantallaFeed() {
         keyExtractor={(item) => `${item.tipo_item}-${item.id}`}
         renderItem={renderItem}
         contentContainerStyle={styles.lista}
-        // Pull-to-refresh nativo
         refreshControl={
           <RefreshControl
             refreshing={refrescando}
@@ -159,7 +189,6 @@ export default function PantallaFeed() {
             tintColor={Colors.primary}
           />
         }
-        // Mensaje cuando no hay contenido
         ListEmptyComponent={
           <View style={styles.centrado}>
             <Text style={styles.vacio}>No hay publicaciones disponibles.</Text>
@@ -170,65 +199,39 @@ export default function PantallaFeed() {
   );
 }
 
-const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: Colors.light,
+const menuCrearEstilos = {
+  optionsContainer: {
+    borderRadius: 8,
+    paddingVertical: 4,
+    width: 160,
   },
+};
+
+const styles = StyleSheet.create({
+  contenedor: { flex: 1, backgroundColor: Colors.light },
   header: {
     backgroundColor: Colors.secondary,
-    paddingTop: 56, // espacio para la status bar
+    paddingTop: 56,
     paddingBottom: Spacing.md,
     paddingHorizontal: Spacing.md,
   },
-  headerFila: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerTitulo: {
-    fontFamily: Typography.heading,
-    fontSize: FontSize.xxl,
-    color: Colors.light,
-    letterSpacing: 2,
-  },
-  headerSubtitulo: {
-    fontFamily: Typography.body,
-    fontSize: FontSize.sm,
-    color: Colors.border,
-    marginTop: 2,
-  },
-  botonLogin: {
-    padding: 4,
-  },
-  lista: {
-    padding: Spacing.md,
-  },
-  centrado: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: Spacing.xl,
-  },
-  errorTexto: {
-    fontFamily: Typography.body,
-    fontSize: FontSize.md,
-    color: Colors.red,
-    textAlign: 'center',
-  },
-  vacio: {
-    fontFamily: Typography.body,
-    fontSize: FontSize.md,
-    color: Colors.secondary,
-    textAlign: 'center',
-  },
+  headerFila: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  headerTitulo: { fontFamily: Typography.heading, fontSize: FontSize.xxl, color: Colors.light, letterSpacing: 2 },
+  headerSubtitulo: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.border, marginTop: 2 },
+  botonLogin: { padding: 4 },
+  lista: { padding: Spacing.md },
+  centrado: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: Spacing.xl },
+  errorTexto: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.red, textAlign: 'center' },
+  vacio: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.secondary, textAlign: 'center' },
   filtros: {
     flexDirection: 'row',
     backgroundColor: Colors.white,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     gap: 8,
+    alignItems: 'center',
   },
+  botonCrear: { marginRight: 4 },
   filtroBotón: {
     paddingHorizontal: 14,
     paddingVertical: 6,
@@ -237,16 +240,14 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     backgroundColor: Colors.white,
   },
-  filtroBotónActivo: {
-    backgroundColor: Colors.secondary,
-    borderColor: Colors.secondary,
-  },
-  filtroTexto: {
+  filtroBotónActivo: { backgroundColor: Colors.secondary, borderColor: Colors.secondary },
+  filtroTexto: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.secondary },
+  filtroTextoActivo: { color: Colors.white },
+  menuTexto: {
     fontFamily: Typography.body,
     fontSize: FontSize.sm,
-    color: Colors.secondary,
-  },
-  filtroTextoActivo: {
-    color: Colors.white,
+    color: Colors.text,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
 });
