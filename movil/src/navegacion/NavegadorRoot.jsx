@@ -13,6 +13,7 @@ import PantallaFeed from '../pantallas/publico/PantallaFeed';
 import PantallaDetalleEvento from '../pantallas/publico/PantallaDetalleEvento';
 import PantallaDetallePartido from '../pantallas/publico/PantallaDetallePartido';
 import PantallaCalendario from '../pantallas/publico/PantallaCalendario';
+import PantallaLogin from '../pantallas/publico/PantallaLogin';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -32,8 +33,8 @@ function TabsPublico() {
                 },
                 // Paleta UVM para el tab bar
                 tabBarStyle:            { backgroundColor: Colors.secondary },
-                tabBarActiveTintColor:  Colors.orange,
-                tabBarInactiveTintColor: Colors.white,
+                tabBarActiveTintColor:  Colors.white,
+                tabBarInactiveTintColor: Colors.primary,
                 tabBarLabelStyle:       { fontFamily: 'Lato_400Regular', fontSize: 11 },
             })}
         >
@@ -54,9 +55,10 @@ function NavegadorPublico() {
                 options={{
                     headerShown: true,
                     title: 'Evento',
-                    headerStyle: { backgroundColor: Colors.secondary },
+                    headerBackTitle: 'Volver',
+                    headerStyle: { backgroundColor: Colors.secondary , height : 100},
                     headerTintColor: Colors.white,       // color del texto y flecha de volver
-                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
+                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' , fontSize: 20},
                 }}
             /><Stack.Screen 
                 name="DetallePartido"
@@ -64,9 +66,22 @@ function NavegadorPublico() {
                 options={{
                     headerShown: true,
                     title: 'Partido',
-                    headerStyle: { backgroundColor: Colors.secondary },
+                    headerBackTitle: 'Volver',
+                    headerStyle: { backgroundColor: Colors.secondary , height : 100},
                     headerTintColor: Colors.white,       // color del texto y flecha de volver
-                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
+                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' , fontSize: 20},
+                }}
+            />
+            <Stack.Screen
+                name="Login"
+                component={PantallaLogin}
+                options={{
+                    headerShown: true,
+                    title: 'Iniciar sesión',
+                    headerBackTitle: 'Volver',
+                    headerStyle: { backgroundColor: Colors.secondary , height : 100},
+                    headerTintColor: Colors.white,
+                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' , fontSize: 20},
                 }}
             />
         </Stack.Navigator>

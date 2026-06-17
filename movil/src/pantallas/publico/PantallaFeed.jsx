@@ -16,8 +16,12 @@ import TarjetaEvento from './componentes/feed/TarjetaEvento';
 import TarjetaPartido from './componentes/feed/TarjetaPartido';
 import TarjetaAnuncio from './componentes/feed/TarjetaAnuncio';
 import { Colors, Typography, FontSize, Spacing } from '../../tema';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function PantallaFeed() {
+  const navigation = useNavigation();
+
   // items: array con los elementos del feed mezclados
   const [items, setItems] = useState([]);
   // cargando: true en la primera carga
@@ -96,8 +100,22 @@ export default function PantallaFeed() {
     <View style={styles.contenedor}>
       {/* Header de la pantalla */}
       <View style={styles.header}>
-        <Text style={styles.headerTitulo}>DEPORTES UVM</Text>
-        <Text style={styles.headerSubtitulo}>Actividad deportiva universitaria</Text>
+        <View style={styles.headerFila}>
+          <View>
+            <Text style={styles.headerTitulo}>DEPORTES UVM</Text>
+            <Text style={styles.headerSubtitulo}>Actividad deportiva universitaria</Text>
+          </View>
+
+          <TouchableOpacity
+            onPress = { () => navigation.navigate('Login') }
+            style = {styles.botonLogin}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="person-circle-outline" size={28} color={Colors.light} />
+          </TouchableOpacity>
+
+
+        </View>
       </View>
       
       {/* Barra de filtros horizontales */}
@@ -163,6 +181,11 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.md,
     paddingHorizontal: Spacing.md,
   },
+  headerFila: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   headerTitulo: {
     fontFamily: Typography.heading,
     fontSize: FontSize.xxl,
@@ -174,6 +197,9 @@ const styles = StyleSheet.create({
     fontSize: FontSize.sm,
     color: Colors.border,
     marginTop: 2,
+  },
+  botonLogin: {
+    padding: 4,
   },
   lista: {
     padding: Spacing.md,
