@@ -96,21 +96,53 @@ function NavegadorSeluvm() {
     )
 }
 
+function TabsAdmin() {
+    return (
+        <Tab.Navigator
+            screenOptions={{
+                headerShown: false,
+                tabBarIcon: ({ focused, color, size }) => {
+                    return <Ionicons name={'home'} size={size} color={color} />;
+                },
+                tabBarStyle: { backgroundColor: Colors.secondary },
+                tabBarActiveTintColor: Colors.white,
+                tabBarInactiveTintColor: Colors.primary,
+            }}
+            >
+            <Tab.Screen name="Feed" component={PantallaFeed} />
+        </Tab.Navigator>
+    );
+}
+
 function NavegadorAdmin() {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
-            return <Ionicons name={'home'} size={size} color={color} />;
-        },
-        tabBarStyle: { backgroundColor: Colors.secondary },
-        tabBarActiveTintColor: Colors.white,
-        tabBarInactiveTintColor: Colors.primary,
-      }}
-    >
-      <Tab.Screen name="Feed" component={PantallaFeed} />
-    </Tab.Navigator>
+        <Stack.Navigator screenOptions={{ headerShown : false }}>
+            <Stack.Screen name="TabsAdmin" component={TabsAdmin} />
+            <Stack.Screen 
+                name="DetalleEvento"
+                component={PantallaDetalleEvento}
+                options={{
+                    headerShown: true,
+                    title: 'Evento',
+                    headerBackTitle: 'Volver',
+                    headerStyle: { backgroundColor: Colors.secondary , height : 100},
+                    headerTintColor: Colors.white,       // color del texto y flecha de volver
+                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' , fontSize: 20},
+                }}
+            />
+            <Stack.Screen 
+                name="DetallePartido"
+                component={PantallaDetallePartido}
+                options={{
+                    headerShown: true,
+                    title: 'Partido',
+                    headerBackTitle: 'Volver',
+                    headerStyle: { backgroundColor: Colors.secondary , height : 100},
+                    headerTintColor: Colors.white,       // color del texto y flecha de volver
+                    headerTitleStyle: { fontFamily: 'Oswald_400Regular' , fontSize: 20},
+                }}
+            />
+        </Stack.Navigator>
   );
 }
 

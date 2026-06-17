@@ -12,6 +12,8 @@ import { AuthProvider } from './src/contexto/AuthContext';
 import NavegadorRoot from './src/navegacion/NavegadorRoot';
 import { Colors } from './src/tema';
 import { MenuProvider } from 'react-native-popup-menu';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 function App() {
   // useFonts carga las fuentes de Google Fonts de forma asíncrona.
@@ -34,11 +36,15 @@ function App() {
   }
 
   return (
-    <MenuProvider>
-      <AuthProvider>
-        <NavegadorRoot />
-      </AuthProvider>
-    </MenuProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+        <MenuProvider>
+          <AuthProvider>
+            <NavegadorRoot />
+          </AuthProvider>
+        </MenuProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
 

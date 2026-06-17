@@ -1,7 +1,7 @@
 // PantallaFeed.jsx
 // Pantalla del feed. Sirve tanto al módulo público (esAdmin=false)
 // como al módulo admin (esAdmin=true), reutilizando el mismo componente.
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   View,
   FlatList,
@@ -10,11 +10,13 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import api from '../../api/client';
 import TarjetaEvento from './componentes/feed/TarjetaEvento';
 import TarjetaPartido from './componentes/feed/TarjetaPartido';
 import TarjetaAnuncio from './componentes/feed/TarjetaAnuncio';
+import HojaFormulario from '../admin/HojaFormulario';
 import { Colors, Typography, FontSize, Spacing } from '../../tema';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,7 +25,6 @@ import { useAuth } from '../../contexto/AuthContext';
 
 export default function PantallaFeed() {
   const navigation = useNavigation();
-  // rol viene del AuthContext: 'admin' | 'estudiante' | null
   const { rol, cerrarSesion } = useAuth();
   const esAdmin = rol === 'admin';
 
@@ -32,6 +33,17 @@ export default function PantallaFeed() {
   const [refrescando, setRefrescando] = useState(false);
   const [error, setError] = useState(null);
   const [filtro, setFiltro] = useState('todos');
+
+  // ── Estado del formulario en el bottom sheet ──────────────────────────────
+  // refSheet controla abrir/cerrar el BottomSheet desde fuera del componente
+  const refSheet = useRef(null);
+  // tipoFormulario: 'evento' | 'partido' | 'anuncio' | null (null = sheet cerrado)
+  const [tipoFormulario, setTipoFormulario] = useState(null);
+  // itemFormulario: el item a editar, o null si estamos creando uno nuevo
+  const [itemFormulario, setItemFormulario] = useState(null);
+  // tipoAnuncioNuevo: solo aplica cuando tipoFormulario es 'anuncio' y es creación;
+  // indica si el nuevo anuncio será 'publico' o 'seluvm'
+  const [tipoAnuncioNuevo, setTipoAnuncioNuevo] = useState('publico');
 
   const cargarFeed = useCallback(async () => {
     try {
@@ -53,19 +65,66 @@ export default function PantallaFeed() {
     setRefrescando(false);
   }, [cargarFeed]);
 
-  // Placeholder por ahora: en el Paso C conectamos los formularios reales
+  // ── Abrir el sheet en modo edición ────────────────────────────────────────
+  // tipo viene de item.tipo_item ('evento' | 'partido' | 'anuncio')
   const editarItem = (item) => {
-    console.log('Editar', item.tipo_item, item.id);
+    setTipoFormulario(item.tipo_item);
+    setItemFormulario(item);
+    refSheet.current?.expand();
   };
 
-  // Placeholder por ahora: en el Paso D conectamos la llamada DELETE real
+  // ── Eliminar con confirmación explícita (RF-04/RF-05/RF-06/RF-07) ─────────
   const eliminarItem = (item) => {
-    console.log('Eliminar', item.tipo_item, item.id);
+    Alert.alert(
+      'Confirmar eliminación',
+      `¿Seguro que quieres eliminar "${item.nombre || item.titulo}"? Esta acción no se puede deshacer.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // Endpoint admin según el tipo de recurso
+              const rutas = {
+                evento: `/admin/eventos/${item.id}`,
+                partido: `/admin/partidos/${item.id}`,
+                anuncio: `/admin/anuncios/${item.id}`,
+              };
+              await api.delete(rutas[item.tipo_item]);
+              // Refresca el feed para que el item eliminado desaparezca de inmediato
+              cargarFeed();
+            } catch (e) {
+              Alert.alert('Error', 'No se pudo eliminar. Intenta de nuevo.');
+            }
+          },
+        },
+      ]
+    );
   };
 
-  // Placeholder por ahora: en el Paso C navega al formulario de creación
+  // ── Abrir el sheet en modo creación ───────────────────────────────────────
+  // tipo: 'evento' | 'partido' | 'anuncio-publico' | 'anuncio-seluvm'
   const crearPublicacion = (tipo) => {
-    console.log('Crear nuevo', tipo);
+    setItemFormulario(null); // sin item = modo creación
+
+    if (tipo === 'anuncio-publico' || tipo === 'anuncio-seluvm') {
+      setTipoFormulario('anuncio');
+      setTipoAnuncioNuevo(tipo === 'anuncio-publico' ? 'publico' : 'seluvm');
+    } else {
+      setTipoFormulario(tipo);
+    }
+    refSheet.current?.expand();
+  };
+
+  // Se llama cuando el formulario terminó de guardar (POST o PUT exitoso)
+  const handleGuardado = () => {
+    refSheet.current?.close();
+    cargarFeed(); // refresca para mostrar el cambio en el feed
+  };
+
+  const handleCancelar = () => {
+    refSheet.current?.close();
   };
 
   // Cada tarjeta recibe esAdmin y los callbacks; solo importan si esAdmin=true
@@ -109,14 +168,9 @@ export default function PantallaFeed() {
             </Text>
           </View>
 
-          {/* Sin sesión: ícono para ir a Login. Con sesión admin: ícono para cerrar sesión */}
           {esAdmin ? (
-            <TouchableOpacity
-              onPress={cerrarSesion}
-              style={styles.botonLogin}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="log-out-outline" size={28} color={Colors.white} />
+            <TouchableOpacity onPress={cerrarSesion} style={styles.botonLogin} activeOpacity={0.7}>
+              <Ionicons name="log-out-outline" size={28} color={Colors.light} />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -144,8 +198,11 @@ export default function PantallaFeed() {
               <MenuOption onSelect={() => crearPublicacion('partido')}>
                 <Text style={styles.menuTexto}>Nuevo partido</Text>
               </MenuOption>
-              <MenuOption onSelect={() => crearPublicacion('anuncio')}>
-                <Text style={styles.menuTexto}>Nuevo anuncio</Text>
+              <MenuOption onSelect={() => crearPublicacion('anuncio-publico')}>
+                <Text style={styles.menuTexto}>Nuevo anuncio público</Text>
+              </MenuOption>
+              <MenuOption onSelect={() => crearPublicacion('anuncio-seluvm')}>
+                <Text style={styles.menuTexto}>Nuevo anuncio SelUVM</Text>
               </MenuOption>
             </MenuOptions>
           </Menu>
@@ -160,15 +217,9 @@ export default function PantallaFeed() {
           <TouchableOpacity
             key={f.key}
             onPress={() => setFiltro(f.key)}
-            style={[
-              styles.filtroBotón,
-              filtro === f.key && styles.filtroBotónActivo,
-            ]}
+            style={[styles.filtroBotón, filtro === f.key && styles.filtroBotónActivo]}
           >
-            <Text style={[
-              styles.filtroTexto,
-              filtro === f.key && styles.filtroTextoActivo,
-            ]}>
+            <Text style={[styles.filtroTexto, filtro === f.key && styles.filtroTextoActivo]}>
               {f.label}
             </Text>
           </TouchableOpacity>
@@ -195,16 +246,24 @@ export default function PantallaFeed() {
           </View>
         }
       />
+
+      {/* Bottom sheet de creación/edición — solo se monta si es admin */}
+      {esAdmin && (
+        <HojaFormulario
+          ref={refSheet}
+          tipo={tipoFormulario}
+          item={itemFormulario}
+          tipoAnuncioNuevo={tipoAnuncioNuevo}
+          onGuardado={handleGuardado}
+          onCancelar={handleCancelar}
+        />
+      )}
     </View>
   );
 }
 
 const menuCrearEstilos = {
-  optionsContainer: {
-    borderRadius: 8,
-    paddingVertical: 4,
-    width: 160,
-  },
+  optionsContainer: { borderRadius: 8, paddingVertical: 4, width: 200 },
 };
 
 const styles = StyleSheet.create({
