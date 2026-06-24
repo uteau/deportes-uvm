@@ -105,6 +105,7 @@ function NavegadorSeluvm() {
                 options={{
                 headerShown: true,
                 title: 'Anuncios SelUVM',
+                headerBackTitle: 'Volver',
                 headerStyle: { backgroundColor: Colors.primary },
                 headerTintColor: Colors.white,
                 headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
@@ -116,6 +117,7 @@ function NavegadorSeluvm() {
                 options={{
                 headerShown: true,
                 title: 'Contactos',
+                headerBackTitle: 'Volver',
                 headerStyle: { backgroundColor: Colors.primary },
                 headerTintColor: Colors.white,
                 headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
@@ -127,6 +129,7 @@ function NavegadorSeluvm() {
             options={{
                 headerShown: true,
                 title: 'Feed deportivo',
+                headerBackTitle: 'Volver',
                 headerStyle: { backgroundColor: Colors.primary },
                 headerTintColor: Colors.white,
                 headerTitleStyle: { fontFamily: 'Oswald_400Regular' },

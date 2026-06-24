@@ -58,7 +58,7 @@ export default function PantallaInicioSeluvm() {
               style={styles.iconoBoton}
               activeOpacity={0.7}
             >
-              <Ionicons name="id-card-outline" size={26} color={Colors.light} />
+              <Ionicons name="id-card-outline" size={28} color={Colors.light} />
             </TouchableOpacity>
 
             {/* Ícono de logout */}
@@ -67,7 +67,7 @@ export default function PantallaInicioSeluvm() {
               style={styles.iconoBoton}
               activeOpacity={0.7}
             >
-              <Ionicons name="log-out-outline" size={26} color={Colors.light} />
+              <Ionicons name="log-out-outline" size={28} color={Colors.light} />
             </TouchableOpacity>
           </View>
         </View>
