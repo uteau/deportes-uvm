@@ -14,6 +14,10 @@ import PantallaDetalleEvento from '../pantallas/publico/PantallaDetalleEvento';
 import PantallaDetallePartido from '../pantallas/publico/PantallaDetallePartido';
 import PantallaCalendario from '../pantallas/publico/PantallaCalendario';
 import PantallaLogin from '../pantallas/publico/PantallaLogin';
+import PantallaInicioSeluvm from '../pantallas/seluvm/PantallaInicioSeluvm';
+import PantallaContactos from '../pantallas/seluvm/PantallaContactosSeluvm';
+import PantallaAnunciosSeluvm from '../pantallas/seluvm/PantallaAnunciosSeluvm';
+import PantallaFeedSeluvm from '../pantallas/seluvm/PantallaFeedSeluvm';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -90,10 +94,46 @@ function NavegadorPublico() {
 
 function NavegadorSeluvm() {
     return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.light}}>
-            {/* credencial y anucios seluv m*/}
-        </View>
-    )
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {/* Hub principal */}
+            <Stack.Screen name="InicioSeluvm" component={PantallaInicioSeluvm} />
+
+            {/* Pantallas internas con header de vuelta */}
+            <Stack.Screen
+                name="AnunciosSeluvm"
+                component={PantallaAnunciosSeluvm}
+                options={{
+                headerShown: true,
+                title: 'Anuncios SelUVM',
+                headerStyle: { backgroundColor: Colors.primary },
+                headerTintColor: Colors.white,
+                headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
+                }}
+            />
+            <Stack.Screen
+                name="Contactos"
+                component={PantallaContactos}
+                options={{
+                headerShown: true,
+                title: 'Contactos',
+                headerStyle: { backgroundColor: Colors.primary },
+                headerTintColor: Colors.white,
+                headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
+                }}
+            />
+            <Stack.Screen
+            name="FeedEstudiante"
+            component={PantallaFeedSeluvm}
+            options={{
+                headerShown: true,
+                title: 'Feed deportivo',
+                headerStyle: { backgroundColor: Colors.primary },
+                headerTintColor: Colors.white,
+                headerTitleStyle: { fontFamily: 'Oswald_400Regular' },
+            }}
+            />
+        </Stack.Navigator>
+    );
 }
 
 function TabsAdmin() {
