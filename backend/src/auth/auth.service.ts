@@ -39,6 +39,10 @@ export class AuthService {
             throw new UnauthorizedException('Credenciales incorrectas');
         }
 
+        if (!usuario.activo) {
+            throw new UnauthorizedException('Cuenta desactivada');
+        }
+
         // Determinar el rol según la existencia de registros relacionados
         let rol: string;
         if (usuario.admin) {
