@@ -63,9 +63,18 @@ export class AnunciosService {
 
     // === Métodos admin ===========================
 
-    async findAllAdmin() {
+    async findAllPublicosAdmin() {
         return this.prisma.anuncio.findMany({
-            orderBy: { fecha_actualizacion: 'asc' },
+            where: { tipo: AnuncioTipo.PUBLICO },
+            orderBy: { fecha_actualizacion: 'desc' },
+        });
+    }
+
+    // Admin: todos los anuncios SelUVM, activos e inactivos
+    async findAllSeluvmAdmin() {
+        return this.prisma.anuncio.findMany({
+            where: { tipo: AnuncioTipo.SELUVM },
+            orderBy: { fecha_actualizacion: 'desc' },
         });
     }
 
