@@ -29,7 +29,7 @@ const HojaCredencial = forwardRef(function HojaCredencial(props, ref) {
       .finally(() => setCargando(false));
   }, []);
 
-  const vigente = credencial?.vigente;
+  const vigente = credencial?.activo;
 
   return (
     <BottomSheet
@@ -57,12 +57,12 @@ const HojaCredencial = forwardRef(function HojaCredencial(props, ref) {
             </View>
 
             <View style={styles.dato}>
-              <Text style={styles.etiqueta}>N° de identificación</Text>
-              <Text style={styles.valor}>{credencial.estudiante_id}</Text>
+              <Text style={styles.etiqueta}>RUT</Text>
+              <Text style={styles.valor}>{credencial.rut}</Text>
             </View>
 
             <View style={styles.dato}>
-              <Text style={styles.etiqueta}>Disciplina</Text>
+              <Text style={styles.etiqueta}>Deporte</Text>
               <Text style={styles.valor}>{credencial.deporte}</Text>
             </View>
 

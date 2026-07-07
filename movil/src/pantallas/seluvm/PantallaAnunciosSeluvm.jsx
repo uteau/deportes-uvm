@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   lista: { padding: Spacing.md },
   tarjeta: {
     backgroundColor: Colors.white, borderRadius: Radius.md, padding: Spacing.md,
-    marginBottom: Spacing.md, borderLeftWidth: 4, borderLeftColor: Colors.orange, ...Shadow.card,
+    marginBottom: Spacing.md, borderLeftWidth: 4, borderLeftColor: Colors.primary, ...Shadow.card,
   },
   titulo: { fontFamily: Typography.heading, fontSize: FontSize.lg, color: Colors.primary, marginBottom: Spacing.xs },
   contenido: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.text, lineHeight: 20, marginBottom: Spacing.sm },

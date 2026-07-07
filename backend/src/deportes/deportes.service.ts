@@ -13,9 +13,10 @@ export class DeportesService {
     }
 
     async crear(dto: { nombre: string }) {
-        const deporteExiste = await this.prisma.deporte.findUnique({
-            where: { nombre: dto.nombre },
+        const deporteExiste = await this.prisma.deporte.findFirst({
+            where: { nombre: { equals: dto.nombre, mode: 'insensitive' } },
         });
+
         if (deporteExiste) {
             throw new ConflictException(`El deporte "${dto.nombre}" ya existe`);
         }
@@ -37,8 +38,8 @@ export class DeportesService {
             throw new NotFoundException('Deporte no encontrado');
         }
 
-        const deporteMismoNombre = await this.prisma.deporte.findUnique({
-            where: { nombre: dto.nombre },
+        const deporteMismoNombre = await this.prisma.deporte.findFirst({
+            where: { nombre: { equals: dto.nombre, mode: 'insensitive' } },
         });
 
         if (deporteMismoNombre && deporteMismoNombre.id !== id) {

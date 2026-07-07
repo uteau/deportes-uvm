@@ -43,13 +43,19 @@ export class EventosService {
 
         // 404 si no existe o fue eliminado
         if (!evento){
-            throw new NotFoundException('Evento con id "${id}" no encontrado');
+            throw new NotFoundException(`Evento con id ${id} no encontrado`);
         }
 
         return evento;
     }
 
     // === Métodos admin ===========================
+    
+    async findAllAdmin() {
+        return this.prisma.evento.findMany({
+            orderBy: { fecha_evento: 'asc' },
+        });
+    }
 
     // Crear evento
     async crear(dto: CrearEventoDto, adminId: string) {
@@ -76,7 +82,7 @@ export class EventosService {
         });
 
         if (!evento) {
-            throw new NotFoundException('Evento con id "&{id}" no encontrado');
+            throw new NotFoundException(`Evento con id ${id} no encontrado`);
         }
 
         return this.prisma.evento.update({
@@ -84,7 +90,7 @@ export class EventosService {
             data: {
                 nombre: dto.nombre,
                 descripcion: dto.descripcion,
-                fecha_evento: dto.fecha_evento,
+                fecha_evento: new Date(dto.fecha_evento),
                 lugar: dto.lugar,
                 fecha_actualizacion: new Date(),
             },
@@ -98,7 +104,7 @@ export class EventosService {
         }); 
         
         if (!evento) {
-            throw new NotFoundException('Evento con id "&{id}" no encontrado');
+            throw new NotFoundException(`Evento con id ${id} no encontrado`);
         }
 
         return this.prisma.evento.update({

@@ -80,6 +80,7 @@ model Deporte {
 
   // Estudiantes que practican este deporte
   estudiantes Estudiante[]
+  partidos    Partido[]
 
   @@map("deportes")
 }
@@ -109,6 +110,7 @@ model Partido {
   descripcion   String?
   fecha_partido DateTime
   lugar         String
+  deporte_id    String
   equipo_local  String
   equipo_visita String
   resul_local   Int?      // null mientras el partido no ha sido jugado
@@ -118,6 +120,7 @@ model Partido {
   fecha_creacion        DateTime  @default(now())
   fecha_actualizacion   DateTime  @updatedAt
 
+  deporte Deporte @relation(fields: [deporte_id], references: [id])
   creador Usuario @relation(fields: [creado_por], references: [id])
 
   @@map("partidos")

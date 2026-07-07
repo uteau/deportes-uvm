@@ -46,12 +46,16 @@ export class AnunciosSeluvmController {
 export class AnunciosAdminController {
     constructor (private readonly anunciosService: AnunciosService) {}
     
-    //Get todos los anuncios Seluvm para admin
+    @Get('publico')
+    findAllPublicosAdmin() {
+        return this.anunciosService.findAllPublicosAdmin();
+    }
 
-    // @Get('/seluvm')
-    // findAll() {
-    //     return this.anunciosService.findAllSeluvm();
-    // }
+    // GET /api/admin/anuncios/seluvm — todos los SelUVM, activos e inactivos
+    @Get('seluvm')
+    findAllSeluvmAdmin() {
+        return this.anunciosService.findAllSeluvmAdmin();
+    }
 
     @Post()
     crear(@Body() dto: CrearAnuncioDto, @Request() req) {

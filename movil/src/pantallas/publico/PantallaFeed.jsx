@@ -48,12 +48,12 @@ export default function PantallaFeed() {
   const cargarFeed = useCallback(async () => {
     try {
       setError(null);
-      const respuesta = await api.get('/feed');
+      const respuesta = await api.get(esAdmin ? '/feed/admin' : '/feed');
       setItems(respuesta.data);
     } catch (e) {
       setError('No se pudo cargar el feed. Intenta de nuevo.');
     }
-  }, []);
+  }, [esAdmin]);
 
   useEffect(() => {
     cargarFeed().finally(() => setCargando(false));

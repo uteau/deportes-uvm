@@ -47,8 +47,8 @@ export default function PantallaInicioSeluvm() {
       <View style={styles.header}>
         <View style={styles.headerFila}>
           <View>
-            <Text style={styles.headerTitulo}>SELECCIONADOS UVM</Text>
-            <Text style={styles.headerSubtitulo}>Módulo exclusivo para deportistas</Text>
+            <Text style={styles.headerTitulo}>DEPORTES UVM</Text>
+            <Text style={styles.headerSubtitulo}>Perfil para deportistas</Text>
           </View>
 
           <View style={styles.headerIconos}>
@@ -58,7 +58,7 @@ export default function PantallaInicioSeluvm() {
               style={styles.iconoBoton}
               activeOpacity={0.7}
             >
-              <Ionicons name="id-card-outline" size={26} color={Colors.light} />
+              <Ionicons name="id-card-outline" size={28} color={Colors.light} />
             </TouchableOpacity>
 
             {/* Ícono de logout */}
@@ -67,7 +67,7 @@ export default function PantallaInicioSeluvm() {
               style={styles.iconoBoton}
               activeOpacity={0.7}
             >
-              <Ionicons name="log-out-outline" size={26} color={Colors.light} />
+              <Ionicons name="log-out-outline" size={28} color={Colors.light} />
             </TouchableOpacity>
           </View>
         </View>
@@ -83,7 +83,7 @@ export default function PantallaInicioSeluvm() {
             activeOpacity={0.85}
           >
             <View style={styles.cardIcono}>
-              <Ionicons name={card.icono} size={28} color={Colors.orange} />
+              <Ionicons name={card.icono} size={28} color={Colors.primary} />
             </View>
             <View style={styles.cardTexto}>
               <Text style={styles.cardTitulo}>{card.titulo}</Text>
