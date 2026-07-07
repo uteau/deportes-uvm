@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { AnuncioTipo, CrearAnuncioDto } from "./dto/crear-anuncio.dto";
 import { ActualizarAnuncioDto } from "./dto/actualizar-anuncio.dto";
+import { ActualizarEstadoAnuncioDto } from "./dto/actualizar-estado-anuncio.dto";
 
 @Injectable()
 export class AnunciosService {
@@ -116,9 +117,9 @@ export class AnunciosService {
         });
     }
 
-    async eliminar(id: string) {
+    async activar(id: string, dto: ActualizarEstadoAnuncioDto) {
         const anuncio = await this.prisma.anuncio.findFirst({
-            where: { id , activo: true},
+            where: { id },
         });
 
         if (!anuncio) {
@@ -127,7 +128,7 @@ export class AnunciosService {
 
         return this.prisma.anuncio.update({
             where: { id },
-            data: { activo: false },
+            data: { activo: dto.activo },
         });
     }
 }

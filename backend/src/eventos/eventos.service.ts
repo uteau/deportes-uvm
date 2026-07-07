@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { PrismaService } from "../prisma/prisma.service";
 import { CrearEventoDto } from "./dto/crear-evento.dto";
 import { ActualizarEventoDto } from "./dto/actualizar-evento.dto";
+import { ActualizarEstadoEventoDto } from "./dto/actualizar-estado-evento.dto";
 
 
 @Injectable()
@@ -97,10 +98,10 @@ export class EventosService {
         });
     }
 
-    // desactivar evento (elminación lógica)
-    async eliminar(id: string) {
+    // activar/desactivar evento (elminación lógica)
+    async activar(id: string, dto: ActualizarEstadoEventoDto) {
        const evento = await this.prisma.evento.findFirst({
-            where: { id, activo: true },
+            where: { id },
         }); 
         
         if (!evento) {
@@ -109,7 +110,7 @@ export class EventosService {
 
         return this.prisma.evento.update({
             where: {id},
-            data: { activo: false},
+            data: { activo: dto.activo },
         });
     }
 }
