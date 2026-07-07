@@ -83,7 +83,7 @@ export class AnunciosService {
             data: {
                 titulo: dto.titulo,
                 contenido: dto.contenido,
-                tipo: dto.subtipo,
+                tipo: dto.tipo,
                 instagram_url: dto.instagram_url,
                 activo: true,
                 creado_por: adminId,
@@ -102,7 +102,7 @@ export class AnunciosService {
             throw new NotFoundException(`Anuncio con id ${id} no encontrado`);
         }
 
-        const subtipoFinal = dto.subtipo ?? anuncio.tipo;
+        const subtipoFinal = dto.tipo ?? anuncio.tipo;
         
         return this.prisma.anuncio.update({
             where: { id },
