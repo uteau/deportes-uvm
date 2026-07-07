@@ -5,6 +5,7 @@ import{
     IsNotEmpty,
     IsOptional,
     IsString,
+    IsUUID,
     Min,
 } from 'class-validator';
 
@@ -26,6 +27,10 @@ export class CrearPartidoDto {
     @IsNotEmpty({message: 'El lugar es obligatorio'})   
     lugar: string;
     
+    @IsUUID('4', { message: 'El deporte seleccionado no es válido' })
+    @IsNotEmpty({ message: 'El deporte es obligatorio' })
+    deporte_id: string;
+
     @IsString()
     @IsNotEmpty({message: 'El equipo local es obligatorio'})   
     equipo_local: string;

@@ -16,6 +16,7 @@ export class PartidosService {
         return this.prisma.partido.findMany({
             where: { activo: true },
             orderBy: { fecha_partido: 'asc' },
+            include: { deporte: true },
         });
     }
 
@@ -50,14 +51,31 @@ export class PartidosService {
 
     // === Métodos admin ===========================
 
+    // Valida que el deporte exista y esté activo antes de asignarlo a un partido.
+    // Se usa tanto en crear() como en actualizar().
+    private async validarDeporteActivo(deporte_id: string) {
+        const deporte = await this.prisma.deporte.findUnique({
+            where: { id: deporte_id },
+        });
+
+        if (!deporte || !deporte.activo) {
+            throw new BadRequestException(
+                'El deporte seleccionado no existe o no está activo',
+            );
+        }
+    }
+
     // Crear partido
     async crear(dto: CrearPartidoDto, adminId: string) {
+        await this.validarDeporteActivo(dto.deporte_id);
+
         return this.prisma.partido.create({
             data: {
                 nombre: dto.nombre,
                 descripcion: dto.descripcion,
                 fecha_partido: new Date(dto.fecha_partido),
                 lugar: dto.lugar,
+                deporte_id: dto.deporte_id,
                 equipo_local: dto.equipo_local,
                 equipo_visita: dto.equipo_visita,
                 resul_local: dto.resul_local,
@@ -81,19 +99,27 @@ export class PartidosService {
             throw new NotFoundException('partido con id "&{id}" no encontrado');
         }
 
+        if (dto.deporte_id) {
+            await this.validarDeporteActivo(dto.deporte_id);
+        }
+
         return this.prisma.partido.update({
             where: {id},
             data: {
                 nombre: dto.nombre,
                 descripcion: dto.descripcion,
                 fecha_partido: new Date(dto.fecha_partido),
+                // validación alternativa
+                // fecha_partido: dto.fecha_partido ? new Date(dto.fecha_partido) : undefined,
                 lugar: dto.lugar,
+                deporte_id: dto.deporte_id,
                 equipo_local: dto.equipo_local,
                 equipo_visita: dto.equipo_visita,
                 resul_local: dto.resul_local,
                 resul_visita: dto.resul_visita,
                 fecha_actualizacion: new Date(),
             },
+            include: { deporte: true },
         });
     }
 
