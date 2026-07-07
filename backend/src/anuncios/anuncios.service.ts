@@ -101,15 +101,16 @@ export class AnunciosService {
 
     async eliminar(id: string) {
         const anuncio = await this.prisma.anuncio.findFirst({
-            where: { id },
+            where: { id , activo: true},
         });
 
         if (!anuncio) {
             throw new NotFoundException('Anuncio con id "&{id}" no encontrado');
         }
 
-        return this.prisma.anuncio.delete({
+        return this.prisma.anuncio.update({
             where: { id },
+            data: { activo: false },
         });
     }
 }
