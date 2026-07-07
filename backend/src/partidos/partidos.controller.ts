@@ -44,6 +44,11 @@ export class PartidosController {
 export class PartidosAdminController {
     constructor(private readonly partidosService: PartidosService) {}
 
+    @Get()
+    findAllAdmin() {
+        return this.partidosService.findAllAdmin();
+    }
+
     // Crear, editar y borrar partido
 
     @Post()

@@ -48,6 +48,11 @@ export class EventosPublicosController {
 export class EventosAdminController {
     constructor(private readonly eventosService: EventosService) {}
 
+    @Get()
+    findAllAdmin() {
+        return this.eventosService.findAllAdmin();
+    }
+    
     // Crear, editar y borrar evento
 
     @Post()

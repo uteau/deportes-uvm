@@ -43,13 +43,19 @@ export class PartidosService {
 
         // 404 si no existe o fue eliminado
         if (!partido){
-            throw new NotFoundException('partido con id "${id}" no encontrado');
+            throw new NotFoundException(`Partido con id ${id} no encontrado`);
         }
 
         return partido;
     }
 
     // === Métodos admin ===========================
+
+    async findAllAdmin() {
+        return this.prisma.partido.findMany({
+            orderBy: { fecha_partido: 'asc' },
+        });
+    }
 
     // Valida que el deporte exista y esté activo antes de asignarlo a un partido.
     // Se usa tanto en crear() como en actualizar().
@@ -96,7 +102,7 @@ export class PartidosService {
         });
 
         if (!partido) {
-            throw new NotFoundException('partido con id "&{id}" no encontrado');
+            throw new NotFoundException(`Partido con id ${id} no encontrado`);
         }
 
         if (dto.deporte_id) {
@@ -130,7 +136,7 @@ export class PartidosService {
         }); 
         
         if (!partido) {
-            throw new NotFoundException('partido con id "&{id}" no encontrado');
+            throw new NotFoundException(`Partido con id ${id} no encontrado`);
         }
 
         return this.prisma.partido.update({
