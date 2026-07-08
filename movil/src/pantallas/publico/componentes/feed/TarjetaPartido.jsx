@@ -24,7 +24,7 @@ export default function TarjetaPartido({ item, esAdmin = false, activo, onEditar
     <View style={styles.tarjeta}>
       {/* Fila superior: círculo de estado, nombre y menú (solo admin) */}
       <View style={styles.filaTitulo}>
-        <View style={[styles.circulo, { backgroundColor: activo ? '#22c55e' : '#ef4444' }]} />
+        {esAdmin && <View style={[styles.circulo, { backgroundColor: activo ? '#22c55e' : '#ef4444' }]} />}
         <Text style={styles.nombre} numberOfLines={1} ellipsizeMode="tail">
           {item.nombre}
         </Text>

@@ -24,7 +24,7 @@ export default function TarjetaAnuncio({ item, esAdmin = false, activo, onEditar
     <View style={styles.tarjeta}>
       {/* Fila superior: círculo de estado, título y menú (solo admin) */}
       <View style={styles.filaTitulo}>
-        <View style={[styles.circulo, { backgroundColor: activo ? '#22c55e' : '#ef4444' }]} />
+        {esAdmin && <View style={[styles.circulo, { backgroundColor: activo ? '#22c55e' : '#ef4444' }]} />}
         <Text style={styles.titulo} numberOfLines={1} ellipsizeMode="tail">
           {item.titulo}
         </Text>
