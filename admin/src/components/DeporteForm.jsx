@@ -49,7 +49,7 @@ export default function DeporteForm({ deporte, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-xl mb-4">
           {deporte ? 'Editar Deporte' : 'Nuevo Deporte'}
         </h2>
         {error && (
@@ -69,20 +69,6 @@ export default function DeporteForm({ deporte, onClose }) {
               placeholder="Nombre del deporte"
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-uvm-primary"
               required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Descripción (opcional)
-            </label>
-            <textarea
-              name="descripcion"
-              value={form.descripcion}
-              onChange={handleChange}
-              placeholder="Descripción breve"
-              rows="3"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-uvm-primary"
             />
           </div>
 

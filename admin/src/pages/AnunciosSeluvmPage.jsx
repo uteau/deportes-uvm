@@ -60,7 +60,7 @@ export default function AnunciosSeluvmPage() {
           </div>
         ))}
       </div>
-      {showForm && <AnuncioForm tipo="seluvm" anuncio={editItem} onClose={() => { setShowForm(false); load(); }} />}
+      {showForm && <AnuncioForm tipo="seluvm" anuncio={editItem} onClose={() => { setShowForm(false); loadAnuncios(); }} />}
     </div>
   );
 }
