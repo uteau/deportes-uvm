@@ -1,5 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
+import { ActualizarDeporteDto } from "./dto/actualizar-deporte";
+import { ActualizarEstadoDeporteDto } from "./dto/actualizar-estado-deporte.dto";
 
 @Injectable()
 export class DeportesService {
@@ -7,15 +9,15 @@ export class DeportesService {
 
     async findAll() {
         return this.prisma.deporte.findMany({
-            where: { activo : true},
             orderBy: { nombre : 'asc' },
         });
     }
 
     async crear(dto: { nombre: string }) {
-        const deporteExiste = await this.prisma.deporte.findUnique({
-            where: { nombre: dto.nombre },
+        const deporteExiste = await this.prisma.deporte.findFirst({
+            where: { nombre: { equals: dto.nombre, mode: 'insensitive' } },
         });
+
         if (deporteExiste) {
             throw new ConflictException(`El deporte "${dto.nombre}" ya existe`);
         }
@@ -37,8 +39,8 @@ export class DeportesService {
             throw new NotFoundException('Deporte no encontrado');
         }
 
-        const deporteMismoNombre = await this.prisma.deporte.findUnique({
-            where: { nombre: dto.nombre },
+        const deporteMismoNombre = await this.prisma.deporte.findFirst({
+            where: { nombre: { equals: dto.nombre, mode: 'insensitive' } },
         });
 
         if (deporteMismoNombre && deporteMismoNombre.id !== id) {
@@ -51,7 +53,7 @@ export class DeportesService {
         })
     }
 
-    async eliminar(id: string) {
+    async activar(id: string, dto: ActualizarEstadoDeporteDto) {
         const deporte = await this.prisma.deporte.findUnique({
             where: { id },
             // Incluimos los estudiantes para validar antes de eliminar
@@ -69,10 +71,9 @@ export class DeportesService {
             );
         }
 
-        // Soft delete: marcamos como inactivo en vez de borrar el registro
         return this.prisma.deporte.update({
             where: { id },
-            data: { activo: false },
+            data: { activo: dto.activo },
         });
     }
 

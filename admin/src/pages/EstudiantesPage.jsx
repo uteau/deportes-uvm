@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import apiClient from '../api/client';
 import EstudianteForm from '../components/EstudianteForm';
+import EstadoBadge from '../components/EstadoBadge';
 
 export default function EstudiantesPage() {
   const [estudiantes, setEstudiantes] = useState([]);
@@ -74,7 +75,6 @@ export default function EstudiantesPage() {
               <th className="px-4 py-2 text-left">Email</th>
               <th className="px-4 py-2 text-left">RUT</th>
               <th className="px-4 py-2 text-left">Deporte</th>
-              <th className="px-4 py-2 text-left">Estado</th>
               <th className="px-4 py-2 text-left">Acciones</th>
             </tr>
           </thead>
@@ -86,22 +86,24 @@ export default function EstudiantesPage() {
             ) : (
               estudiantes.map(est => (
                 <tr key={est.id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-2">{est.usuario.nombre}</td>
+                  <td className="px-4 py-2">
+                    <div className="flex items-center gap-2">
+                      <EstadoBadge activo={est.usuario.activo} />
+                      <span>{est.usuario.nombre}</span>
+                    </div>
+                  </td>
                   <td className="px-4 py-2">{est.usuario.email}</td>
                   <td className="px-4 py-2">{est.rut}-{est.dig_verificador}</td>
                   <td className="px-4 py-2">{est.deporte?.nombre || '-'}</td>
-                  <td className="px-4 py-2">
-                    <span className={`px-2 py-1 rounded text-xs ${est.usuario.activo ? 'bg-green-100 text-green-800' : 'bg-uvm-red/10 text-uvm-red'}`}>
-                      {est.usuario.activo ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2">
-                    <button onClick={() => handleEdit(est)} className="text-uvm-primary hover:text-uvm-primary mr-3 px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
-                      Editar
-                    </button>
-                    <button onClick={() => toggleStatus(est.usuario.id, est.usuario.activo)} className="text-uvm-orange hover:text-uvm-orange px-3 py-1 rounded hover:bg-uvm-orange/10 transition">
-                      {est.usuario.activo ? 'Desactivar' : 'Activar'}
-                    </button>
+                  <td className="px-4 py-2 w-1">
+                    <div className= "flex justify-end gap-2">
+                      <button onClick={() => handleEdit(est)} className="text-uvm-primary hover:text-uvm-primary mr-3 px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
+                        Editar
+                      </button>
+                      <button onClick={() => toggleStatus(est.usuario.id, est.usuario.activo)} className="text-uvm-primary hover:text-uvm-primary-dark px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
+                        {est.usuario.activo ? 'Desactivar' : 'Activar'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

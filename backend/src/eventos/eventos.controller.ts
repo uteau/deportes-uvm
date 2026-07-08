@@ -3,6 +3,7 @@ import { Body,
     Delete, 
     Get, 
     Param, 
+    Patch, 
     Post, 
     Put, 
     Query, 
@@ -14,6 +15,7 @@ import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorators";
 import { CrearEventoDto } from "./dto/crear-evento.dto";
 import { ActualizarEventoDto } from "./dto/actualizar-evento.dto";
+import { ActualizarEstadoEventoDto } from "./dto/actualizar-estado-evento.dto";
 
 
 // === Rutas públicas ======================================
@@ -48,6 +50,11 @@ export class EventosPublicosController {
 export class EventosAdminController {
     constructor(private readonly eventosService: EventosService) {}
 
+    @Get()
+    findAllAdmin() {
+        return this.eventosService.findAllAdmin();
+    }
+    
     // Crear, editar y borrar evento
 
     @Post()
@@ -62,8 +69,8 @@ export class EventosAdminController {
         return this.eventosService.actualizar(dto, id);
     }
 
-    @Delete(':id')
-    eliminar(@Param('id') id: string) {
-        return this.eventosService.eliminar(id);
+    @Patch(':id')
+    activar(@Param('id') id: string, @Body() dto: ActualizarEstadoEventoDto) {
+        return this.eventosService.activar(id, dto);
     }
 }

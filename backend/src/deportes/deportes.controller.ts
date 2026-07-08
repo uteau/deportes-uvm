@@ -6,6 +6,7 @@ import {
     Param,
     Patch,
     Post,
+    Put,
     UseGuards,
 } from '@nestjs/common';
 import { DeportesService } from './deportes.service';
@@ -13,6 +14,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorators';
 import { CrearDeporteDto } from './dto/crear-deporte.dto';
+import { ActualizarEstadoDeporteDto } from './dto/actualizar-estado-deporte.dto';
 
 @Controller('admin/deportes')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -33,14 +35,14 @@ export class DeportesController {
     }
 
     // PUT /api/admin/deportes/:id
-    @Patch(':id')
+    @Put(':id')
     editar(@Param('id') id: string, @Body() dto: { nombre: string }) {
         return this.deportesService.editar(id, dto);
     }
 
     // DELETE /api/admin/deportes/:id
-    @Delete(':id')
-    eliminar(@Param('id') id: string) {
-        return this.deportesService.eliminar(id);
+    @Patch(':id')
+    activar(@Param('id') id: string, @Body() dto: ActualizarEstadoDeporteDto) {
+        return this.deportesService.activar(id, dto);
     }
 }

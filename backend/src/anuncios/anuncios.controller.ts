@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Request, UseGuards } from "@nestjs/common";
 import { AnunciosService } from "./anuncios.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorators";
 import { CrearAnuncioDto } from "./dto/crear-anuncio.dto";
 import { ActualizarAnuncioDto } from "./dto/actualizar-anuncio.dto";
+import { ActualizarEstadoAnuncioDto } from "./dto/actualizar-estado-anuncio.dto";
 
 // === Rutas públicas ======================================
 @Controller('anuncios/publico')
@@ -46,12 +47,16 @@ export class AnunciosSeluvmController {
 export class AnunciosAdminController {
     constructor (private readonly anunciosService: AnunciosService) {}
     
-    //Get todos los anuncios Seluvm para admin
+    @Get('publico')
+    findAllPublicosAdmin() {
+        return this.anunciosService.findAllPublicosAdmin();
+    }
 
-    // @Get('/seluvm')
-    // findAll() {
-    //     return this.anunciosService.findAllSeluvm();
-    // }
+    // GET /api/admin/anuncios/seluvm — todos los SelUVM, activos e inactivos
+    @Get('seluvm')
+    findAllSeluvmAdmin() {
+        return this.anunciosService.findAllSeluvmAdmin();
+    }
 
     @Post()
     crear(@Body() dto: CrearAnuncioDto, @Request() req) {
@@ -63,9 +68,9 @@ export class AnunciosAdminController {
         return this.anunciosService.actualizar(dto, id);
     }
 
-    @Delete(':id')
-    eliminar(@Param('id') id: string) {
-        return this.anunciosService.eliminar(id);
+    @Patch(':id')
+    activar(@Param('id') id: string, @Body() dto: ActualizarEstadoAnuncioDto) {
+        return this.anunciosService.activar(id, dto);
     }
 }
 

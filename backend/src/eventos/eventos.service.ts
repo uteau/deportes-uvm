@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { PrismaService } from "../prisma/prisma.service";
 import { CrearEventoDto } from "./dto/crear-evento.dto";
 import { ActualizarEventoDto } from "./dto/actualizar-evento.dto";
+import { ActualizarEstadoEventoDto } from "./dto/actualizar-estado-evento.dto";
 
 
 @Injectable()
@@ -43,13 +44,19 @@ export class EventosService {
 
         // 404 si no existe o fue eliminado
         if (!evento){
-            throw new NotFoundException('Evento con id "${id}" no encontrado');
+            throw new NotFoundException(`Evento con id ${id} no encontrado`);
         }
 
         return evento;
     }
 
     // === Métodos admin ===========================
+    
+    async findAllAdmin() {
+        return this.prisma.evento.findMany({
+            orderBy: { fecha_evento: 'asc' },
+        });
+    }
 
     // Crear evento
     async crear(dto: CrearEventoDto, adminId: string) {
@@ -76,7 +83,7 @@ export class EventosService {
         });
 
         if (!evento) {
-            throw new NotFoundException('Evento con id "&{id}" no encontrado');
+            throw new NotFoundException(`Evento con id ${id} no encontrado`);
         }
 
         return this.prisma.evento.update({
@@ -84,26 +91,26 @@ export class EventosService {
             data: {
                 nombre: dto.nombre,
                 descripcion: dto.descripcion,
-                fecha_evento: dto.fecha_evento,
+                fecha_evento: new Date(dto.fecha_evento),
                 lugar: dto.lugar,
                 fecha_actualizacion: new Date(),
             },
         });
     }
 
-    // desactivar evento (elminación lógica)
-    async eliminar(id: string) {
+    // activar/desactivar evento (elminación lógica)
+    async activar(id: string, dto: ActualizarEstadoEventoDto) {
        const evento = await this.prisma.evento.findFirst({
-            where: { id, activo: true },
+            where: { id },
         }); 
         
         if (!evento) {
-            throw new NotFoundException('Evento con id "&{id}" no encontrado');
+            throw new NotFoundException(`Evento con id ${id} no encontrado`);
         }
 
         return this.prisma.evento.update({
             where: {id},
-            data: { activo: false},
+            data: { activo: dto.activo },
         });
     }
 }

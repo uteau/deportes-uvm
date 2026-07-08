@@ -19,8 +19,8 @@ export class CrearAnuncioDto {
     @IsNotEmpty({message: 'El contenido es obligatorio'}) 
     contenido: string;
 
-    @IsEnum(AnuncioTipo, {message: 'El subtipo debe ser "publico" o "seluvm"'})   
-    subtipo: AnuncioTipo;
+    @IsEnum(AnuncioTipo, {message: 'El tipo debe ser "publico" o "seluvm"'})   
+    tipo: AnuncioTipo;
 
     @IsOptional()
     @IsUrl({}, { message: 'El enlace debe ser una URL válida'})  

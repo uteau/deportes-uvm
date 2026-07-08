@@ -3,6 +3,7 @@ import { Body,
     Delete, 
     Get, 
     Param, 
+    Patch, 
     Post, 
     Put, 
     Query, 
@@ -14,6 +15,7 @@ import { RolesGuard } from "../auth/roles.guard";
 import { Roles } from "../auth/decorators/roles.decorators";
 import { CrearPartidoDto } from "./dto/crear-partido.dto";
 import { ActualizarPartidoDto } from "./dto/actualizar-partido.dto";
+import { ActualizarEstadoPartidoDto } from "./dto/actualizar-estado-partido.dto";
 
 // === Rutas públicas ======================================
 @Controller('partidos')
@@ -44,6 +46,11 @@ export class PartidosController {
 export class PartidosAdminController {
     constructor(private readonly partidosService: PartidosService) {}
 
+    @Get()
+    findAllAdmin() {
+        return this.partidosService.findAllAdmin();
+    }
+
     // Crear, editar y borrar partido
 
     @Post()
@@ -58,8 +65,8 @@ export class PartidosAdminController {
         return this.partidosService.actualizar(dto, id);
     }
 
-    @Delete(':id')
-    eliminar(@Param('id') id: string) {
-        return this.partidosService.eliminar(id);
+    @Patch(':id')
+    activar(@Param('id') id: string, @Body() dto: ActualizarEstadoPartidoDto) {
+        return this.partidosService.activar(id, dto);
     }
 }

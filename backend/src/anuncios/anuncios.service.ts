@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { AnuncioTipo, CrearAnuncioDto } from "./dto/crear-anuncio.dto";
 import { ActualizarAnuncioDto } from "./dto/actualizar-anuncio.dto";
+import { ActualizarEstadoAnuncioDto } from "./dto/actualizar-estado-anuncio.dto";
 
 @Injectable()
 export class AnunciosService {
@@ -28,13 +29,14 @@ export class AnunciosService {
         });
 
         if (!anuncio) {
-            throw new NotFoundException('Evento con id "${id}" no encontrado');
+            throw new NotFoundException(`Anuncio con id ${id} no encontrado`);
         }
 
         return anuncio;
     }
 
     // === Métodos anucios SELUVM ===========================
+
     async findAllSeluvm() {
         return this.prisma.anuncio.findMany({
             where: {
@@ -54,19 +56,35 @@ export class AnunciosService {
         });
 
         if (!anuncio) {
-            throw new NotFoundException('Evento con id "${id}" no encontrado');
+            throw new NotFoundException(`Anuncio con id ${id} no encontrado`);
         }
 
         return anuncio;
     }
 
     // === Métodos admin ===========================
+
+    async findAllPublicosAdmin() {
+        return this.prisma.anuncio.findMany({
+            where: { tipo: AnuncioTipo.PUBLICO },
+            orderBy: { fecha_actualizacion: 'desc' },
+        });
+    }
+
+    // Admin: todos los anuncios SelUVM, activos e inactivos
+    async findAllSeluvmAdmin() {
+        return this.prisma.anuncio.findMany({
+            where: { tipo: AnuncioTipo.SELUVM },
+            orderBy: { fecha_actualizacion: 'desc' },
+        });
+    }
+
     async crear(dto:CrearAnuncioDto, adminId: string) {
         return this.prisma.anuncio.create({
             data: {
                 titulo: dto.titulo,
                 contenido: dto.contenido,
-                tipo: dto.subtipo,
+                tipo: dto.tipo,
                 instagram_url: dto.instagram_url,
                 activo: true,
                 creado_por: adminId,
@@ -82,10 +100,10 @@ export class AnunciosService {
         });
 
         if (!anuncio) {
-            throw new NotFoundException('Anuncio con id "&{id}" no encontrado');
+            throw new NotFoundException(`Anuncio con id ${id} no encontrado`);
         }
 
-        const subtipoFinal = dto.subtipo ?? anuncio.tipo;
+        const subtipoFinal = dto.tipo ?? anuncio.tipo;
         
         return this.prisma.anuncio.update({
             where: { id },
@@ -99,17 +117,18 @@ export class AnunciosService {
         });
     }
 
-    async eliminar(id: string) {
+    async activar(id: string, dto: ActualizarEstadoAnuncioDto) {
         const anuncio = await this.prisma.anuncio.findFirst({
             where: { id },
         });
 
         if (!anuncio) {
-            throw new NotFoundException('Anuncio con id "&{id}" no encontrado');
+            throw new NotFoundException(`Anuncio con id ${id} no encontrado`);
         }
 
-        return this.prisma.anuncio.delete({
+        return this.prisma.anuncio.update({
             where: { id },
+            data: { activo: dto.activo },
         });
     }
 }
