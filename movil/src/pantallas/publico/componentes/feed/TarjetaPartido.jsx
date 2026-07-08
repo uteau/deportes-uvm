@@ -1,6 +1,6 @@
 // TarjetaPartido.jsx
 // Tarjeta para partidos. Extiende TarjetaEvento mostrando equipos y marcador.
-// En modo admin (esAdmin=true) muestra un menú de opciones (Editar/Eliminar).
+// En modo admin (esAdmin=true) muestra un menú de opciones (Editar/Activar/Desactivar).
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +8,7 @@ import { Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-m
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, FontSize, Spacing, Radius, Shadow } from '../../../../tema';
 
-export default function TarjetaPartido({ item, esAdmin = false, onEditar, onEliminar }) {
+export default function TarjetaPartido({ item, esAdmin = false, activo, onEditar, onToggleStatus }) {
   const navigation = useNavigation();
 
   const fecha = new Date(item.fecha_partido).toLocaleDateString('es-CL', {
@@ -18,15 +18,17 @@ export default function TarjetaPartido({ item, esAdmin = false, onEditar, onElim
     year: 'numeric',
   });
 
-  // Determinamos si el partido ya tiene resultado registrado
   const tieneResultado = item.resul_local !== null && item.resul_visita !== null;
 
   return (
     <View style={styles.tarjeta}>
-
-      {/* Fila superior: el ⋮ vive fuera del TouchableOpacity de navegación */}
-      {esAdmin && (
-        <View style={styles.filaMenu}>
+      {/* Fila superior: círculo de estado, nombre y menú (solo admin) */}
+      <View style={styles.filaTitulo}>
+        <View style={[styles.circulo, { backgroundColor: activo ? '#22c55e' : '#ef4444' }]} />
+        <Text style={styles.nombre} numberOfLines={1} ellipsizeMode="tail">
+          {item.nombre}
+        </Text>
+        {esAdmin && (
           <Menu>
             <MenuTrigger>
               <Ionicons name="ellipsis-vertical" size={20} color={Colors.secondary} />
@@ -35,30 +37,23 @@ export default function TarjetaPartido({ item, esAdmin = false, onEditar, onElim
               <MenuOption onSelect={() => onEditar?.(item)}>
                 <Text style={styles.menuTexto}>Editar</Text>
               </MenuOption>
-              <MenuOption onSelect={() => onEliminar?.(item)}>
-                <Text style={[styles.menuTexto, styles.menuTextoEliminar]}>Eliminar</Text>
+              <MenuOption onSelect={() => onToggleStatus?.(item)}>
+                <Text style={[styles.menuTexto, styles.menuTextoEstado]}>
+                  {activo ? 'Desactivar' : 'Activar'}
+                </Text>
               </MenuOption>
             </MenuOptions>
           </Menu>
-        </View>
-      )}
+        )}
+      </View>
 
-      {/* Contenido tocable: navega al detalle */}
+      {/* Contenido tocable: navega al detalle (sin el nombre) */}
       <TouchableOpacity
         onPress={() => navigation.navigate('DetallePartido', { id: item.id })}
         activeOpacity={0.85}
       >
-        {/* Nombre del partido */}
-        <Text style={styles.nombre}>{item.nombre}</Text>
-
-        {/* Equipos y marcador */}
         <View style={styles.marcadorContainer}>
-          {/* Equipo local */}
-          <Text style={styles.equipo} numberOfLines={1}>
-            {item.equipo_local}
-          </Text>
-
-          {/* Marcador o "VS" si no hay resultado */}
+          <Text style={styles.equipo} numberOfLines={1}>{item.equipo_local}</Text>
           <View style={styles.marcadorCentro}>
             {tieneResultado ? (
               <Text style={styles.marcador}>
@@ -68,14 +63,11 @@ export default function TarjetaPartido({ item, esAdmin = false, onEditar, onElim
               <Text style={styles.vs}>VS</Text>
             )}
           </View>
-
-          {/* Equipo visita */}
           <Text style={[styles.equipo, styles.equipoVisita]} numberOfLines={1}>
             {item.equipo_visita}
           </Text>
         </View>
 
-        {/* Fecha y lugar */}
         <Text style={styles.meta}>Fecha: {fecha}</Text>
         <Text style={styles.meta}>Lugar: {item.lugar}</Text>
       </TouchableOpacity>
@@ -83,7 +75,6 @@ export default function TarjetaPartido({ item, esAdmin = false, onEditar, onElim
   );
 }
 
-// Estilos custom para el popup del menú
 const menuEstilos = {
   optionsContainer: {
     borderRadius: Radius.sm,
@@ -102,29 +93,22 @@ const styles = StyleSheet.create({
     borderLeftColor: Colors.primary,
     ...Shadow.card,
   },
-  filaMenu: {
+  filaTitulo: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: -Spacing.xs,
+    alignItems: 'center',
+    marginBottom: Spacing.xs,
   },
-  etiqueta: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
-    borderRadius: Radius.sm,
-    marginBottom: Spacing.sm,
-  },
-  etiquetaTexto: {
-    fontFamily: Typography.heading,
-    fontSize: FontSize.xs,
-    color: Colors.white,
-    letterSpacing: 1,
+  circulo: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: Spacing.sm,
   },
   nombre: {
+    flex: 1,
     fontFamily: Typography.heading,
     fontSize: FontSize.lg,
     color: Colors.primary,
-    marginBottom: Spacing.sm,
   },
   marcadorContainer: {
     flexDirection: 'row',
@@ -171,7 +155,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
   },
-  menuTextoEliminar: {
-    color: Colors.red,
+  menuTextoEstado: {
+    color: Colors.primary,
   },
 });

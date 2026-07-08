@@ -34,15 +34,9 @@ export default function PantallaFeed() {
   const [error, setError] = useState(null);
   const [filtro, setFiltro] = useState('todos');
 
-  // ── Estado del formulario en el bottom sheet ──────────────────────────────
-  // refSheet controla abrir/cerrar el BottomSheet desde fuera del componente
   const refSheet = useRef(null);
-  // tipoFormulario: 'evento' | 'partido' | 'anuncio' | null (null = sheet cerrado)
   const [tipoFormulario, setTipoFormulario] = useState(null);
-  // itemFormulario: el item a editar, o null si estamos creando uno nuevo
   const [itemFormulario, setItemFormulario] = useState(null);
-  // tipoAnuncioNuevo: solo aplica cuando tipoFormulario es 'anuncio' y es creación;
-  // indica si el nuevo anuncio será 'publico' o 'seluvm'
   const [tipoAnuncioNuevo, setTipoAnuncioNuevo] = useState('publico');
 
   const cargarFeed = useCallback(async () => {
@@ -66,36 +60,34 @@ export default function PantallaFeed() {
   }, [cargarFeed]);
 
   // ── Abrir el sheet en modo edición ────────────────────────────────────────
-  // tipo viene de item.tipo_item ('evento' | 'partido' | 'anuncio')
   const editarItem = (item) => {
     setTipoFormulario(item.tipo_item);
     setItemFormulario(item);
     refSheet.current?.expand();
   };
 
-  // ── Eliminar con confirmación explícita (RF-04/RF-05/RF-06/RF-07) ─────────
-  const eliminarItem = (item) => {
+  // ── Activar/Desactivar publicación (reemplaza a eliminar) ────────────────
+  const toggleStatusItem = (item) => {
+    const accion = item.activo ? 'desactivar' : 'activar';
     Alert.alert(
-      'Confirmar eliminación',
-      `¿Seguro que quieres eliminar "${item.nombre || item.titulo}"? Esta acción no se puede deshacer.`,
+      `Confirmar ${accion}`,
+      `¿Seguro que quieres ${accion} "${item.nombre || item.titulo}"?`,
       [
         { text: 'Cancelar', style: 'cancel' },
         {
-          text: 'Eliminar',
-          style: 'destructive',
+          text: accion.charAt(0).toUpperCase() + accion.slice(1),
+          style: 'default',
           onPress: async () => {
             try {
-              // Endpoint admin según el tipo de recurso
               const rutas = {
                 evento: `/admin/eventos/${item.id}`,
                 partido: `/admin/partidos/${item.id}`,
                 anuncio: `/admin/anuncios/${item.id}`,
               };
-              await api.delete(rutas[item.tipo_item]);
-              // Refresca el feed para que el item eliminado desaparezca de inmediato
-              cargarFeed();
+              await api.patch(rutas[item.tipo_item], { activo: !item.activo });
+              cargarFeed(); // refresca la lista
             } catch (e) {
-              Alert.alert('Error', 'No se pudo eliminar. Intenta de nuevo.');
+              Alert.alert('Error', 'No se pudo cambiar el estado. Intenta de nuevo.');
             }
           },
         },
@@ -104,10 +96,8 @@ export default function PantallaFeed() {
   };
 
   // ── Abrir el sheet en modo creación ───────────────────────────────────────
-  // tipo: 'evento' | 'partido' | 'anuncio-publico' | 'anuncio-seluvm'
   const crearPublicacion = (tipo) => {
-    setItemFormulario(null); // sin item = modo creación
-
+    setItemFormulario(null);
     if (tipo === 'anuncio-publico' || tipo === 'anuncio-seluvm') {
       setTipoFormulario('anuncio');
       setTipoAnuncioNuevo(tipo === 'anuncio-publico' ? 'publico' : 'seluvm');
@@ -117,19 +107,24 @@ export default function PantallaFeed() {
     refSheet.current?.expand();
   };
 
-  // Se llama cuando el formulario terminó de guardar (POST o PUT exitoso)
   const handleGuardado = () => {
     refSheet.current?.close();
-    cargarFeed(); // refresca para mostrar el cambio en el feed
+    cargarFeed();
   };
 
   const handleCancelar = () => {
     refSheet.current?.close();
   };
 
-  // Cada tarjeta recibe esAdmin y los callbacks; solo importan si esAdmin=true
+  // ── Renderizado de cada tarjeta ──────────────────────────────────────────
   const renderItem = ({ item }) => {
-    const propsAdmin = { esAdmin, onEditar: editarItem, onEliminar: eliminarItem };
+    // Pasamos el estado activo, esAdmin, y los callbacks de edición y toggle
+    const propsAdmin = {
+      esAdmin,
+      activo: item.activo,
+      onEditar: editarItem,
+      onToggleStatus: toggleStatusItem, // ← nuevo callback
+    };
     if (item.tipo_item === 'evento')  return <TarjetaEvento  item={item} {...propsAdmin} />;
     if (item.tipo_item === 'partido') return <TarjetaPartido item={item} {...propsAdmin} />;
     if (item.tipo_item === 'anuncio') return <TarjetaAnuncio item={item} {...propsAdmin} />;
@@ -158,7 +153,7 @@ export default function PantallaFeed() {
 
   return (
     <View style={styles.contenedor}>
-      {/* Header de la pantalla */}
+      {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerFila}>
           <View>
@@ -184,7 +179,7 @@ export default function PantallaFeed() {
         </View>
       </View>
 
-      {/* Barra de filtros + botón de crear (solo admin) */}
+      {/* Barra de filtros + botón crear (solo admin) */}
       <View style={styles.filtros}>
         {esAdmin && (
           <Menu>
@@ -247,7 +242,7 @@ export default function PantallaFeed() {
         }
       />
 
-      {/* Bottom sheet de creación/edición — solo se monta si es admin */}
+      {/* Bottom sheet de creación/edición */}
       {esAdmin && (
         <HojaFormulario
           ref={refSheet}

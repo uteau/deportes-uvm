@@ -158,17 +158,23 @@ function NavegadorSeluvm() {
 function TabsAdmin() {
     return (
         <Tab.Navigator
-            screenOptions={{
+            screenOptions={({ route }) => ({
                 headerShown: false,
                 tabBarIcon: ({ focused, color, size }) => {
-                    return <Ionicons name={'home'} size={size} color={color} />;
+                    const iconos = {
+                        Feed:       focused ? 'home'           : 'home-outline',
+                        Calendario: focused ? 'calendar'       : 'calendar-outline',
+                    };
+                    return <Ionicons name={iconos[route.name]} size={size} color={color} />;
                 },
-                tabBarStyle: { backgroundColor: Colors.secondary },
-                tabBarActiveTintColor: Colors.white,
+                tabBarStyle:            { backgroundColor: Colors.secondary },
+                tabBarActiveTintColor:  Colors.white,
                 tabBarInactiveTintColor: Colors.primary,
-            }}
-            >
+                tabBarLabelStyle:       { fontFamily: 'Lato_400Regular', fontSize: 11 },
+            })}
+        >
             <Tab.Screen name="Feed" component={PantallaFeed} />
+            <Tab.Screen name="Calendario" component={PantallaCalendario} />
         </Tab.Navigator>
     );
 }

@@ -31,7 +31,7 @@ export default function FormularioAnuncio({ anuncio, tipoInicial, onGuardado, on
     const payload = {
       titulo: titulo.trim(),
       contenido: contenido.trim(),
-      subtipo: tipo,
+      tipo: tipo,
     };
 
     // instagram_url solo aplica a anuncios públicos (RF-06)

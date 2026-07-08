@@ -58,7 +58,7 @@ export default function ContactoForm({ contacto, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="text-xl mb-4">
           {contacto ? 'Editar Contacto' : 'Nuevo Contacto'}
         </h2>
         {error && (

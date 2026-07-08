@@ -69,7 +69,7 @@ export default function AnunciosPublicosPage() {
           </div>
         ))}
       </div>
-      {showForm && <AnuncioForm tipo="publico" anuncio={editItem} onClose={() => { setShowForm(false); load(); }} />}
+      {showForm && <AnuncioForm tipo="publico" anuncio={editItem} onClose={() => { setShowForm(false); loadAnuncios(); }} />}
     </div>
   );
 }
