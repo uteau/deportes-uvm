@@ -120,7 +120,7 @@ export class PartidosService {
         }
 
         return this.prisma.partido.update({
-            where: {id},
+            where: { id },
             data: {
                 nombre: dto.nombre,
                 descripcion: dto.descripcion,
