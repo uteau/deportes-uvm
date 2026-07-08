@@ -15,13 +15,14 @@ export default function AdminLayout() {
   };
 
   const navItems = [
-    { name: 'Dashboard',              path: '/' },
+    { name: 'Feed',              path: '/' },
     { name: 'Eventos',                path: '/eventos' },
     { name: 'Partidos',               path: '/partidos' },
     { name: 'Anuncios Públicos',      path: '/anuncios/publicos' },
     { name: 'Anuncios Seleccionados', path: '/anuncios/seluvm' },
-    { name: 'Estudiantes',            path: '/estudiantes' },
+    { name: 'Estudiantes seleccionados',      path: '/estudiantes' },
     { name: 'Deportes',               path: '/deportes' },
+    { name: 'Contactos',              path: '/contactos' },
   ];
 
   // Determina si un link está activo comparando la ruta actual

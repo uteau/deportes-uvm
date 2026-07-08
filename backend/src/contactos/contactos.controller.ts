@@ -18,6 +18,7 @@ export class ContactosController {
       return this.contactosService.findAll();
     }
 }
+
 @Controller('admin/contactos')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')

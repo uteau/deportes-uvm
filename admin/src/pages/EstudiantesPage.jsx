@@ -95,13 +95,15 @@ export default function EstudiantesPage() {
                   <td className="px-4 py-2">{est.usuario.email}</td>
                   <td className="px-4 py-2">{est.rut}-{est.dig_verificador}</td>
                   <td className="px-4 py-2">{est.deporte?.nombre || '-'}</td>
-                  <td className="px-4 py-2">
-                    <button onClick={() => handleEdit(est)} className="text-uvm-primary hover:text-uvm-primary mr-3 px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
-                      Editar
-                    </button>
-                    <button onClick={() => toggleStatus(est.usuario.id, est.usuario.activo)} className="text-uvm-primary hover:text-uvm-primary-dark px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
-                      {est.usuario.activo ? 'Desactivar' : 'Activar'}
-                    </button>
+                  <td className="px-4 py-2 w-1">
+                    <div className= "flex justify-end gap-2">
+                      <button onClick={() => handleEdit(est)} className="text-uvm-primary hover:text-uvm-primary mr-3 px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
+                        Editar
+                      </button>
+                      <button onClick={() => toggleStatus(est.usuario.id, est.usuario.activo)} className="text-uvm-primary hover:text-uvm-primary-dark px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
+                        {est.usuario.activo ? 'Desactivar' : 'Activar'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

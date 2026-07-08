@@ -29,7 +29,7 @@ const HojaCredencial = forwardRef(function HojaCredencial(props, ref) {
       .finally(() => setCargando(false));
   }, []);
 
-  console.log('Credencial completa:', credencial);
+  // console.log('Credencial completa:', credencial);
 
   return (
     <BottomSheet

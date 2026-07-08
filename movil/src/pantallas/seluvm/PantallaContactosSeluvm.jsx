@@ -3,13 +3,22 @@
 // Endpoint protegido con JWT de estudiante.
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  View, Text, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Linking, TouchableOpacity,
+  View, 
+  Text, 
+  FlatList, 
+  StyleSheet, 
+  ActivityIndicator, 
+  RefreshControl, 
+  Linking, 
+  TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../../api/client';
 import { Colors, Typography, FontSize, Spacing, Radius, Shadow } from '../../tema';
+import { useAuth } from '../../contexto/AuthContext';
 
 export default function PantallaContactos() {
+  const { cerrarSesion } = useAuth();
   const [contactos, setContactos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [refrescando, setRefrescando] = useState(false);
@@ -70,6 +79,14 @@ export default function PantallaContactos() {
 
   return (
     <View style={styles.contenedor}>
+      <View style={styles.header}>
+        <View style={styles.headerFila}>
+          <View>
+            <Text style={styles.headerTitulo}>DEPORTES UVM</Text>
+            <Text style={styles.headerSubtitulo}>Actividad deportiva universitaria</Text>
+          </View>
+        </View>
+      </View>
       {error ? (
         <View style={styles.centrado}>
           <Text style={styles.errorTexto}>{error}</Text>
@@ -96,16 +113,25 @@ export default function PantallaContactos() {
 
 const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: Colors.light },
+  header: {
+    backgroundColor: Colors.secondary,
+    paddingTop: 56,
+    paddingBottom: Spacing.md,
+    paddingHorizontal: Spacing.md,
+  },
+  headerFila: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  headerTitulo: { fontFamily: Typography.heading, fontSize: FontSize.xxl, color: Colors.light, letterSpacing: 2 },
+  headerSubtitulo: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.border, marginTop: 2 },
   lista: { padding: Spacing.md },
   tarjeta: {
     backgroundColor: Colors.white, borderRadius: Radius.md, padding: Spacing.md,
     marginBottom: Spacing.md, ...Shadow.card,
   },
-  nombre: { fontFamily: Typography.heading, fontSize: FontSize.md, color: Colors.primary },
-  rol: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.secondary, marginBottom: Spacing.xs },
+  nombre: { fontFamily: Typography.heading, fontSize: FontSize.xl, color: Colors.primary },
+  rol: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.secondary, marginBottom: Spacing.xs },
   fila: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
-  dato: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.text },
-  descripcion: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.text, marginTop: Spacing.xs },
+  dato: { fontFamily: Typography.body, fontSize: FontSize.lg, color: Colors.text },
+  descripcion: { fontFamily: Typography.body, fontSize: FontSize.lg, color: Colors.text, marginTop: Spacing.xs },
   centrado: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: Spacing.xl },
   errorTexto: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.red, textAlign: 'center' },
   vacio: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.secondary, textAlign: 'center' },

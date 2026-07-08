@@ -1,5 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
+import { ActualizarDeporteDto } from "./dto/actualizar-deporte";
+import { ActualizarEstadoDeporteDto } from "./dto/actualizar-estado-deporte.dto";
 
 @Injectable()
 export class DeportesService {
@@ -7,7 +9,6 @@ export class DeportesService {
 
     async findAll() {
         return this.prisma.deporte.findMany({
-            where: { activo : true},
             orderBy: { nombre : 'asc' },
         });
     }
@@ -52,7 +53,7 @@ export class DeportesService {
         })
     }
 
-    async eliminar(id: string) {
+    async activar(id: string, dto: ActualizarEstadoDeporteDto) {
         const deporte = await this.prisma.deporte.findUnique({
             where: { id },
             // Incluimos los estudiantes para validar antes de eliminar
@@ -70,10 +71,9 @@ export class DeportesService {
             );
         }
 
-        // Soft delete: marcamos como inactivo en vez de borrar el registro
         return this.prisma.deporte.update({
             where: { id },
-            data: { activo: false },
+            data: { activo: dto.activo },
         });
     }
 

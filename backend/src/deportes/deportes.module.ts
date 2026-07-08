@@ -3,8 +3,8 @@ import { DeportesController } from './deportes.controller';
 import { DeportesService } from './deportes.service';
 
 @Module({
-  controllers: [DeportesController],
-  providers: [DeportesService],
-  exports: [DeportesService],
+    controllers: [DeportesController],
+    providers: [DeportesService],
+    exports: [DeportesService],
 })
 export class DeportesModule {}
