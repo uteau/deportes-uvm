@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { PrismaService } from "../prisma/prisma.service";
 import { CrearPartidoDto } from "./dto/crear-partido.dto";
 import { ActualizarPartidoDto } from "./dto/actualizar-partido.dto";
+import { ActualizarEstadoPartidoDto } from "./dto/actualizar-estado-partido.dto";
 
 
 @Injectable()
@@ -16,7 +17,7 @@ export class PartidosService {
         return this.prisma.partido.findMany({
             where: { activo: true },
             orderBy: { fecha_partido: 'asc' },
-            include: { deporte: true },
+            include: { deporte: { select: { id: true, nombre: true } } },
         });
     }
 
@@ -39,6 +40,14 @@ export class PartidosService {
     async findOne(id: string) {
         const partido = await this.prisma.partido.findFirst({
             where: { id, activo: true},
+            include: {
+                deporte: {
+                    select: {
+                        id: true,
+                        nombre: true
+                    }
+                }
+            }
         });
 
         // 404 si no existe o fue eliminado
@@ -53,6 +62,7 @@ export class PartidosService {
 
     async findAllAdmin() {
         return this.prisma.partido.findMany({
+            include: { deporte: true },
             orderBy: { fecha_partido: 'asc' },
         });
     }
@@ -130,9 +140,9 @@ export class PartidosService {
     }
 
     // desactivar partido (elminación lógica)
-    async eliminar(id: string) {
+    async activar(id: string, dto: ActualizarEstadoPartidoDto) {
        const partido = await this.prisma.partido.findFirst({
-            where: { id, activo: true },
+            where: { id },
         }); 
         
         if (!partido) {
@@ -141,7 +151,7 @@ export class PartidosService {
 
         return this.prisma.partido.update({
             where: {id},
-            data: { activo: false},
+            data: { activo: dto.activo},
         });
     }
 }

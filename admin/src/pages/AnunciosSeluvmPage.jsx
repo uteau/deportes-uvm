@@ -1,23 +1,29 @@
 import { useEffect, useState } from 'react';
 import apiClient from '../api/client';
 import AnuncioForm from '../components/AnuncioForm';
+import EstadoBadge from '../components/EstadoBadge';
 
 export default function AnunciosSeluvmPage() {
   const [anuncios, setAnuncios] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editItem, setEditItem] = useState(null);
 
-  const load = async () => {
-    const res = await apiClient.get('/anuncios/seluvm');
+  const loadAnuncios = async () => {
+    const res = await apiClient.get('/admin/anuncios/seluvm');
     setAnuncios(res.data);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { loadAnuncios(); }, []);
 
-  const handleDelete = async (id) => {
-    if (confirm('¿Eliminar?')) {
-      await apiClient.delete(`/admin/anuncios/${id}`);
-      load();
+  const toggleStatus = async (id, currentStatus) => {
+    const action = currentStatus ? 'desactivar' : 'activar';
+    if (confirm(`¿${action} este anuncio?`)) {
+      try {
+        await apiClient.patch(`/admin/anuncios/${id}`, { activo: !currentStatus });
+        loadAnuncios();
+      } catch (err) {
+        alert('Error al activar/desactivar');
+      }
     }
   };
 
@@ -31,14 +37,24 @@ export default function AnunciosSeluvmPage() {
       </div>
       <div className="space-y-2">
         {anuncios.map(a => (
-          <div key={a.id} className="bg-white p-3 rounded shadow flex justify-between">
-            <div><strong>{a.titulo}</strong><p>{a.contenido}</p></div>
+          <div key={a.id} className="bg-white p-3 rounded shadow flex items-center gap-3">
+            <EstadoBadge activo={a.activo} />
+            <div className="flex-1">
+              <strong className="block">{a.titulo}</strong>
+              <p className="text-gray-600 text-sm">{a.contenido}</p>
+              {a.instagram_url && (
+                <a href={a.instagram_url} className="text-blue-500 text-sm hover:underline">
+                  Instagram
+                </a>
+              )}
+            </div>
+
             <div>
               <button onClick={() => { setEditItem(a); setShowForm(true); }} className="text-uvm-primary hover:text-uvm-primary-dark px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
                 Editar
               </button>
-              <button onClick={() => handleDelete(a.id)} className="text-uvm-red hover:text-uvm-red-dark px-3 py-1 rounded hover:bg-uvm-red/5 transition">
-                Eliminar
+              <button onClick={() => toggleStatus(a.id, a.activo)} className="text-uvm-primary hover:text-uvm-primary-dark px-3 py-1 rounded hover:bg-uvm-primary/10 transition">
+                {a.activo ? 'Desactivar' : 'Activar'}
               </button>
             </div>
           </div>

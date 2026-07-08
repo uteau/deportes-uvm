@@ -29,7 +29,7 @@ const HojaCredencial = forwardRef(function HojaCredencial(props, ref) {
       .finally(() => setCargando(false));
   }, []);
 
-  const vigente = credencial?.activo;
+  console.log('Credencial completa:', credencial);
 
   return (
     <BottomSheet
@@ -48,7 +48,7 @@ const HojaCredencial = forwardRef(function HojaCredencial(props, ref) {
           <Text style={styles.errorTexto}>{error}</Text>
         ) : (
           <View style={styles.tarjetaCredencial}>
-            <Ionicons name="shield-checkmark" size={40} color={Colors.orange} />
+            <Ionicons name="shield-checkmark" size={40} color={Colors.primary} />
             <Text style={styles.tituloCredencial}>CREDENCIAL DIGITAL</Text>
 
             <View style={styles.dato}>
@@ -59,16 +59,12 @@ const HojaCredencial = forwardRef(function HojaCredencial(props, ref) {
             <View style={styles.dato}>
               <Text style={styles.etiqueta}>RUT</Text>
               <Text style={styles.valor}>{credencial.rut}</Text>
+              {/* <Text style={styles.valor}>{credencial.rut}-{credencial.dv}</Text> */}
             </View>
 
             <View style={styles.dato}>
               <Text style={styles.etiqueta}>Deporte</Text>
               <Text style={styles.valor}>{credencial.deporte}</Text>
-            </View>
-
-            {/* Estado de vigencia con color según corresponda */}
-            <View style={[styles.estado, { backgroundColor: vigente ? Colors.orange : Colors.red }]}>
-              <Text style={styles.estadoTexto}>{vigente ? 'VIGENTE' : 'VENCIDA'}</Text>
             </View>
           </View>
         )}
