@@ -1,6 +1,6 @@
 // TarjetaEvento.jsx
 // Tarjeta para mostrar un evento deportivo general en el feed.
-// En modo admin (esAdmin=true) muestra un menú de opciones (Editar/Eliminar).
+// En modo admin (esAdmin=true) muestra un menú de opciones (Editar/Activar/Desactivar).
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -8,9 +8,9 @@ import { Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-m
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, FontSize, Spacing, Radius, Shadow } from '../../../../tema';
 
-export default function TarjetaEvento({ item, esAdmin = false, onEditar, onEliminar }) {
+export default function TarjetaEvento({ item, esAdmin = false, activo, onEditar, onToggleStatus }) {
   const navigation = useNavigation();
-  // Formateamos la fecha a formato legible en español
+
   const fecha = new Date(item.fecha_evento).toLocaleDateString('es-CL', {
     weekday: 'short',
     day: 'numeric',
@@ -20,11 +20,13 @@ export default function TarjetaEvento({ item, esAdmin = false, onEditar, onElimi
 
   return (
     <View style={styles.tarjeta}>
-
-      {/* Fila superior: el ⋮ vive fuera del TouchableOpacity de navegación,
-          así un toque en el menú no dispara también la navegación al detalle */}
-      {esAdmin && (
-        <View style={styles.filaMenu}>
+      {/* Fila superior: círculo de estado, nombre y menú (solo admin) */}
+      <View style={styles.filaTitulo}>
+        <View style={[styles.circulo, { backgroundColor: activo ? '#22c55e' : '#ef4444' }]} />
+        <Text style={styles.nombre} numberOfLines={1} ellipsizeMode="tail">
+          {item.nombre}
+        </Text>
+        {esAdmin && (
           <Menu>
             <MenuTrigger>
               <Ionicons name="ellipsis-vertical" size={20} color={Colors.secondary} />
@@ -33,27 +35,23 @@ export default function TarjetaEvento({ item, esAdmin = false, onEditar, onElimi
               <MenuOption onSelect={() => onEditar?.(item)}>
                 <Text style={styles.menuTexto}>Editar</Text>
               </MenuOption>
-              <MenuOption onSelect={() => onEliminar?.(item)}>
-                <Text style={[styles.menuTexto, styles.menuTextoEliminar]}>Eliminar</Text>
+              <MenuOption onSelect={() => onToggleStatus?.(item)}>
+                <Text style={[styles.menuTexto, styles.menuTextoEstado]}>
+                  {activo ? 'Desactivar' : 'Activar'}
+                </Text>
               </MenuOption>
             </MenuOptions>
           </Menu>
-        </View>
-      )}
+        )}
+      </View>
 
-      {/* Contenido tocable: navega al detalle */}
+      {/* Contenido tocable: navega al detalle (sin el nombre, ya está arriba) */}
       <TouchableOpacity
         onPress={() => navigation.navigate('DetalleEvento', { id: item.id })}
         activeOpacity={0.85}
       >
-        {/* Nombre del evento */}
-        <Text style={styles.nombre}>{item.nombre}</Text>
-
-        {/* Fecha y lugar */}
         <Text style={styles.meta}>Fecha: {fecha}</Text>
         <Text style={styles.meta}>Lugar: {item.lugar}</Text>
-
-        {/* Descripción opcional */}
         {item.descripcion ? (
           <Text style={styles.descripcion} numberOfLines={2}>
             {item.descripcion}
@@ -64,7 +62,6 @@ export default function TarjetaEvento({ item, esAdmin = false, onEditar, onElimi
   );
 }
 
-// Estilos custom para el popup del menú
 const menuEstilos = {
   optionsContainer: {
     borderRadius: Radius.sm,
@@ -79,34 +76,26 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     padding: Spacing.md,
     marginBottom: Spacing.md,
-    // Borde izquierdo de color como acento visual
     borderLeftWidth: 4,
     borderLeftColor: Colors.primary,
     ...Shadow.card,
   },
-  filaMenu: {
+  filaTitulo: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: -Spacing.xs, // compensa el espacio para que no empuje el contenido de más
+    alignItems: 'center',
+    marginBottom: Spacing.xs,
   },
-  etiqueta: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
-    borderRadius: Radius.sm,
-    marginBottom: Spacing.sm,
-  },
-  etiquetaTexto: {
-    fontFamily: Typography.heading,
-    fontSize: FontSize.xs,
-    color: Colors.white,
-    letterSpacing: 1,
+  circulo: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: Spacing.sm,
   },
   nombre: {
+    flex: 1,
     fontFamily: Typography.heading,
     fontSize: FontSize.lg,
     color: Colors.primary,
-    marginBottom: Spacing.xs,
   },
   meta: {
     fontFamily: Typography.body,
@@ -127,7 +116,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
   },
-  menuTextoEliminar: {
-    color: Colors.red,
+  menuTextoEstado: {
+    color: Colors.primary,
   },
 });

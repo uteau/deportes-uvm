@@ -6,7 +6,7 @@ export default function AnuncioForm({ tipo, anuncio, onClose }) {
   const [form, setForm] = useState({ 
     titulo: '', 
     contenido: '', 
-    subtipo: tipo, 
+    tipo: tipo, 
     instagram_url: ''
   });
 
@@ -21,7 +21,7 @@ export default function AnuncioForm({ tipo, anuncio, onClose }) {
     const payload = {
       titulo: form.titulo,
       contenido: form.contenido,
-      subtipo: form.subtipo
+      tipo: form.subtipo
     };
 
     if (tipo === 'publico' && form.instagram_url) {

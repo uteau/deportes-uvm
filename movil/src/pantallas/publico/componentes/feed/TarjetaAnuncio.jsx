@@ -1,21 +1,19 @@
 // TarjetaAnuncio.jsx
 // Tarjeta para anuncios públicos. Muestra enlace a Instagram si existe.
-// En modo admin (esAdmin=true) muestra un menú de opciones (Editar/Eliminar),
-// en su propia fila arriba, igual que TarjetaEvento y TarjetaPartido.
+// En modo admin (esAdmin=true) muestra un menú de opciones (Editar/Activar/Desactivar).
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import { Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, FontSize, Spacing, Radius, Shadow } from '../../../../tema';
 
-export default function TarjetaAnuncio({ item, esAdmin = false, onEditar, onEliminar }) {
+export default function TarjetaAnuncio({ item, esAdmin = false, activo, onEditar, onToggleStatus }) {
   const fecha = new Date(item.fecha_creacion).toLocaleDateString('es-CL', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
   });
 
-  // Abre el enlace de Instagram en el navegador del dispositivo
   const abrirInstagram = () => {
     if (item.instagram_url) {
       Linking.openURL(item.instagram_url);
@@ -24,11 +22,13 @@ export default function TarjetaAnuncio({ item, esAdmin = false, onEditar, onElim
 
   return (
     <View style={styles.tarjeta}>
-
-      {/* Fila superior: el ⋮ vive en su propia fila, alineado a la derecha,
-          igual que en TarjetaEvento y TarjetaPartido */}
-      {esAdmin && (
-        <View style={styles.filaMenu}>
+      {/* Fila superior: círculo de estado, título y menú (solo admin) */}
+      <View style={styles.filaTitulo}>
+        <View style={[styles.circulo, { backgroundColor: activo ? '#22c55e' : '#ef4444' }]} />
+        <Text style={styles.titulo} numberOfLines={1} ellipsizeMode="tail">
+          {item.titulo}
+        </Text>
+        {esAdmin && (
           <Menu>
             <MenuTrigger>
               <Ionicons name="ellipsis-vertical" size={20} color={Colors.secondary} />
@@ -37,27 +37,23 @@ export default function TarjetaAnuncio({ item, esAdmin = false, onEditar, onElim
               <MenuOption onSelect={() => onEditar?.(item)}>
                 <Text style={styles.menuTexto}>Editar</Text>
               </MenuOption>
-              <MenuOption onSelect={() => onEliminar?.(item)}>
-                <Text style={[styles.menuTexto, styles.menuTextoEliminar]}>Eliminar</Text>
+              <MenuOption onSelect={() => onToggleStatus?.(item)}>
+                <Text style={[styles.menuTexto, styles.menuTextoEstado]}>
+                  {activo ? 'Desactivar' : 'Activar'}
+                </Text>
               </MenuOption>
             </MenuOptions>
           </Menu>
-        </View>
-      )}
+        )}
+      </View>
 
-      {/* Título */}
-      <Text style={styles.titulo}>{item.titulo}</Text>
-
-      {/* Contenido con límite de líneas */}
+      {/* Contenido del anuncio (sin el título, ya está arriba) */}
       <Text style={styles.contenido} numberOfLines={3}>
         {item.contenido}
       </Text>
 
-      {/* Footer: fecha e Instagram */}
       <View style={styles.footer}>
         <Text style={styles.fecha}>{fecha}</Text>
-
-        {/* Botón Instagram solo si existe la URL */}
         {item.instagram_url ? (
           <TouchableOpacity onPress={abrirInstagram}>
             <Text style={styles.instagram}>Ver en Instagram →</Text>
@@ -68,7 +64,6 @@ export default function TarjetaAnuncio({ item, esAdmin = false, onEditar, onElim
   );
 }
 
-// Estilos custom para el popup del menú
 const menuEstilos = {
   optionsContainer: {
     borderRadius: Radius.sm,
@@ -87,29 +82,22 @@ const styles = StyleSheet.create({
     borderLeftColor: Colors.primary,
     ...Shadow.card,
   },
-  filaMenu: {
+  filaTitulo: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: -Spacing.xs,
+    alignItems: 'center',
+    marginBottom: Spacing.xs,
   },
-  etiqueta: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
-    borderRadius: Radius.sm,
-    marginBottom: Spacing.sm,
-  },
-  etiquetaTexto: {
-    fontFamily: Typography.heading,
-    fontSize: FontSize.xs,
-    color: Colors.white,
-    letterSpacing: 1,
+  circulo: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: Spacing.sm,
   },
   titulo: {
+    flex: 1,
     fontFamily: Typography.heading,
     fontSize: FontSize.lg,
     color: Colors.primary,
-    marginBottom: Spacing.xs,
   },
   contenido: {
     fontFamily: Typography.body,
@@ -141,7 +129,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
   },
-  menuTextoEliminar: {
-    color: Colors.red,
+  menuTextoEstado: {
+    color: Colors.primary,
   },
 });
