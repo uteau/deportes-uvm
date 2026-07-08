@@ -41,8 +41,6 @@ export default function PantallaFeedSeluvm() {
       const respuesta = await api.get('/feed/seluvm');
       setItems(respuesta.data);
     } catch (e) {
-      console.log('Status:', e.response?.status);
-      console.log('Data:', e.response?.data);
       setError('No se pudo cargar el feed. Intenta de nuevo.');
     }
   }, []);
@@ -128,6 +126,7 @@ export default function PantallaFeedSeluvm() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.filtrosScroll}  
         contentContainerStyle={styles.filtros}
       >
         {[
@@ -192,12 +191,17 @@ const styles = StyleSheet.create({
   centrado: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: Spacing.xl },
   errorTexto: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.red, textAlign: 'center' },
   vacio: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.secondary, textAlign: 'center' },
+  filtrosScroll: {
+    flexGrow: 0,           // evita que el ScrollView se estire/colapse raro en el eje vertical
+    flexShrink: 0,
+    backgroundColor: Colors.white,
+  },
   filtros: {
     flexDirection: 'row',
-    backgroundColor: Colors.white,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     gap: 8,
+    alignItems: 'center',   // 👈 esto es lo que faltaba
   },
   filtroBotón: {
     paddingHorizontal: 14,
@@ -208,6 +212,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   filtroBotónActivo: { backgroundColor: Colors.secondary, borderColor: Colors.secondary },
-  filtroTexto: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.secondary },
+  filtroTexto: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.secondary, lineHeight: FontSize.sm * 1.3 },
   filtroTextoActivo: { color: Colors.white },
 });
