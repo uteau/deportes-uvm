@@ -36,7 +36,7 @@ function readAdminEnv(emailVar, passwordVar, nombreVar, defaultEmail, defaultNom
 }
 
 async function main() {
-  // ── Admin principal ────────────────────────────────────────────────────────
+  // ── Admin principal (obligatorio) ────────────────────────────────────────
   const admin1Password = process.env.ADMIN_PASSWORD;
   if (!admin1Password) {
     throw new Error(
@@ -53,7 +53,6 @@ async function main() {
 
   const hash1 = await bcrypt.hash(admin1.password, SALT_ROUNDS);
 
-  // Crear o actualizar el usuario base
   const result1 = await prisma.usuario.upsert({
     where: { email: admin1.email },
     update: {
@@ -69,7 +68,6 @@ async function main() {
     },
   });
 
-  // Crear el registro de Admin asociado si no existe
   await prisma.admin.upsert({
     where: { usuario_id: result1.id },
     update: {},
@@ -78,9 +76,9 @@ async function main() {
     },
   });
 
-  console.log(`✅ Admin principal creado/actualizado: ${result1.email} (id: ${result1.id})`);
+  console.log(`Admin #1 creado/actualizado: ${result1.email} (id: ${result1.id})`);
 
-  // ── Admin secundario (opcional) ────────────────────────────────────────────
+  // ── Admin secundario (opcional) ──────────────────────────────────────────
   const admin2 = readAdminEnv(
     'ADMIN2_EMAIL',
     'ADMIN2_PASSWORD',
@@ -92,7 +90,6 @@ async function main() {
   if (admin2) {
     const hash2 = await bcrypt.hash(admin2.password, SALT_ROUNDS);
 
-    // Crear o actualizar el usuario base
     const result2 = await prisma.usuario.upsert({
       where: { email: admin2.email },
       update: {
@@ -108,7 +105,6 @@ async function main() {
       },
     });
 
-    // Crear el registro de Admin asociado si no existe
     await prisma.admin.upsert({
       where: { usuario_id: result2.id },
       update: {},
@@ -117,19 +113,57 @@ async function main() {
       },
     });
 
-    console.log(`✅ Admin secundario creado/actualizado: ${result2.email} (id: ${result2.id})`);
+    console.log(`Admin #2 creado/actualizado: ${result2.email} (id: ${result2.id})`);
   } else {
-    console.log(
-      'ℹ️  Admin secundario omitido (ADMIN2_PASSWORD no definida).',
-    );
+    console.log('ℹ Admin #2 omitido (ADMIN2_PASSWORD no definida).');
   }
 
-  console.log('🌱 Seed completado.');
+  // ── Admin terciario (opcional) ──────────────────────────────────────────
+  const admin3 = readAdminEnv(
+    'ADMIN3_EMAIL',
+    'ADMIN3_PASSWORD',
+    'ADMIN3_NOMBRE',
+    'admin3@uvm.cl',
+    'Administrador UVM 3',
+  );
+
+  if (admin3) {
+    const hash3 = await bcrypt.hash(admin3.password, SALT_ROUNDS);
+
+    const result3 = await prisma.usuario.upsert({
+      where: { email: admin3.email },
+      update: {
+        nombre: admin3.nombre,
+        password_hash: hash3,
+        activo: true,
+      },
+      create: {
+        nombre: admin3.nombre,
+        email: admin3.email,
+        password_hash: hash3,
+        activo: true,
+      },
+    });
+
+    await prisma.admin.upsert({
+      where: { usuario_id: result3.id },
+      update: {},
+      create: {
+        usuario_id: result3.id,
+      },
+    });
+
+    console.log(`Admin #3 creado/actualizado: ${result3.email} (id: ${result3.id})`);
+  } else {
+    console.log(' Admin #3 omitido (ADMIN3_PASSWORD no definida).');
+  }
+
+  console.log('Seed completado.');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error durante el seed:', e.message);
+    console.error('Error durante el seed:', e.message);
     process.exit(1);
   })
   .finally(async () => {

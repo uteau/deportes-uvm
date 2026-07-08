@@ -70,28 +70,28 @@ export default function PantallaCalendario() {
 
   // useMemo recalcula markedDates solo cuando cambian eventos, partidos o diaSeleccionado
   const markedDates = useMemo(() => {
-    const marcas = {};
+    // Primero acumulamos los puntos por fecha en un array, sin pisar nada
+    const puntosPorFecha = {};
 
     eventos.forEach(ev => {
       const fecha = toDateString(ev.fecha_evento);
-      marcas[fecha] = { marked: true, dotColor: Colors.orange };
+      if (!puntosPorFecha[fecha]) puntosPorFecha[fecha] = [];
+      puntosPorFecha[fecha].push({ color: Colors.orange }); // punto de evento
     });
 
     partidos.forEach(p => {
       const fecha = toDateString(p.fecha_partido);
-      if (marcas[fecha]) {
-        // Día con evento Y partido: multi-dot
-        marcas[fecha] = {
-          dots: [
-            { color: Colors.orange }, // evento
-            { color: Colors.red },    // partido
-          ],
-        };
-      } else {
-        marcas[fecha] = { marked: true, dotColor: Colors.red };
-      }
+      if (!puntosPorFecha[fecha]) puntosPorFecha[fecha] = [];
+      puntosPorFecha[fecha].push({ color: Colors.red }); // punto de partido
     });
 
+    // Convertimos a la forma que espera markingType="multi-dot"
+    const marcas = {};
+    Object.entries(puntosPorFecha).forEach(([fecha, dots]) => {
+      marcas[fecha] = { dots };
+    });
+
+    // El día seleccionado se agrega aparte, conservando los dots si ya tenía
     if (diaSeleccionado) {
       marcas[diaSeleccionado] = {
         ...(marcas[diaSeleccionado] || {}),
