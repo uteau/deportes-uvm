@@ -5,6 +5,17 @@ import 'flatpickr/dist/flatpickr.css';
 import 'flatpickr/dist/themes/material_blue.css';
 import 'flatpickr/dist/l10n/es.js';
 
+const formatDateForDisplay = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
+};
+
 export default function PartidoForm({ partido, onClose }) {
   const [deportes, setDeportes] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,11 +48,18 @@ export default function PartidoForm({ partido, onClose }) {
 
   // Cargar datos si es edición
   useEffect(() => {
+    apiClient.get('/admin/deportes')
+      .then(res => {
+        const sorted = res.data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        setDeportes(sorted);
+      })
+      .catch(console.error);
+
     if (partido) {
       const fechaLocal = partido.fecha_partido
-        ? new Date(partido.fecha_partido).toISOString().slice(0, 16)
+        ? formatDateForDisplay(partido.fecha_partido)
         : '';
-
+        
       setForm({
         nombre: partido.nombre || '',
         descripcion: partido.descripcion || '',
@@ -61,7 +79,7 @@ export default function PartidoForm({ partido, onClose }) {
     if (datePickerRef.current && !flatpickrInstance.current) {
       flatpickrInstance.current = flatpickr(datePickerRef.current, {
         enableTime: true,
-        dateFormat: "Y-m-d\\TH:i",
+        dateFormat: "d-m-Y H:i",
         time_24hr: true,
         locale: "es",
         minuteIncrement: 1,
@@ -121,11 +139,21 @@ export default function PartidoForm({ partido, onClose }) {
 
     setIsSubmitting(true);
     try {
+      let fechaISO = null;
+      if (form.fecha_partido) {
+        // Parsear "DD-MM-YYYY HH:MM" a objeto Date
+        const [datePart, timePart] = form.fecha_partido.split(' ');
+        const [day, month, year] = datePart.split('-').map(Number);
+        const [hours, minutes] = timePart.split(':').map(Number);
+        const fecha = new Date(year, month - 1, day, hours, minutes);
+        // Ajuste de zona horaria (si lo usabas)
+        fechaISO = new Date(fecha.getTime() - fecha.getTimezoneOffset() * 60000).toISOString();
+      }
       // Enviar fecha en UTC sin ajustes manuales (el backend debe interpretar como UTC o usar zona)
       const payload = {
         nombre: form.nombre.trim(),
         descripcion: form.descripcion.trim(),
-        fecha_partido: form.fecha_partido ? new Date(form.fecha_partido).toISOString() : null,
+        fecha_partido: fechaISO,
         lugar: form.lugar.trim(),
         deporte_id: form.deporte_id,
         equipo_local: form.equipo_local.trim(),

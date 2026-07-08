@@ -20,4 +20,10 @@ export class FeedController {
   getFeedAdmin() {
     return this.feedService.verFeedAdmin();
   }
+
+  @Get('seluvm')
+  @UseGuards(JwtAuthGuard)
+  getFeedSeluvm() {
+    return this.feedService.verFeedSeluvm();
+  }
 }

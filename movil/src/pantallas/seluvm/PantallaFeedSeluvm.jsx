@@ -1,8 +1,8 @@
-// PantallaFeedEstudiante.jsx
-// Copia de solo-lectura del feed para estudiantes seleccionados.
-// Sin lógica de admin, sin botón de login.
-// El botón de volver al hub lo provee el Stack header de NavegadorSeluvm.
-import React, { useEffect, useState, useCallback } from 'react';
+// PantallaFeedSeluvm.jsx
+// Feed del Módulo Seleccionado UVM. Ahora es la pantalla raíz del tab "Feed"
+// (ya no existe PantallaInicioSeluvm). Por eso este header asume el acceso
+// a la credencial digital y el logout, que antes vivían en el hub.
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   View,
   FlatList,
@@ -11,14 +11,23 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../../api/client';
 import TarjetaEvento from '../publico/componentes/feed/TarjetaEvento';
 import TarjetaPartido from '../publico/componentes/feed/TarjetaPartido';
 import TarjetaAnuncio from '../publico/componentes/feed/TarjetaAnuncio';
+import HojaCredencial from './HojaCredencial';
+import { useAuth } from '../../contexto/AuthContext';
 import { Colors, Typography, FontSize, Spacing } from '../../tema';
 
 export default function PantallaFeedSeluvm() {
+  const { cerrarSesion } = useAuth();
+  // refCredencial controla el bottom sheet de credencial, igual que
+  // antes lo hacía PantallaInicioSeluvm.
+  const refCredencial = useRef(null);
+
   const [items, setItems] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [refrescando, setRefrescando] = useState(false);
@@ -28,9 +37,12 @@ export default function PantallaFeedSeluvm() {
   const cargarFeed = useCallback(async () => {
     try {
       setError(null);
-      const respuesta = await api.get('/feed');
+      // /feed/seluvm: eventos + partidos + anuncios (público Y seluvm), activos.
+      const respuesta = await api.get('/feed/seluvm');
       setItems(respuesta.data);
     } catch (e) {
+      console.log('Status:', e.response?.status);
+      console.log('Data:', e.response?.data);
       setError('No se pudo cargar el feed. Intenta de nuevo.');
     }
   }, []);
@@ -45,7 +57,7 @@ export default function PantallaFeedSeluvm() {
     setRefrescando(false);
   }, [cargarFeed]);
 
-  // Sin props de admin: las tarjetas se renderizan en modo solo-lectura
+  // Solo lectura: sin props de admin hacia las tarjetas.
   const renderItem = ({ item }) => {
     if (item.tipo_item === 'evento')  return <TarjetaEvento  item={item} />;
     if (item.tipo_item === 'partido') return <TarjetaPartido item={item} />;
@@ -53,9 +65,16 @@ export default function PantallaFeedSeluvm() {
     return null;
   };
 
-  const itemsFiltrados = filtro === 'todos'
-    ? items
-    : items.filter(item => item.tipo_item === filtro);
+  // "Anuncios" = solo tipo publico. "Anun Sel" = solo tipo seluvm.
+  // Por eso el filtro mira item.tipo además de item.tipo_item.
+  const itemsFiltrados = items.filter(item => {
+    if (filtro === 'todos')       return true;
+    if (filtro === 'evento')      return item.tipo_item === 'evento';
+    if (filtro === 'partido')     return item.tipo_item === 'partido';
+    if (filtro === 'anuncio')     return item.tipo_item === 'anuncio' && item.tipo === 'publico';
+    if (filtro === 'anuncio_sel') return item.tipo_item === 'anuncio' && item.tipo === 'seluvm';
+    return true;
+  });
 
   if (cargando) {
     return (
@@ -76,19 +95,47 @@ export default function PantallaFeedSeluvm() {
   return (
     <View style={styles.contenedor}>
 
-      {/* Header propio de la pantalla — el botón volver viene del Stack */}
+      {/* Header con íconos de credencial y logout */}
       <View style={styles.header}>
-        <Text style={styles.headerTitulo}>DEPORTES UVM</Text>
-        <Text style={styles.headerSubtitulo}>Actividad deportiva universitaria</Text>
+        <View style={styles.headerFila}>
+          <View>
+            <Text style={styles.headerTitulo}>DEPORTES UVM</Text>
+            <Text style={styles.headerSubtitulo}>Actividad deportiva universitaria</Text>
+          </View>
+
+          <View style={styles.headerIconos}>
+            <TouchableOpacity
+              onPress={() => refCredencial.current?.expand()}
+              style={styles.iconoBoton}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="id-card-outline" size={28} color={Colors.light} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={cerrarSesion}
+              style={styles.iconoBoton}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="log-out-outline" size={28} color={Colors.light} />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
 
-      {/* Filtros de tipo de publicación */}
-      <View style={styles.filtros}>
+      {/* Filtros — scroll horizontal: con 5 opciones ya no caben cómodos
+          en pantallas angostas (320-375px, ver RNF-05) */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filtros}
+      >
         {[
-          { key: 'todos',   label: 'Todos' },
-          { key: 'evento',  label: 'Eventos' },
-          { key: 'partido', label: 'Partidos' },
-          { key: 'anuncio', label: 'Anuncios' },
+          { key: 'todos',       label: 'Todos' },
+          { key: 'evento',      label: 'Eventos' },
+          { key: 'partido',     label: 'Partidos' },
+          { key: 'anuncio',     label: 'Anuncios' },
+          { key: 'anuncio_sel', label: 'Anun Sel' },
         ].map(f => (
           <TouchableOpacity
             key={f.key}
@@ -100,9 +147,8 @@ export default function PantallaFeedSeluvm() {
             </Text>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
 
-      {/* Lista del feed */}
       <FlatList
         data={itemsFiltrados}
         keyExtractor={item => `${item.tipo_item}-${item.id}`}
@@ -122,6 +168,9 @@ export default function PantallaFeedSeluvm() {
           </View>
         }
       />
+
+      {/* Bottom sheet de credencial — se dispara desde el ícono de arriba */}
+      <HojaCredencial ref={refCredencial} />
     </View>
   );
 }
@@ -130,11 +179,19 @@ const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: Colors.light },
   header: {
     backgroundColor: Colors.secondary,
-    paddingVertical: Spacing.md,
+    paddingTop: 56,
+    paddingBottom: Spacing.md,
     paddingHorizontal: Spacing.md,
   },
+  headerFila: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   headerTitulo: { fontFamily: Typography.heading, fontSize: FontSize.xxl, color: Colors.light, letterSpacing: 2 },
   headerSubtitulo: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.border, marginTop: 2 },
+  headerIconos: { flexDirection: 'row', gap: Spacing.sm },
+  iconoBoton: { padding: 4 },
+  lista: { padding: Spacing.md },
+  centrado: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: Spacing.xl },
+  errorTexto: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.red, textAlign: 'center' },
+  vacio: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.secondary, textAlign: 'center' },
   filtros: {
     flexDirection: 'row',
     backgroundColor: Colors.white,
@@ -153,8 +210,4 @@ const styles = StyleSheet.create({
   filtroBotónActivo: { backgroundColor: Colors.secondary, borderColor: Colors.secondary },
   filtroTexto: { fontFamily: Typography.body, fontSize: FontSize.sm, color: Colors.secondary },
   filtroTextoActivo: { color: Colors.white },
-  lista: { padding: Spacing.md },
-  centrado: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: Spacing.xl },
-  errorTexto: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.red, textAlign: 'center' },
-  vacio: { fontFamily: Typography.body, fontSize: FontSize.md, color: Colors.secondary, textAlign: 'center' },
 });

@@ -203,6 +203,7 @@ export class UsuariosService {
         return {
             nombre: estudiante.usuario.nombre,
             rut: estudiante.rut,
+            dv: estudiante.dig_verificador,
             deporte: estudiante.deporte?.nombre ?? 'Sin asignar',
             activo: estudiante.usuario.activo,
         };
